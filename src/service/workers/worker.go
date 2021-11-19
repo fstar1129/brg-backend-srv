@@ -54,6 +54,12 @@ type IWorker interface {
 	// Unregister
 	Unregister(relayerAddress common.Address) (string, error)
 
+	//Felony
+	Felony(relayerAddress common.Address, chainID string) (string, error)
+
+	// Penalty
+	Penalty(relayerAddress common.Address, amount string) (string, error)
+
 	//HTLT(erc20TokenAddr, lrc20TokenAddr, recipientAddr, otherChainRecipientAddr string, timestamp int64,
 	//	heightSpan int64, outAmount *big.Int) (string, error)
 	// CreateRequest sends wrapped tokens tx

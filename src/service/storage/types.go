@@ -34,7 +34,10 @@ const (
 type TxType string
 
 const (
-	TxTypeRegister TxType = "REGISTER"
+	TxTypeRegister   TxType = "REGISTER"
+	TxTypeUnregister TxType = "UNREGISTER"
+	TxTypeFelony     TxType = "FELONY"
+	TxTypePenalty    TxType = "PENALTY"
 )
 
 type EventStatus string
@@ -47,6 +50,30 @@ const (
 	EventStatusRegisterConfirmed     EventStatus = "REGISTER_CONFIRMED"
 	EventStatusRegisterFailed        EventStatus = "REGISTER_FAILED"
 	EventStatusRegisterSentFailed    EventStatus = "REGISTER_SENT_FAILED"
+
+	// UNREGISTER
+	EventStatusUnregisterInit          EventStatus = "UNREGISTER_INIT"
+	EventStatusUnregisterInitConfrimed EventStatus = "UNREGISTER_INIT_CONFIRMED"
+	EventStatusUnregisterSent          EventStatus = "UNREGISTER_SENT"
+	EventStatusUnregisterConfirmed     EventStatus = "UNREGISTER_CONFIRMED"
+	EventStatusUnregisterFailed        EventStatus = "UNREGISTER_FAILED"
+	EventStatusUnregisterSentFailed    EventStatus = "UNREGISTER_SENT_FAILED"
+
+	// FELONY
+	EventStatusFelonyInit          EventStatus = "FELONY_INIT"
+	EventStatusFelonyInitConfrimed EventStatus = "FELONY_INIT_CONFIRMED"
+	EventStatusFelonySent          EventStatus = "FELONY_SENT"
+	EventStatusFelonyConfirmed     EventStatus = "FELONY_CONFIRMED"
+	EventStatusFelonyFailed        EventStatus = "FELONY_FAILED"
+	EventStatusFelonySentFailed    EventStatus = "FELONY_SENT_FAILED"
+
+	// PENALTY
+	EventStatusPenaltyInit          EventStatus = "PENALTY_INIT"
+	EventStatusPenaltyInitConfrimed EventStatus = "PENALTY_INIT_CONFIRMED"
+	EventStatusPenaltySent          EventStatus = "PENALTY_SENT"
+	EventStatusPenaltyConfirmed     EventStatus = "PENALTY_CONFIRMED"
+	EventStatusPenaltyFailed        EventStatus = "PENALTY_FAILED"
+	EventStatusPenaltySentFailed    EventStatus = "PENALTY_SENT_FAILED"
 )
 
 // TxLogStatus ...

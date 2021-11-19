@@ -68,11 +68,11 @@ func (a *App) Run(ctx context.Context) {
 		}
 	}()
 
-	a.logger.Infof("Relayer service has started on %s\nPress ctrl + C to exit.", a.server.Addr)
+	a.logger.Infof("Bridge backend service has started on %s\nPress ctrl + C to exit.", a.server.Addr)
 
 	<-ctx.Done()
 
-	a.logger.Infoln("Relayer service has stopped")
+	a.logger.Infoln("Bridge backend service has stopped")
 
 	ctxShutDown, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()

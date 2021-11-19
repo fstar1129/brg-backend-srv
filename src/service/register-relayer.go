@@ -10,11 +10,11 @@ import (
 )
 
 // emitRegistreted ...
-func (r *BridgeSRV) emitRegistreted(worker workers.IWorker) {
+func (r *BridgeSRV) emitRegistered(worker workers.IWorker) {
 	for {
-		events := r.storage.GetEventsByTypeAndStatuses([]storage.EventStatus{storage.EventStatusRegisterInitConfrimed, storage.EventStatusRegisterSent})
+		events := r.storage.GetEventsByTypeAndStatuses([]storage.EventStatus{storage.EventStatusRegisterInit, storage.EventStatusRegisterSent})
 		for _, event := range events {
-			if event.Status == storage.EventStatusRegisterInitConfrimed {
+			if event.Status == storage.EventStatusRegisterInit {
 				r.logger.Infoln("attempting to send registrate")
 				if _, err := r.sendRegister(worker, event); err != nil {
 					r.logger.Errorf("submit claim failed: %s", err)

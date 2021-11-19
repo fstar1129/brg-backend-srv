@@ -30,6 +30,7 @@ type TxLog struct {
 	ConfirmedNum       int64 `gorm:"type:BIGINT"`
 	CreateTime         int64 `gorm:"type:BIGINT"`
 	UpdateTime         int64 `gorm:"type:BIGINT"`
+	Penalty            string
 }
 
 // Registration
@@ -55,6 +56,7 @@ type Event struct {
 	Status         EventStatus
 	CreateTime     int64
 	UpdateTime     int64
+	Penalty        string
 }
 
 // TxSent ...

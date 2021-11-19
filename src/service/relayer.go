@@ -64,11 +64,14 @@ func (r *BridgeSRV) Run() {
 	// run Worker workers
 	for _, worker := range r.Workers {
 		go r.ConfirmWorkerTx(worker)
+		go r.emitFelony(worker)
 		if worker.GetChain() != storage.LaChain {
-			go r.emitRegistreted(worker)
-			// go r.emitUnregistering(worker)
-			go r.CheckTxSentRoutine(worker)
+			go r.emitRegistered(worker)
+			go r.emitUnregistered(worker)
+		} else if worker.GetChain() != storage.EthChain {
+			go r.emitPenalty(worker)
 		}
+		go r.CheckTxSentRoutine(worker)
 	}
 }
 
@@ -86,17 +89,49 @@ func (r *BridgeSRV) ConfirmWorkerTx(worker workers.IWorker) {
 		newEvents := make([]*storage.Event, 0)
 
 		for _, txLog := range txLogs {
-			if txLog.Status == storage.TxStatusInit {
-				r.logger.Infoln("NEW EVENT")
+			if txLog.TxType == storage.TxTypeRegister {
+				r.logger.Infoln("register worker")
 				newEvent := &storage.Event{
 					RelayerAddress: txLog.Data,
-					ChainID:        txLog.DestinationChainID,
+					ChainID:        txLog.Chain,
 					Height:         txLog.Height,
-					Status:         storage.EventStatusRegisterInitConfrimed,
+					Status:         storage.EventStatusRegisterInit,
 					CreateTime:     time.Now().Unix(),
 				}
 				newEvents = append(newEvents, newEvent)
+			} else if txLog.TxType == storage.TxTypeUnregister {
+				r.logger.Infoln("unregister worker")
+				newEvent := &storage.Event{
+					RelayerAddress: txLog.Data,
+					ChainID:        txLog.Chain,
+					Height:         txLog.Height,
+					Status:         storage.EventStatusUnregisterInit,
+					CreateTime:     time.Now().Unix(),
+				}
+				newEvents = append(newEvents, newEvent)
+			} else if txLog.TxType == storage.TxTypeFelony {
+				r.logger.Infoln("Felony worker")
+				newEvent := &storage.Event{
+					RelayerAddress: txLog.Data,
+					ChainID:        txLog.Chain,
+					Height:         txLog.Height,
+					Status:         storage.EventStatusFelonyInit,
+					CreateTime:     time.Now().Unix(),
+				}
+				newEvents = append(newEvents, newEvent)
+			} else if txLog.TxType == storage.TxTypePenalty {
+				r.logger.Infoln("Penalty worker")
+				newEvent := &storage.Event{
+					RelayerAddress: txLog.Data,
+					ChainID:        txLog.Chain,
+					Height:         txLog.Height,
+					Status:         storage.EventStatusPenaltyInit,
+					CreateTime:     time.Now().Unix(),
+					Penalty:        txLog.Penalty,
+				}
+				newEvents = append(newEvents, newEvent)
 			}
+
 			txHashes = append(txHashes, txLog.TxHash)
 		}
 

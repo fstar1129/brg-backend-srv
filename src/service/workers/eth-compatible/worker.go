@@ -8,7 +8,8 @@ import (
 	"math/big"
 	"time"
 
-	hub "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/eth-compatible/abi/relayer-hub"
+	hubEth "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/eth-compatible/abi/relayer-hub/eth"
+	hubLA "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/eth-compatible/abi/relayer-hub/la"
 	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/utils"
 
 	"github.com/ethereum/go-ethereum"
@@ -97,7 +98,7 @@ func (w *Erc20Worker) Register(relayerAddress common.Address) (string, error) {
 		return "", err
 	}
 
-	instance, err := hub.NewHub(w.contractAddr, w.client)
+	instance, err := hubEth.NewHubEth(w.contractAddr, w.client)
 	if err != nil {
 		return "", err
 	}
@@ -117,12 +118,69 @@ func (w *Erc20Worker) Unregister(relayerAddress common.Address) (string, error) 
 		return "", err
 	}
 
-	instance, err := hub.NewHub(w.contractAddr, w.client)
+	instance, err := hubEth.NewHubEth(w.contractAddr, w.client)
 	if err != nil {
 		return "", err
 	}
 
 	tx, err := instance.Unregister(auth, relayerAddress)
+	if err != nil {
+		return "", err
+	}
+
+	return tx.Hash().String(), nil
+}
+
+// Felony ...
+func (w *Erc20Worker) Felony(relayerAddress common.Address, chainID string) (string, error) {
+	auth, err := w.getTransactor()
+	if err != nil {
+		return "", err
+	}
+	if chainID != storage.LaChain {
+		instance, err := hubEth.NewHubEth(w.contractAddr, w.client)
+		if err != nil {
+			return "", err
+		}
+
+		tx, err := instance.Felony(auth, relayerAddress)
+		if err != nil {
+			return "", err
+		}
+
+		return tx.Hash().String(), nil
+
+	} else if chainID != storage.EthChain {
+		instance, err := hubLA.NewHubLA(w.contractAddr, w.client)
+		if err != nil {
+			return "", err
+		}
+
+		tx, err := instance.Felony(auth, relayerAddress)
+		if err != nil {
+			return "", err
+		}
+
+		return tx.Hash().String(), nil
+
+	}
+
+	return "", nil
+}
+
+//Penalty
+func (w *Erc20Worker) Penalty(relayerAddress common.Address, amount string) (string, error) {
+	auth, err := w.getTransactor()
+	if err != nil {
+		return "", err
+	}
+
+	instance, err := hubLA.NewHubLA(w.contractAddr, w.client)
+	if err != nil {
+		return "", err
+	}
+	value, _ := new(big.Int).SetString(amount, 10)
+	tx, err := instance.Slash(auth, relayerAddress, value)
 	if err != nil {
 		return "", err
 	}
@@ -222,7 +280,6 @@ func (w *Erc20Worker) getLogs(blockHash common.Hash) ([]*storage.TxLog, error) {
 		txLog := event.ToTxLog(w.chainID)
 		txLog.Chain = w.chainID
 		txLog.Height = int64(log.BlockNumber)
-		txLog.DestinationChainID = w.chainID
 		txLog.EventID = log.TxHash.Hex()
 		txLog.BlockHash = log.BlockHash.Hex()
 		txLog.TxHash = log.TxHash.Hex()
@@ -291,24 +348,24 @@ func (w *Erc20Worker) getTransactor() (auth *bind.TransactOpts, err error) {
 	}
 
 	var nonce uint64
-	if w.chainID == storage.LaChain {
-		nonce, err = w.GetTxCountLatest()
-		if err != nil {
-			return nil, err
-		}
+	// if w.chainID == storage.LaChain {
+	// 	nonce, err = w.GetTxCountLatest()
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
 
-		auth, err = bind.NewKeyedTransactorWithChainID(privateKey, big.NewInt(int64(26)))
-		if err != nil {
-			return nil, err
-		}
+	// 	auth, err = bind.NewKeyedTransactorWithChainID(privateKey, big.NewInt(int64(26)))
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
 
-	} else {
-		nonce, err = w.client.PendingNonceAt(context.Background(), w.config.WorkerAddr)
-		if err != nil {
-			return nil, err
-		}
-		auth = bind.NewKeyedTransactor(privateKey)
+	// } else {
+	nonce, err = w.client.PendingNonceAt(context.Background(), w.config.WorkerAddr)
+	if err != nil {
+		return nil, err
 	}
+	auth = bind.NewKeyedTransactor(privateKey)
+	// }
 
 	auth.Nonce = big.NewInt(int64(nonce))
 	auth.Value = big.NewInt(0)                // in wei

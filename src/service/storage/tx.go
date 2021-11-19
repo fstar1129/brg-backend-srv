@@ -78,8 +78,26 @@ func (d *DataBase) ConfirmTx(tx *gorm.DB, txLog *TxLog) error {
 			nil, EventStatusRegisterConfirmed); err != nil {
 			return err
 		}
+	case TxTypeUnregister:
+		if err := d.UpdateEventStatusWhenConfirmTx(tx, txLog, []EventStatus{
+			EventStatusUnregisterConfirmed, EventStatusUnregisterSent, EventStatusUnregisterFailed},
+			nil, EventStatusUnregisterConfirmed); err != nil {
+			return err
+		}
+	case TxTypeFelony:
+		if err := d.UpdateEventStatusWhenConfirmTx(tx, txLog, []EventStatus{
+			EventStatusFelonyConfirmed, EventStatusFelonySent, EventStatusFelonyFailed},
+			nil, EventStatusFelonyConfirmed); err != nil {
+			return err
+		}
+	case TxTypePenalty:
+		if err := d.UpdateEventStatusWhenConfirmTx(tx, txLog, []EventStatus{
+			EventStatusPenaltyConfirmed, EventStatusPenaltySent, EventStatusPenaltyFailed},
+			nil, EventStatusPenaltyConfirmed); err != nil {
+			return err
+		}
 
-	//	case TxTypeUnregister:
+		//	case TxTypeUnregister:
 	}
 
 	return nil

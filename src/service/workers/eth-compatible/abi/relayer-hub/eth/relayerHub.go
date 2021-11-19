@@ -1,9 +1,10 @@
 // Code generated - DO NOT EDIT.
 // This file is a generated binding and any manual changes will be lost.
 
-package hub
+package hubEth
 
 import (
+	"errors"
 	"math/big"
 	"strings"
 
@@ -17,6 +18,7 @@ import (
 
 // Reference imports to suppress errors if they are not otherwise used.
 var (
+	_ = errors.New
 	_ = big.NewInt
 	_ = strings.NewReader
 	_ = ethereum.NotFound
@@ -26,107 +28,113 @@ var (
 	_ = event.NewSubscription
 )
 
-// HubABI is the input ABI used to generate the binding from.
-const HubABI = "[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"bridgeAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"penaltyPercentage\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"rewardPercentage\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"string\",\"name\":\"reason\",\"type\":\"string\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"relayer\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"penalty\",\"type\":\"uint256\"}],\"name\":\"PenaltyForRelayer\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"newPercentage\",\"type\":\"uint256\"}],\"name\":\"PenaltyPercentChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"relayer\",\"type\":\"address\"}],\"name\":\"RelayerBlocked\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"_relayer\",\"type\":\"address\"}],\"name\":\"RelayerRegister\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"_relayer\",\"type\":\"address\"}],\"name\":\"RelayerUnRegister\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"relayer\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"reward\",\"type\":\"uint256\"}],\"name\":\"RewardForRelayer\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"newPercentage\",\"type\":\"uint256\"}],\"name\":\"RewardPercentageChanged\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"_penaltyPercentage\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"_relayerBlocked\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"_relayersExistMap\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"_rewardPercentage\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_relayer\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"swapValue\",\"type\":\"uint256\"}],\"name\":\"alreadyExecuted\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"relayer\",\"type\":\"address\"}],\"name\":\"felony\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"isRelayer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"relayerToAdd\",\"type\":\"address\"}],\"name\":\"register\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_relayer\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"swapValue\",\"type\":\"uint256\"}],\"name\":\"swapReward\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"relayerToRemove\",\"type\":\"address\"}],\"name\":\"unregister\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"penaltyPercentage\",\"type\":\"uint256\"}],\"name\":\"updatePenaltyPercentage\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"rewardPercent\",\"type\":\"uint256\"}],\"name\":\"updateRewardPercentage\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]"
-
-// Hub is an auto generated Go binding around an Ethereum contract.
-type Hub struct {
-	HubCaller     // Read-only binding to the contract
-	HubTransactor // Write-only binding to the contract
-	HubFilterer   // Log filterer for contract events
+// HubEthMetaData contains all meta data concerning the HubEth contract.
+var HubEthMetaData = &bind.MetaData{
+	ABI: "[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"bridgeAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"penaltyPercentage\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"rewardPercentage\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"string\",\"name\":\"reason\",\"type\":\"string\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"relayer\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"penalty\",\"type\":\"uint256\"}],\"name\":\"PenaltyForRelayer\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"newPercentage\",\"type\":\"uint256\"}],\"name\":\"PenaltyPercentChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"relayer\",\"type\":\"address\"}],\"name\":\"RelayerBlocked\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"_relayer\",\"type\":\"address\"}],\"name\":\"RelayerRegister\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"_relayer\",\"type\":\"address\"}],\"name\":\"RelayerUnRegister\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"relayer\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"reward\",\"type\":\"uint256\"}],\"name\":\"RewardForRelayer\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"newPercentage\",\"type\":\"uint256\"}],\"name\":\"RewardPercentageChanged\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"_penaltyPercentage\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"_relayerBlocked\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"_relayersExistMap\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[],\"name\":\"_rewardPercentage\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"relayerToAdd\",\"type\":\"address\"}],\"name\":\"register\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"relayerToRemove\",\"type\":\"address\"}],\"name\":\"unregister\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"isRelayer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_relayer\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"swapValue\",\"type\":\"uint256\"}],\"name\":\"alreadyExecuted\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"relayer\",\"type\":\"address\"}],\"name\":\"felony\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"penaltyPercentage\",\"type\":\"uint256\"}],\"name\":\"updatePenaltyPercentage\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_relayer\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"swapValue\",\"type\":\"uint256\"}],\"name\":\"swapReward\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"rewardPercent\",\"type\":\"uint256\"}],\"name\":\"updateRewardPercentage\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
-// HubCaller is an auto generated read-only Go binding around an Ethereum contract.
-type HubCaller struct {
+// HubEthABI is the input ABI used to generate the binding from.
+// Deprecated: Use HubEthMetaData.ABI instead.
+var HubEthABI = HubEthMetaData.ABI
+
+// HubEth is an auto generated Go binding around an Ethereum contract.
+type HubEth struct {
+	HubEthCaller     // Read-only binding to the contract
+	HubEthTransactor // Write-only binding to the contract
+	HubEthFilterer   // Log filterer for contract events
+}
+
+// HubEthCaller is an auto generated read-only Go binding around an Ethereum contract.
+type HubEthCaller struct {
 	contract *bind.BoundContract // Generic contract wrapper for the low level calls
 }
 
-// HubTransactor is an auto generated write-only Go binding around an Ethereum contract.
-type HubTransactor struct {
+// HubEthTransactor is an auto generated write-only Go binding around an Ethereum contract.
+type HubEthTransactor struct {
 	contract *bind.BoundContract // Generic contract wrapper for the low level calls
 }
 
-// HubFilterer is an auto generated log filtering Go binding around an Ethereum contract events.
-type HubFilterer struct {
+// HubEthFilterer is an auto generated log filtering Go binding around an Ethereum contract events.
+type HubEthFilterer struct {
 	contract *bind.BoundContract // Generic contract wrapper for the low level calls
 }
 
-// HubSession is an auto generated Go binding around an Ethereum contract,
+// HubEthSession is an auto generated Go binding around an Ethereum contract,
 // with pre-set call and transact options.
-type HubSession struct {
-	Contract     *Hub              // Generic contract binding to set the session for
+type HubEthSession struct {
+	Contract     *HubEth           // Generic contract binding to set the session for
 	CallOpts     bind.CallOpts     // Call options to use throughout this session
 	TransactOpts bind.TransactOpts // Transaction auth options to use throughout this session
 }
 
-// HubCallerSession is an auto generated read-only Go binding around an Ethereum contract,
+// HubEthCallerSession is an auto generated read-only Go binding around an Ethereum contract,
 // with pre-set call options.
-type HubCallerSession struct {
-	Contract *HubCaller    // Generic contract caller binding to set the session for
+type HubEthCallerSession struct {
+	Contract *HubEthCaller // Generic contract caller binding to set the session for
 	CallOpts bind.CallOpts // Call options to use throughout this session
 }
 
-// HubTransactorSession is an auto generated write-only Go binding around an Ethereum contract,
+// HubEthTransactorSession is an auto generated write-only Go binding around an Ethereum contract,
 // with pre-set transact options.
-type HubTransactorSession struct {
-	Contract     *HubTransactor    // Generic contract transactor binding to set the session for
+type HubEthTransactorSession struct {
+	Contract     *HubEthTransactor // Generic contract transactor binding to set the session for
 	TransactOpts bind.TransactOpts // Transaction auth options to use throughout this session
 }
 
-// HubRaw is an auto generated low-level Go binding around an Ethereum contract.
-type HubRaw struct {
-	Contract *Hub // Generic contract binding to access the raw methods on
+// HubEthRaw is an auto generated low-level Go binding around an Ethereum contract.
+type HubEthRaw struct {
+	Contract *HubEth // Generic contract binding to access the raw methods on
 }
 
-// HubCallerRaw is an auto generated low-level read-only Go binding around an Ethereum contract.
-type HubCallerRaw struct {
-	Contract *HubCaller // Generic read-only contract binding to access the raw methods on
+// HubEthCallerRaw is an auto generated low-level read-only Go binding around an Ethereum contract.
+type HubEthCallerRaw struct {
+	Contract *HubEthCaller // Generic read-only contract binding to access the raw methods on
 }
 
-// HubTransactorRaw is an auto generated low-level write-only Go binding around an Ethereum contract.
-type HubTransactorRaw struct {
-	Contract *HubTransactor // Generic write-only contract binding to access the raw methods on
+// HubEthTransactorRaw is an auto generated low-level write-only Go binding around an Ethereum contract.
+type HubEthTransactorRaw struct {
+	Contract *HubEthTransactor // Generic write-only contract binding to access the raw methods on
 }
 
-// NewHub creates a new instance of Hub, bound to a specific deployed contract.
-func NewHub(address common.Address, backend bind.ContractBackend) (*Hub, error) {
-	contract, err := bindHub(address, backend, backend, backend)
+// NewHubEth creates a new instance of HubEth, bound to a specific deployed contract.
+func NewHubEth(address common.Address, backend bind.ContractBackend) (*HubEth, error) {
+	contract, err := bindHubEth(address, backend, backend, backend)
 	if err != nil {
 		return nil, err
 	}
-	return &Hub{HubCaller: HubCaller{contract: contract}, HubTransactor: HubTransactor{contract: contract}, HubFilterer: HubFilterer{contract: contract}}, nil
+	return &HubEth{HubEthCaller: HubEthCaller{contract: contract}, HubEthTransactor: HubEthTransactor{contract: contract}, HubEthFilterer: HubEthFilterer{contract: contract}}, nil
 }
 
-// NewHubCaller creates a new read-only instance of Hub, bound to a specific deployed contract.
-func NewHubCaller(address common.Address, caller bind.ContractCaller) (*HubCaller, error) {
-	contract, err := bindHub(address, caller, nil, nil)
+// NewHubEthCaller creates a new read-only instance of HubEth, bound to a specific deployed contract.
+func NewHubEthCaller(address common.Address, caller bind.ContractCaller) (*HubEthCaller, error) {
+	contract, err := bindHubEth(address, caller, nil, nil)
 	if err != nil {
 		return nil, err
 	}
-	return &HubCaller{contract: contract}, nil
+	return &HubEthCaller{contract: contract}, nil
 }
 
-// NewHubTransactor creates a new write-only instance of Hub, bound to a specific deployed contract.
-func NewHubTransactor(address common.Address, transactor bind.ContractTransactor) (*HubTransactor, error) {
-	contract, err := bindHub(address, nil, transactor, nil)
+// NewHubEthTransactor creates a new write-only instance of HubEth, bound to a specific deployed contract.
+func NewHubEthTransactor(address common.Address, transactor bind.ContractTransactor) (*HubEthTransactor, error) {
+	contract, err := bindHubEth(address, nil, transactor, nil)
 	if err != nil {
 		return nil, err
 	}
-	return &HubTransactor{contract: contract}, nil
+	return &HubEthTransactor{contract: contract}, nil
 }
 
-// NewHubFilterer creates a new log filterer instance of Hub, bound to a specific deployed contract.
-func NewHubFilterer(address common.Address, filterer bind.ContractFilterer) (*HubFilterer, error) {
-	contract, err := bindHub(address, nil, nil, filterer)
+// NewHubEthFilterer creates a new log filterer instance of HubEth, bound to a specific deployed contract.
+func NewHubEthFilterer(address common.Address, filterer bind.ContractFilterer) (*HubEthFilterer, error) {
+	contract, err := bindHubEth(address, nil, nil, filterer)
 	if err != nil {
 		return nil, err
 	}
-	return &HubFilterer{contract: contract}, nil
+	return &HubEthFilterer{contract: contract}, nil
 }
 
-// bindHub binds a generic wrapper to an already deployed contract.
-func bindHub(address common.Address, caller bind.ContractCaller, transactor bind.ContractTransactor, filterer bind.ContractFilterer) (*bind.BoundContract, error) {
-	parsed, err := abi.JSON(strings.NewReader(HubABI))
+// bindHubEth binds a generic wrapper to an already deployed contract.
+func bindHubEth(address common.Address, caller bind.ContractCaller, transactor bind.ContractTransactor, filterer bind.ContractFilterer) (*bind.BoundContract, error) {
+	parsed, err := abi.JSON(strings.NewReader(HubEthABI))
 	if err != nil {
 		return nil, err
 	}
@@ -137,46 +145,46 @@ func bindHub(address common.Address, caller bind.ContractCaller, transactor bind
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_Hub *HubRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
-	return _Hub.Contract.HubCaller.contract.Call(opts, result, method, params...)
+func (_HubEth *HubEthRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
+	return _HubEth.Contract.HubEthCaller.contract.Call(opts, result, method, params...)
 }
 
 // Transfer initiates a plain transaction to move funds to the contract, calling
 // its default method if one is available.
-func (_Hub *HubRaw) Transfer(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _Hub.Contract.HubTransactor.contract.Transfer(opts)
+func (_HubEth *HubEthRaw) Transfer(opts *bind.TransactOpts) (*types.Transaction, error) {
+	return _HubEth.Contract.HubEthTransactor.contract.Transfer(opts)
 }
 
 // Transact invokes the (paid) contract method with params as input values.
-func (_Hub *HubRaw) Transact(opts *bind.TransactOpts, method string, params ...interface{}) (*types.Transaction, error) {
-	return _Hub.Contract.HubTransactor.contract.Transact(opts, method, params...)
+func (_HubEth *HubEthRaw) Transact(opts *bind.TransactOpts, method string, params ...interface{}) (*types.Transaction, error) {
+	return _HubEth.Contract.HubEthTransactor.contract.Transact(opts, method, params...)
 }
 
 // Call invokes the (constant) contract method with params as input values and
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_Hub *HubCallerRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
-	return _Hub.Contract.contract.Call(opts, result, method, params...)
+func (_HubEth *HubEthCallerRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
+	return _HubEth.Contract.contract.Call(opts, result, method, params...)
 }
 
 // Transfer initiates a plain transaction to move funds to the contract, calling
 // its default method if one is available.
-func (_Hub *HubTransactorRaw) Transfer(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _Hub.Contract.contract.Transfer(opts)
+func (_HubEth *HubEthTransactorRaw) Transfer(opts *bind.TransactOpts) (*types.Transaction, error) {
+	return _HubEth.Contract.contract.Transfer(opts)
 }
 
 // Transact invokes the (paid) contract method with params as input values.
-func (_Hub *HubTransactorRaw) Transact(opts *bind.TransactOpts, method string, params ...interface{}) (*types.Transaction, error) {
-	return _Hub.Contract.contract.Transact(opts, method, params...)
+func (_HubEth *HubEthTransactorRaw) Transact(opts *bind.TransactOpts, method string, params ...interface{}) (*types.Transaction, error) {
+	return _HubEth.Contract.contract.Transact(opts, method, params...)
 }
 
 // PenaltyPercentage is a free data retrieval call binding the contract method 0x93a55f92.
 //
 // Solidity: function _penaltyPercentage() view returns(uint256)
-func (_Hub *HubCaller) PenaltyPercentage(opts *bind.CallOpts) (*big.Int, error) {
+func (_HubEth *HubEthCaller) PenaltyPercentage(opts *bind.CallOpts) (*big.Int, error) {
 	var out []interface{}
-	err := _Hub.contract.Call(opts, &out, "_penaltyPercentage")
+	err := _HubEth.contract.Call(opts, &out, "_penaltyPercentage")
 
 	if err != nil {
 		return *new(*big.Int), err
@@ -191,23 +199,23 @@ func (_Hub *HubCaller) PenaltyPercentage(opts *bind.CallOpts) (*big.Int, error) 
 // PenaltyPercentage is a free data retrieval call binding the contract method 0x93a55f92.
 //
 // Solidity: function _penaltyPercentage() view returns(uint256)
-func (_Hub *HubSession) PenaltyPercentage() (*big.Int, error) {
-	return _Hub.Contract.PenaltyPercentage(&_Hub.CallOpts)
+func (_HubEth *HubEthSession) PenaltyPercentage() (*big.Int, error) {
+	return _HubEth.Contract.PenaltyPercentage(&_HubEth.CallOpts)
 }
 
 // PenaltyPercentage is a free data retrieval call binding the contract method 0x93a55f92.
 //
 // Solidity: function _penaltyPercentage() view returns(uint256)
-func (_Hub *HubCallerSession) PenaltyPercentage() (*big.Int, error) {
-	return _Hub.Contract.PenaltyPercentage(&_Hub.CallOpts)
+func (_HubEth *HubEthCallerSession) PenaltyPercentage() (*big.Int, error) {
+	return _HubEth.Contract.PenaltyPercentage(&_HubEth.CallOpts)
 }
 
 // RelayerBlocked is a free data retrieval call binding the contract method 0x0537b4d6.
 //
 // Solidity: function _relayerBlocked(address ) view returns(bool)
-func (_Hub *HubCaller) RelayerBlocked(opts *bind.CallOpts, arg0 common.Address) (bool, error) {
+func (_HubEth *HubEthCaller) RelayerBlocked(opts *bind.CallOpts, arg0 common.Address) (bool, error) {
 	var out []interface{}
-	err := _Hub.contract.Call(opts, &out, "_relayerBlocked", arg0)
+	err := _HubEth.contract.Call(opts, &out, "_relayerBlocked", arg0)
 
 	if err != nil {
 		return *new(bool), err
@@ -222,23 +230,23 @@ func (_Hub *HubCaller) RelayerBlocked(opts *bind.CallOpts, arg0 common.Address) 
 // RelayerBlocked is a free data retrieval call binding the contract method 0x0537b4d6.
 //
 // Solidity: function _relayerBlocked(address ) view returns(bool)
-func (_Hub *HubSession) RelayerBlocked(arg0 common.Address) (bool, error) {
-	return _Hub.Contract.RelayerBlocked(&_Hub.CallOpts, arg0)
+func (_HubEth *HubEthSession) RelayerBlocked(arg0 common.Address) (bool, error) {
+	return _HubEth.Contract.RelayerBlocked(&_HubEth.CallOpts, arg0)
 }
 
 // RelayerBlocked is a free data retrieval call binding the contract method 0x0537b4d6.
 //
 // Solidity: function _relayerBlocked(address ) view returns(bool)
-func (_Hub *HubCallerSession) RelayerBlocked(arg0 common.Address) (bool, error) {
-	return _Hub.Contract.RelayerBlocked(&_Hub.CallOpts, arg0)
+func (_HubEth *HubEthCallerSession) RelayerBlocked(arg0 common.Address) (bool, error) {
+	return _HubEth.Contract.RelayerBlocked(&_HubEth.CallOpts, arg0)
 }
 
 // RelayersExistMap is a free data retrieval call binding the contract method 0xbd59a093.
 //
 // Solidity: function _relayersExistMap(address ) view returns(bool)
-func (_Hub *HubCaller) RelayersExistMap(opts *bind.CallOpts, arg0 common.Address) (bool, error) {
+func (_HubEth *HubEthCaller) RelayersExistMap(opts *bind.CallOpts, arg0 common.Address) (bool, error) {
 	var out []interface{}
-	err := _Hub.contract.Call(opts, &out, "_relayersExistMap", arg0)
+	err := _HubEth.contract.Call(opts, &out, "_relayersExistMap", arg0)
 
 	if err != nil {
 		return *new(bool), err
@@ -253,23 +261,23 @@ func (_Hub *HubCaller) RelayersExistMap(opts *bind.CallOpts, arg0 common.Address
 // RelayersExistMap is a free data retrieval call binding the contract method 0xbd59a093.
 //
 // Solidity: function _relayersExistMap(address ) view returns(bool)
-func (_Hub *HubSession) RelayersExistMap(arg0 common.Address) (bool, error) {
-	return _Hub.Contract.RelayersExistMap(&_Hub.CallOpts, arg0)
+func (_HubEth *HubEthSession) RelayersExistMap(arg0 common.Address) (bool, error) {
+	return _HubEth.Contract.RelayersExistMap(&_HubEth.CallOpts, arg0)
 }
 
 // RelayersExistMap is a free data retrieval call binding the contract method 0xbd59a093.
 //
 // Solidity: function _relayersExistMap(address ) view returns(bool)
-func (_Hub *HubCallerSession) RelayersExistMap(arg0 common.Address) (bool, error) {
-	return _Hub.Contract.RelayersExistMap(&_Hub.CallOpts, arg0)
+func (_HubEth *HubEthCallerSession) RelayersExistMap(arg0 common.Address) (bool, error) {
+	return _HubEth.Contract.RelayersExistMap(&_HubEth.CallOpts, arg0)
 }
 
 // RewardPercentage is a free data retrieval call binding the contract method 0xa1444a4a.
 //
 // Solidity: function _rewardPercentage() view returns(uint256)
-func (_Hub *HubCaller) RewardPercentage(opts *bind.CallOpts) (*big.Int, error) {
+func (_HubEth *HubEthCaller) RewardPercentage(opts *bind.CallOpts) (*big.Int, error) {
 	var out []interface{}
-	err := _Hub.contract.Call(opts, &out, "_rewardPercentage")
+	err := _HubEth.contract.Call(opts, &out, "_rewardPercentage")
 
 	if err != nil {
 		return *new(*big.Int), err
@@ -284,23 +292,23 @@ func (_Hub *HubCaller) RewardPercentage(opts *bind.CallOpts) (*big.Int, error) {
 // RewardPercentage is a free data retrieval call binding the contract method 0xa1444a4a.
 //
 // Solidity: function _rewardPercentage() view returns(uint256)
-func (_Hub *HubSession) RewardPercentage() (*big.Int, error) {
-	return _Hub.Contract.RewardPercentage(&_Hub.CallOpts)
+func (_HubEth *HubEthSession) RewardPercentage() (*big.Int, error) {
+	return _HubEth.Contract.RewardPercentage(&_HubEth.CallOpts)
 }
 
 // RewardPercentage is a free data retrieval call binding the contract method 0xa1444a4a.
 //
 // Solidity: function _rewardPercentage() view returns(uint256)
-func (_Hub *HubCallerSession) RewardPercentage() (*big.Int, error) {
-	return _Hub.Contract.RewardPercentage(&_Hub.CallOpts)
+func (_HubEth *HubEthCallerSession) RewardPercentage() (*big.Int, error) {
+	return _HubEth.Contract.RewardPercentage(&_HubEth.CallOpts)
 }
 
 // IsRelayer is a free data retrieval call binding the contract method 0x541d5548.
 //
 // Solidity: function isRelayer(address sender) view returns(bool)
-func (_Hub *HubCaller) IsRelayer(opts *bind.CallOpts, sender common.Address) (bool, error) {
+func (_HubEth *HubEthCaller) IsRelayer(opts *bind.CallOpts, sender common.Address) (bool, error) {
 	var out []interface{}
-	err := _Hub.contract.Call(opts, &out, "isRelayer", sender)
+	err := _HubEth.contract.Call(opts, &out, "isRelayer", sender)
 
 	if err != nil {
 		return *new(bool), err
@@ -315,23 +323,23 @@ func (_Hub *HubCaller) IsRelayer(opts *bind.CallOpts, sender common.Address) (bo
 // IsRelayer is a free data retrieval call binding the contract method 0x541d5548.
 //
 // Solidity: function isRelayer(address sender) view returns(bool)
-func (_Hub *HubSession) IsRelayer(sender common.Address) (bool, error) {
-	return _Hub.Contract.IsRelayer(&_Hub.CallOpts, sender)
+func (_HubEth *HubEthSession) IsRelayer(sender common.Address) (bool, error) {
+	return _HubEth.Contract.IsRelayer(&_HubEth.CallOpts, sender)
 }
 
 // IsRelayer is a free data retrieval call binding the contract method 0x541d5548.
 //
 // Solidity: function isRelayer(address sender) view returns(bool)
-func (_Hub *HubCallerSession) IsRelayer(sender common.Address) (bool, error) {
-	return _Hub.Contract.IsRelayer(&_Hub.CallOpts, sender)
+func (_HubEth *HubEthCallerSession) IsRelayer(sender common.Address) (bool, error) {
+	return _HubEth.Contract.IsRelayer(&_HubEth.CallOpts, sender)
 }
 
 // Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
 //
 // Solidity: function owner() view returns(address)
-func (_Hub *HubCaller) Owner(opts *bind.CallOpts) (common.Address, error) {
+func (_HubEth *HubEthCaller) Owner(opts *bind.CallOpts) (common.Address, error) {
 	var out []interface{}
-	err := _Hub.contract.Call(opts, &out, "owner")
+	err := _HubEth.contract.Call(opts, &out, "owner")
 
 	if err != nil {
 		return *new(common.Address), err
@@ -346,209 +354,209 @@ func (_Hub *HubCaller) Owner(opts *bind.CallOpts) (common.Address, error) {
 // Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
 //
 // Solidity: function owner() view returns(address)
-func (_Hub *HubSession) Owner() (common.Address, error) {
-	return _Hub.Contract.Owner(&_Hub.CallOpts)
+func (_HubEth *HubEthSession) Owner() (common.Address, error) {
+	return _HubEth.Contract.Owner(&_HubEth.CallOpts)
 }
 
 // Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
 //
 // Solidity: function owner() view returns(address)
-func (_Hub *HubCallerSession) Owner() (common.Address, error) {
-	return _Hub.Contract.Owner(&_Hub.CallOpts)
+func (_HubEth *HubEthCallerSession) Owner() (common.Address, error) {
+	return _HubEth.Contract.Owner(&_HubEth.CallOpts)
 }
 
 // AlreadyExecuted is a paid mutator transaction binding the contract method 0x0f03ee59.
 //
 // Solidity: function alreadyExecuted(address _relayer, uint256 swapValue) returns()
-func (_Hub *HubTransactor) AlreadyExecuted(opts *bind.TransactOpts, _relayer common.Address, swapValue *big.Int) (*types.Transaction, error) {
-	return _Hub.contract.Transact(opts, "alreadyExecuted", _relayer, swapValue)
+func (_HubEth *HubEthTransactor) AlreadyExecuted(opts *bind.TransactOpts, _relayer common.Address, swapValue *big.Int) (*types.Transaction, error) {
+	return _HubEth.contract.Transact(opts, "alreadyExecuted", _relayer, swapValue)
 }
 
 // AlreadyExecuted is a paid mutator transaction binding the contract method 0x0f03ee59.
 //
 // Solidity: function alreadyExecuted(address _relayer, uint256 swapValue) returns()
-func (_Hub *HubSession) AlreadyExecuted(_relayer common.Address, swapValue *big.Int) (*types.Transaction, error) {
-	return _Hub.Contract.AlreadyExecuted(&_Hub.TransactOpts, _relayer, swapValue)
+func (_HubEth *HubEthSession) AlreadyExecuted(_relayer common.Address, swapValue *big.Int) (*types.Transaction, error) {
+	return _HubEth.Contract.AlreadyExecuted(&_HubEth.TransactOpts, _relayer, swapValue)
 }
 
 // AlreadyExecuted is a paid mutator transaction binding the contract method 0x0f03ee59.
 //
 // Solidity: function alreadyExecuted(address _relayer, uint256 swapValue) returns()
-func (_Hub *HubTransactorSession) AlreadyExecuted(_relayer common.Address, swapValue *big.Int) (*types.Transaction, error) {
-	return _Hub.Contract.AlreadyExecuted(&_Hub.TransactOpts, _relayer, swapValue)
+func (_HubEth *HubEthTransactorSession) AlreadyExecuted(_relayer common.Address, swapValue *big.Int) (*types.Transaction, error) {
+	return _HubEth.Contract.AlreadyExecuted(&_HubEth.TransactOpts, _relayer, swapValue)
 }
 
 // Felony is a paid mutator transaction binding the contract method 0x35409f7f.
 //
 // Solidity: function felony(address relayer) returns()
-func (_Hub *HubTransactor) Felony(opts *bind.TransactOpts, relayer common.Address) (*types.Transaction, error) {
-	return _Hub.contract.Transact(opts, "felony", relayer)
+func (_HubEth *HubEthTransactor) Felony(opts *bind.TransactOpts, relayer common.Address) (*types.Transaction, error) {
+	return _HubEth.contract.Transact(opts, "felony", relayer)
 }
 
 // Felony is a paid mutator transaction binding the contract method 0x35409f7f.
 //
 // Solidity: function felony(address relayer) returns()
-func (_Hub *HubSession) Felony(relayer common.Address) (*types.Transaction, error) {
-	return _Hub.Contract.Felony(&_Hub.TransactOpts, relayer)
+func (_HubEth *HubEthSession) Felony(relayer common.Address) (*types.Transaction, error) {
+	return _HubEth.Contract.Felony(&_HubEth.TransactOpts, relayer)
 }
 
 // Felony is a paid mutator transaction binding the contract method 0x35409f7f.
 //
 // Solidity: function felony(address relayer) returns()
-func (_Hub *HubTransactorSession) Felony(relayer common.Address) (*types.Transaction, error) {
-	return _Hub.Contract.Felony(&_Hub.TransactOpts, relayer)
+func (_HubEth *HubEthTransactorSession) Felony(relayer common.Address) (*types.Transaction, error) {
+	return _HubEth.Contract.Felony(&_HubEth.TransactOpts, relayer)
 }
 
 // Register is a paid mutator transaction binding the contract method 0x4420e486.
 //
 // Solidity: function register(address relayerToAdd) returns()
-func (_Hub *HubTransactor) Register(opts *bind.TransactOpts, relayerToAdd common.Address) (*types.Transaction, error) {
-	return _Hub.contract.Transact(opts, "register", relayerToAdd)
+func (_HubEth *HubEthTransactor) Register(opts *bind.TransactOpts, relayerToAdd common.Address) (*types.Transaction, error) {
+	return _HubEth.contract.Transact(opts, "register", relayerToAdd)
 }
 
 // Register is a paid mutator transaction binding the contract method 0x4420e486.
 //
 // Solidity: function register(address relayerToAdd) returns()
-func (_Hub *HubSession) Register(relayerToAdd common.Address) (*types.Transaction, error) {
-	return _Hub.Contract.Register(&_Hub.TransactOpts, relayerToAdd)
+func (_HubEth *HubEthSession) Register(relayerToAdd common.Address) (*types.Transaction, error) {
+	return _HubEth.Contract.Register(&_HubEth.TransactOpts, relayerToAdd)
 }
 
 // Register is a paid mutator transaction binding the contract method 0x4420e486.
 //
 // Solidity: function register(address relayerToAdd) returns()
-func (_Hub *HubTransactorSession) Register(relayerToAdd common.Address) (*types.Transaction, error) {
-	return _Hub.Contract.Register(&_Hub.TransactOpts, relayerToAdd)
+func (_HubEth *HubEthTransactorSession) Register(relayerToAdd common.Address) (*types.Transaction, error) {
+	return _HubEth.Contract.Register(&_HubEth.TransactOpts, relayerToAdd)
 }
 
 // RenounceOwnership is a paid mutator transaction binding the contract method 0x715018a6.
 //
 // Solidity: function renounceOwnership() returns()
-func (_Hub *HubTransactor) RenounceOwnership(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _Hub.contract.Transact(opts, "renounceOwnership")
+func (_HubEth *HubEthTransactor) RenounceOwnership(opts *bind.TransactOpts) (*types.Transaction, error) {
+	return _HubEth.contract.Transact(opts, "renounceOwnership")
 }
 
 // RenounceOwnership is a paid mutator transaction binding the contract method 0x715018a6.
 //
 // Solidity: function renounceOwnership() returns()
-func (_Hub *HubSession) RenounceOwnership() (*types.Transaction, error) {
-	return _Hub.Contract.RenounceOwnership(&_Hub.TransactOpts)
+func (_HubEth *HubEthSession) RenounceOwnership() (*types.Transaction, error) {
+	return _HubEth.Contract.RenounceOwnership(&_HubEth.TransactOpts)
 }
 
 // RenounceOwnership is a paid mutator transaction binding the contract method 0x715018a6.
 //
 // Solidity: function renounceOwnership() returns()
-func (_Hub *HubTransactorSession) RenounceOwnership() (*types.Transaction, error) {
-	return _Hub.Contract.RenounceOwnership(&_Hub.TransactOpts)
+func (_HubEth *HubEthTransactorSession) RenounceOwnership() (*types.Transaction, error) {
+	return _HubEth.Contract.RenounceOwnership(&_HubEth.TransactOpts)
 }
 
 // SwapReward is a paid mutator transaction binding the contract method 0xadaa71cc.
 //
 // Solidity: function swapReward(address _relayer, uint256 swapValue) returns()
-func (_Hub *HubTransactor) SwapReward(opts *bind.TransactOpts, _relayer common.Address, swapValue *big.Int) (*types.Transaction, error) {
-	return _Hub.contract.Transact(opts, "swapReward", _relayer, swapValue)
+func (_HubEth *HubEthTransactor) SwapReward(opts *bind.TransactOpts, _relayer common.Address, swapValue *big.Int) (*types.Transaction, error) {
+	return _HubEth.contract.Transact(opts, "swapReward", _relayer, swapValue)
 }
 
 // SwapReward is a paid mutator transaction binding the contract method 0xadaa71cc.
 //
 // Solidity: function swapReward(address _relayer, uint256 swapValue) returns()
-func (_Hub *HubSession) SwapReward(_relayer common.Address, swapValue *big.Int) (*types.Transaction, error) {
-	return _Hub.Contract.SwapReward(&_Hub.TransactOpts, _relayer, swapValue)
+func (_HubEth *HubEthSession) SwapReward(_relayer common.Address, swapValue *big.Int) (*types.Transaction, error) {
+	return _HubEth.Contract.SwapReward(&_HubEth.TransactOpts, _relayer, swapValue)
 }
 
 // SwapReward is a paid mutator transaction binding the contract method 0xadaa71cc.
 //
 // Solidity: function swapReward(address _relayer, uint256 swapValue) returns()
-func (_Hub *HubTransactorSession) SwapReward(_relayer common.Address, swapValue *big.Int) (*types.Transaction, error) {
-	return _Hub.Contract.SwapReward(&_Hub.TransactOpts, _relayer, swapValue)
+func (_HubEth *HubEthTransactorSession) SwapReward(_relayer common.Address, swapValue *big.Int) (*types.Transaction, error) {
+	return _HubEth.Contract.SwapReward(&_HubEth.TransactOpts, _relayer, swapValue)
 }
 
 // TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
 //
 // Solidity: function transferOwnership(address newOwner) returns()
-func (_Hub *HubTransactor) TransferOwnership(opts *bind.TransactOpts, newOwner common.Address) (*types.Transaction, error) {
-	return _Hub.contract.Transact(opts, "transferOwnership", newOwner)
+func (_HubEth *HubEthTransactor) TransferOwnership(opts *bind.TransactOpts, newOwner common.Address) (*types.Transaction, error) {
+	return _HubEth.contract.Transact(opts, "transferOwnership", newOwner)
 }
 
 // TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
 //
 // Solidity: function transferOwnership(address newOwner) returns()
-func (_Hub *HubSession) TransferOwnership(newOwner common.Address) (*types.Transaction, error) {
-	return _Hub.Contract.TransferOwnership(&_Hub.TransactOpts, newOwner)
+func (_HubEth *HubEthSession) TransferOwnership(newOwner common.Address) (*types.Transaction, error) {
+	return _HubEth.Contract.TransferOwnership(&_HubEth.TransactOpts, newOwner)
 }
 
 // TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
 //
 // Solidity: function transferOwnership(address newOwner) returns()
-func (_Hub *HubTransactorSession) TransferOwnership(newOwner common.Address) (*types.Transaction, error) {
-	return _Hub.Contract.TransferOwnership(&_Hub.TransactOpts, newOwner)
+func (_HubEth *HubEthTransactorSession) TransferOwnership(newOwner common.Address) (*types.Transaction, error) {
+	return _HubEth.Contract.TransferOwnership(&_HubEth.TransactOpts, newOwner)
 }
 
 // Unregister is a paid mutator transaction binding the contract method 0x2ec2c246.
 //
 // Solidity: function unregister(address relayerToRemove) returns()
-func (_Hub *HubTransactor) Unregister(opts *bind.TransactOpts, relayerToRemove common.Address) (*types.Transaction, error) {
-	return _Hub.contract.Transact(opts, "unregister", relayerToRemove)
+func (_HubEth *HubEthTransactor) Unregister(opts *bind.TransactOpts, relayerToRemove common.Address) (*types.Transaction, error) {
+	return _HubEth.contract.Transact(opts, "unregister", relayerToRemove)
 }
 
 // Unregister is a paid mutator transaction binding the contract method 0x2ec2c246.
 //
 // Solidity: function unregister(address relayerToRemove) returns()
-func (_Hub *HubSession) Unregister(relayerToRemove common.Address) (*types.Transaction, error) {
-	return _Hub.Contract.Unregister(&_Hub.TransactOpts, relayerToRemove)
+func (_HubEth *HubEthSession) Unregister(relayerToRemove common.Address) (*types.Transaction, error) {
+	return _HubEth.Contract.Unregister(&_HubEth.TransactOpts, relayerToRemove)
 }
 
 // Unregister is a paid mutator transaction binding the contract method 0x2ec2c246.
 //
 // Solidity: function unregister(address relayerToRemove) returns()
-func (_Hub *HubTransactorSession) Unregister(relayerToRemove common.Address) (*types.Transaction, error) {
-	return _Hub.Contract.Unregister(&_Hub.TransactOpts, relayerToRemove)
+func (_HubEth *HubEthTransactorSession) Unregister(relayerToRemove common.Address) (*types.Transaction, error) {
+	return _HubEth.Contract.Unregister(&_HubEth.TransactOpts, relayerToRemove)
 }
 
 // UpdatePenaltyPercentage is a paid mutator transaction binding the contract method 0xeb961693.
 //
 // Solidity: function updatePenaltyPercentage(uint256 penaltyPercentage) returns()
-func (_Hub *HubTransactor) UpdatePenaltyPercentage(opts *bind.TransactOpts, penaltyPercentage *big.Int) (*types.Transaction, error) {
-	return _Hub.contract.Transact(opts, "updatePenaltyPercentage", penaltyPercentage)
+func (_HubEth *HubEthTransactor) UpdatePenaltyPercentage(opts *bind.TransactOpts, penaltyPercentage *big.Int) (*types.Transaction, error) {
+	return _HubEth.contract.Transact(opts, "updatePenaltyPercentage", penaltyPercentage)
 }
 
 // UpdatePenaltyPercentage is a paid mutator transaction binding the contract method 0xeb961693.
 //
 // Solidity: function updatePenaltyPercentage(uint256 penaltyPercentage) returns()
-func (_Hub *HubSession) UpdatePenaltyPercentage(penaltyPercentage *big.Int) (*types.Transaction, error) {
-	return _Hub.Contract.UpdatePenaltyPercentage(&_Hub.TransactOpts, penaltyPercentage)
+func (_HubEth *HubEthSession) UpdatePenaltyPercentage(penaltyPercentage *big.Int) (*types.Transaction, error) {
+	return _HubEth.Contract.UpdatePenaltyPercentage(&_HubEth.TransactOpts, penaltyPercentage)
 }
 
 // UpdatePenaltyPercentage is a paid mutator transaction binding the contract method 0xeb961693.
 //
 // Solidity: function updatePenaltyPercentage(uint256 penaltyPercentage) returns()
-func (_Hub *HubTransactorSession) UpdatePenaltyPercentage(penaltyPercentage *big.Int) (*types.Transaction, error) {
-	return _Hub.Contract.UpdatePenaltyPercentage(&_Hub.TransactOpts, penaltyPercentage)
+func (_HubEth *HubEthTransactorSession) UpdatePenaltyPercentage(penaltyPercentage *big.Int) (*types.Transaction, error) {
+	return _HubEth.Contract.UpdatePenaltyPercentage(&_HubEth.TransactOpts, penaltyPercentage)
 }
 
 // UpdateRewardPercentage is a paid mutator transaction binding the contract method 0xa4f209b0.
 //
 // Solidity: function updateRewardPercentage(uint256 rewardPercent) returns()
-func (_Hub *HubTransactor) UpdateRewardPercentage(opts *bind.TransactOpts, rewardPercent *big.Int) (*types.Transaction, error) {
-	return _Hub.contract.Transact(opts, "updateRewardPercentage", rewardPercent)
+func (_HubEth *HubEthTransactor) UpdateRewardPercentage(opts *bind.TransactOpts, rewardPercent *big.Int) (*types.Transaction, error) {
+	return _HubEth.contract.Transact(opts, "updateRewardPercentage", rewardPercent)
 }
 
 // UpdateRewardPercentage is a paid mutator transaction binding the contract method 0xa4f209b0.
 //
 // Solidity: function updateRewardPercentage(uint256 rewardPercent) returns()
-func (_Hub *HubSession) UpdateRewardPercentage(rewardPercent *big.Int) (*types.Transaction, error) {
-	return _Hub.Contract.UpdateRewardPercentage(&_Hub.TransactOpts, rewardPercent)
+func (_HubEth *HubEthSession) UpdateRewardPercentage(rewardPercent *big.Int) (*types.Transaction, error) {
+	return _HubEth.Contract.UpdateRewardPercentage(&_HubEth.TransactOpts, rewardPercent)
 }
 
 // UpdateRewardPercentage is a paid mutator transaction binding the contract method 0xa4f209b0.
 //
 // Solidity: function updateRewardPercentage(uint256 rewardPercent) returns()
-func (_Hub *HubTransactorSession) UpdateRewardPercentage(rewardPercent *big.Int) (*types.Transaction, error) {
-	return _Hub.Contract.UpdateRewardPercentage(&_Hub.TransactOpts, rewardPercent)
+func (_HubEth *HubEthTransactorSession) UpdateRewardPercentage(rewardPercent *big.Int) (*types.Transaction, error) {
+	return _HubEth.Contract.UpdateRewardPercentage(&_HubEth.TransactOpts, rewardPercent)
 }
 
-// HubOwnershipTransferredIterator is returned from FilterOwnershipTransferred and is used to iterate over the raw logs and unpacked data for OwnershipTransferred events raised by the Hub contract.
-type HubOwnershipTransferredIterator struct {
-	Event *HubOwnershipTransferred // Event containing the contract specifics and raw log
+// HubEthOwnershipTransferredIterator is returned from FilterOwnershipTransferred and is used to iterate over the raw logs and unpacked data for OwnershipTransferred events raised by the HubEth contract.
+type HubEthOwnershipTransferredIterator struct {
+	Event *HubEthOwnershipTransferred // Event containing the contract specifics and raw log
 
 	contract *bind.BoundContract // Generic contract to use for unpacking event data
 	event    string              // Event name to use for unpacking event data
@@ -562,7 +570,7 @@ type HubOwnershipTransferredIterator struct {
 // Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
-func (it *HubOwnershipTransferredIterator) Next() bool {
+func (it *HubEthOwnershipTransferredIterator) Next() bool {
 	// If the iterator failed, stop iterating
 	if it.fail != nil {
 		return false
@@ -571,7 +579,7 @@ func (it *HubOwnershipTransferredIterator) Next() bool {
 	if it.done {
 		select {
 		case log := <-it.logs:
-			it.Event = new(HubOwnershipTransferred)
+			it.Event = new(HubEthOwnershipTransferred)
 			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 				it.fail = err
 				return false
@@ -586,7 +594,7 @@ func (it *HubOwnershipTransferredIterator) Next() bool {
 	// Iterator still in progress, wait for either a data or an error event
 	select {
 	case log := <-it.logs:
-		it.Event = new(HubOwnershipTransferred)
+		it.Event = new(HubEthOwnershipTransferred)
 		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 			it.fail = err
 			return false
@@ -602,19 +610,19 @@ func (it *HubOwnershipTransferredIterator) Next() bool {
 }
 
 // Error returns any retrieval or parsing error occurred during filtering.
-func (it *HubOwnershipTransferredIterator) Error() error {
+func (it *HubEthOwnershipTransferredIterator) Error() error {
 	return it.fail
 }
 
 // Close terminates the iteration process, releasing any pending underlying
 // resources.
-func (it *HubOwnershipTransferredIterator) Close() error {
+func (it *HubEthOwnershipTransferredIterator) Close() error {
 	it.sub.Unsubscribe()
 	return nil
 }
 
-// HubOwnershipTransferred represents a OwnershipTransferred event raised by the Hub contract.
-type HubOwnershipTransferred struct {
+// HubEthOwnershipTransferred represents a OwnershipTransferred event raised by the HubEth contract.
+type HubEthOwnershipTransferred struct {
 	PreviousOwner common.Address
 	NewOwner      common.Address
 	Raw           types.Log // Blockchain specific contextual infos
@@ -623,7 +631,7 @@ type HubOwnershipTransferred struct {
 // FilterOwnershipTransferred is a free log retrieval operation binding the contract event 0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0.
 //
 // Solidity: event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)
-func (_Hub *HubFilterer) FilterOwnershipTransferred(opts *bind.FilterOpts, previousOwner []common.Address, newOwner []common.Address) (*HubOwnershipTransferredIterator, error) {
+func (_HubEth *HubEthFilterer) FilterOwnershipTransferred(opts *bind.FilterOpts, previousOwner []common.Address, newOwner []common.Address) (*HubEthOwnershipTransferredIterator, error) {
 
 	var previousOwnerRule []interface{}
 	for _, previousOwnerItem := range previousOwner {
@@ -634,17 +642,17 @@ func (_Hub *HubFilterer) FilterOwnershipTransferred(opts *bind.FilterOpts, previ
 		newOwnerRule = append(newOwnerRule, newOwnerItem)
 	}
 
-	logs, sub, err := _Hub.contract.FilterLogs(opts, "OwnershipTransferred", previousOwnerRule, newOwnerRule)
+	logs, sub, err := _HubEth.contract.FilterLogs(opts, "OwnershipTransferred", previousOwnerRule, newOwnerRule)
 	if err != nil {
 		return nil, err
 	}
-	return &HubOwnershipTransferredIterator{contract: _Hub.contract, event: "OwnershipTransferred", logs: logs, sub: sub}, nil
+	return &HubEthOwnershipTransferredIterator{contract: _HubEth.contract, event: "OwnershipTransferred", logs: logs, sub: sub}, nil
 }
 
 // WatchOwnershipTransferred is a free log subscription operation binding the contract event 0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0.
 //
 // Solidity: event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)
-func (_Hub *HubFilterer) WatchOwnershipTransferred(opts *bind.WatchOpts, sink chan<- *HubOwnershipTransferred, previousOwner []common.Address, newOwner []common.Address) (event.Subscription, error) {
+func (_HubEth *HubEthFilterer) WatchOwnershipTransferred(opts *bind.WatchOpts, sink chan<- *HubEthOwnershipTransferred, previousOwner []common.Address, newOwner []common.Address) (event.Subscription, error) {
 
 	var previousOwnerRule []interface{}
 	for _, previousOwnerItem := range previousOwner {
@@ -655,7 +663,7 @@ func (_Hub *HubFilterer) WatchOwnershipTransferred(opts *bind.WatchOpts, sink ch
 		newOwnerRule = append(newOwnerRule, newOwnerItem)
 	}
 
-	logs, sub, err := _Hub.contract.WatchLogs(opts, "OwnershipTransferred", previousOwnerRule, newOwnerRule)
+	logs, sub, err := _HubEth.contract.WatchLogs(opts, "OwnershipTransferred", previousOwnerRule, newOwnerRule)
 	if err != nil {
 		return nil, err
 	}
@@ -665,8 +673,8 @@ func (_Hub *HubFilterer) WatchOwnershipTransferred(opts *bind.WatchOpts, sink ch
 			select {
 			case log := <-logs:
 				// New log arrived, parse the event and forward to the user
-				event := new(HubOwnershipTransferred)
-				if err := _Hub.contract.UnpackLog(event, "OwnershipTransferred", log); err != nil {
+				event := new(HubEthOwnershipTransferred)
+				if err := _HubEth.contract.UnpackLog(event, "OwnershipTransferred", log); err != nil {
 					return err
 				}
 				event.Raw = log
@@ -690,18 +698,18 @@ func (_Hub *HubFilterer) WatchOwnershipTransferred(opts *bind.WatchOpts, sink ch
 // ParseOwnershipTransferred is a log parse operation binding the contract event 0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0.
 //
 // Solidity: event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)
-func (_Hub *HubFilterer) ParseOwnershipTransferred(log types.Log) (*HubOwnershipTransferred, error) {
-	event := new(HubOwnershipTransferred)
-	if err := _Hub.contract.UnpackLog(event, "OwnershipTransferred", log); err != nil {
+func (_HubEth *HubEthFilterer) ParseOwnershipTransferred(log types.Log) (*HubEthOwnershipTransferred, error) {
+	event := new(HubEthOwnershipTransferred)
+	if err := _HubEth.contract.UnpackLog(event, "OwnershipTransferred", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
 	return event, nil
 }
 
-// HubPenaltyForRelayerIterator is returned from FilterPenaltyForRelayer and is used to iterate over the raw logs and unpacked data for PenaltyForRelayer events raised by the Hub contract.
-type HubPenaltyForRelayerIterator struct {
-	Event *HubPenaltyForRelayer // Event containing the contract specifics and raw log
+// HubEthPenaltyForRelayerIterator is returned from FilterPenaltyForRelayer and is used to iterate over the raw logs and unpacked data for PenaltyForRelayer events raised by the HubEth contract.
+type HubEthPenaltyForRelayerIterator struct {
+	Event *HubEthPenaltyForRelayer // Event containing the contract specifics and raw log
 
 	contract *bind.BoundContract // Generic contract to use for unpacking event data
 	event    string              // Event name to use for unpacking event data
@@ -715,7 +723,7 @@ type HubPenaltyForRelayerIterator struct {
 // Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
-func (it *HubPenaltyForRelayerIterator) Next() bool {
+func (it *HubEthPenaltyForRelayerIterator) Next() bool {
 	// If the iterator failed, stop iterating
 	if it.fail != nil {
 		return false
@@ -724,7 +732,7 @@ func (it *HubPenaltyForRelayerIterator) Next() bool {
 	if it.done {
 		select {
 		case log := <-it.logs:
-			it.Event = new(HubPenaltyForRelayer)
+			it.Event = new(HubEthPenaltyForRelayer)
 			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 				it.fail = err
 				return false
@@ -739,7 +747,7 @@ func (it *HubPenaltyForRelayerIterator) Next() bool {
 	// Iterator still in progress, wait for either a data or an error event
 	select {
 	case log := <-it.logs:
-		it.Event = new(HubPenaltyForRelayer)
+		it.Event = new(HubEthPenaltyForRelayer)
 		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 			it.fail = err
 			return false
@@ -755,19 +763,19 @@ func (it *HubPenaltyForRelayerIterator) Next() bool {
 }
 
 // Error returns any retrieval or parsing error occurred during filtering.
-func (it *HubPenaltyForRelayerIterator) Error() error {
+func (it *HubEthPenaltyForRelayerIterator) Error() error {
 	return it.fail
 }
 
 // Close terminates the iteration process, releasing any pending underlying
 // resources.
-func (it *HubPenaltyForRelayerIterator) Close() error {
+func (it *HubEthPenaltyForRelayerIterator) Close() error {
 	it.sub.Unsubscribe()
 	return nil
 }
 
-// HubPenaltyForRelayer represents a PenaltyForRelayer event raised by the Hub contract.
-type HubPenaltyForRelayer struct {
+// HubEthPenaltyForRelayer represents a PenaltyForRelayer event raised by the HubEth contract.
+type HubEthPenaltyForRelayer struct {
 	Reason  string
 	Relayer common.Address
 	Penalty *big.Int
@@ -777,31 +785,31 @@ type HubPenaltyForRelayer struct {
 // FilterPenaltyForRelayer is a free log retrieval operation binding the contract event 0x73f262bdf0c3145b25a03d5c75d5989bdab8ecb77968d7ff6de8a3bd83b8b13b.
 //
 // Solidity: event PenaltyForRelayer(string reason, address indexed relayer, uint256 penalty)
-func (_Hub *HubFilterer) FilterPenaltyForRelayer(opts *bind.FilterOpts, relayer []common.Address) (*HubPenaltyForRelayerIterator, error) {
+func (_HubEth *HubEthFilterer) FilterPenaltyForRelayer(opts *bind.FilterOpts, relayer []common.Address) (*HubEthPenaltyForRelayerIterator, error) {
 
 	var relayerRule []interface{}
 	for _, relayerItem := range relayer {
 		relayerRule = append(relayerRule, relayerItem)
 	}
 
-	logs, sub, err := _Hub.contract.FilterLogs(opts, "PenaltyForRelayer", relayerRule)
+	logs, sub, err := _HubEth.contract.FilterLogs(opts, "PenaltyForRelayer", relayerRule)
 	if err != nil {
 		return nil, err
 	}
-	return &HubPenaltyForRelayerIterator{contract: _Hub.contract, event: "PenaltyForRelayer", logs: logs, sub: sub}, nil
+	return &HubEthPenaltyForRelayerIterator{contract: _HubEth.contract, event: "PenaltyForRelayer", logs: logs, sub: sub}, nil
 }
 
 // WatchPenaltyForRelayer is a free log subscription operation binding the contract event 0x73f262bdf0c3145b25a03d5c75d5989bdab8ecb77968d7ff6de8a3bd83b8b13b.
 //
 // Solidity: event PenaltyForRelayer(string reason, address indexed relayer, uint256 penalty)
-func (_Hub *HubFilterer) WatchPenaltyForRelayer(opts *bind.WatchOpts, sink chan<- *HubPenaltyForRelayer, relayer []common.Address) (event.Subscription, error) {
+func (_HubEth *HubEthFilterer) WatchPenaltyForRelayer(opts *bind.WatchOpts, sink chan<- *HubEthPenaltyForRelayer, relayer []common.Address) (event.Subscription, error) {
 
 	var relayerRule []interface{}
 	for _, relayerItem := range relayer {
 		relayerRule = append(relayerRule, relayerItem)
 	}
 
-	logs, sub, err := _Hub.contract.WatchLogs(opts, "PenaltyForRelayer", relayerRule)
+	logs, sub, err := _HubEth.contract.WatchLogs(opts, "PenaltyForRelayer", relayerRule)
 	if err != nil {
 		return nil, err
 	}
@@ -811,8 +819,8 @@ func (_Hub *HubFilterer) WatchPenaltyForRelayer(opts *bind.WatchOpts, sink chan<
 			select {
 			case log := <-logs:
 				// New log arrived, parse the event and forward to the user
-				event := new(HubPenaltyForRelayer)
-				if err := _Hub.contract.UnpackLog(event, "PenaltyForRelayer", log); err != nil {
+				event := new(HubEthPenaltyForRelayer)
+				if err := _HubEth.contract.UnpackLog(event, "PenaltyForRelayer", log); err != nil {
 					return err
 				}
 				event.Raw = log
@@ -836,18 +844,18 @@ func (_Hub *HubFilterer) WatchPenaltyForRelayer(opts *bind.WatchOpts, sink chan<
 // ParsePenaltyForRelayer is a log parse operation binding the contract event 0x73f262bdf0c3145b25a03d5c75d5989bdab8ecb77968d7ff6de8a3bd83b8b13b.
 //
 // Solidity: event PenaltyForRelayer(string reason, address indexed relayer, uint256 penalty)
-func (_Hub *HubFilterer) ParsePenaltyForRelayer(log types.Log) (*HubPenaltyForRelayer, error) {
-	event := new(HubPenaltyForRelayer)
-	if err := _Hub.contract.UnpackLog(event, "PenaltyForRelayer", log); err != nil {
+func (_HubEth *HubEthFilterer) ParsePenaltyForRelayer(log types.Log) (*HubEthPenaltyForRelayer, error) {
+	event := new(HubEthPenaltyForRelayer)
+	if err := _HubEth.contract.UnpackLog(event, "PenaltyForRelayer", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
 	return event, nil
 }
 
-// HubPenaltyPercentChangedIterator is returned from FilterPenaltyPercentChanged and is used to iterate over the raw logs and unpacked data for PenaltyPercentChanged events raised by the Hub contract.
-type HubPenaltyPercentChangedIterator struct {
-	Event *HubPenaltyPercentChanged // Event containing the contract specifics and raw log
+// HubEthPenaltyPercentChangedIterator is returned from FilterPenaltyPercentChanged and is used to iterate over the raw logs and unpacked data for PenaltyPercentChanged events raised by the HubEth contract.
+type HubEthPenaltyPercentChangedIterator struct {
+	Event *HubEthPenaltyPercentChanged // Event containing the contract specifics and raw log
 
 	contract *bind.BoundContract // Generic contract to use for unpacking event data
 	event    string              // Event name to use for unpacking event data
@@ -861,7 +869,7 @@ type HubPenaltyPercentChangedIterator struct {
 // Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
-func (it *HubPenaltyPercentChangedIterator) Next() bool {
+func (it *HubEthPenaltyPercentChangedIterator) Next() bool {
 	// If the iterator failed, stop iterating
 	if it.fail != nil {
 		return false
@@ -870,7 +878,7 @@ func (it *HubPenaltyPercentChangedIterator) Next() bool {
 	if it.done {
 		select {
 		case log := <-it.logs:
-			it.Event = new(HubPenaltyPercentChanged)
+			it.Event = new(HubEthPenaltyPercentChanged)
 			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 				it.fail = err
 				return false
@@ -885,7 +893,7 @@ func (it *HubPenaltyPercentChangedIterator) Next() bool {
 	// Iterator still in progress, wait for either a data or an error event
 	select {
 	case log := <-it.logs:
-		it.Event = new(HubPenaltyPercentChanged)
+		it.Event = new(HubEthPenaltyPercentChanged)
 		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 			it.fail = err
 			return false
@@ -901,19 +909,19 @@ func (it *HubPenaltyPercentChangedIterator) Next() bool {
 }
 
 // Error returns any retrieval or parsing error occurred during filtering.
-func (it *HubPenaltyPercentChangedIterator) Error() error {
+func (it *HubEthPenaltyPercentChangedIterator) Error() error {
 	return it.fail
 }
 
 // Close terminates the iteration process, releasing any pending underlying
 // resources.
-func (it *HubPenaltyPercentChangedIterator) Close() error {
+func (it *HubEthPenaltyPercentChangedIterator) Close() error {
 	it.sub.Unsubscribe()
 	return nil
 }
 
-// HubPenaltyPercentChanged represents a PenaltyPercentChanged event raised by the Hub contract.
-type HubPenaltyPercentChanged struct {
+// HubEthPenaltyPercentChanged represents a PenaltyPercentChanged event raised by the HubEth contract.
+type HubEthPenaltyPercentChanged struct {
 	NewPercentage *big.Int
 	Raw           types.Log // Blockchain specific contextual infos
 }
@@ -921,21 +929,21 @@ type HubPenaltyPercentChanged struct {
 // FilterPenaltyPercentChanged is a free log retrieval operation binding the contract event 0xa7422d81f8725b29775f8eaafb874b2d997bb6e6d2a60eda98f5fb2eaeb58f3e.
 //
 // Solidity: event PenaltyPercentChanged(uint256 newPercentage)
-func (_Hub *HubFilterer) FilterPenaltyPercentChanged(opts *bind.FilterOpts) (*HubPenaltyPercentChangedIterator, error) {
+func (_HubEth *HubEthFilterer) FilterPenaltyPercentChanged(opts *bind.FilterOpts) (*HubEthPenaltyPercentChangedIterator, error) {
 
-	logs, sub, err := _Hub.contract.FilterLogs(opts, "PenaltyPercentChanged")
+	logs, sub, err := _HubEth.contract.FilterLogs(opts, "PenaltyPercentChanged")
 	if err != nil {
 		return nil, err
 	}
-	return &HubPenaltyPercentChangedIterator{contract: _Hub.contract, event: "PenaltyPercentChanged", logs: logs, sub: sub}, nil
+	return &HubEthPenaltyPercentChangedIterator{contract: _HubEth.contract, event: "PenaltyPercentChanged", logs: logs, sub: sub}, nil
 }
 
 // WatchPenaltyPercentChanged is a free log subscription operation binding the contract event 0xa7422d81f8725b29775f8eaafb874b2d997bb6e6d2a60eda98f5fb2eaeb58f3e.
 //
 // Solidity: event PenaltyPercentChanged(uint256 newPercentage)
-func (_Hub *HubFilterer) WatchPenaltyPercentChanged(opts *bind.WatchOpts, sink chan<- *HubPenaltyPercentChanged) (event.Subscription, error) {
+func (_HubEth *HubEthFilterer) WatchPenaltyPercentChanged(opts *bind.WatchOpts, sink chan<- *HubEthPenaltyPercentChanged) (event.Subscription, error) {
 
-	logs, sub, err := _Hub.contract.WatchLogs(opts, "PenaltyPercentChanged")
+	logs, sub, err := _HubEth.contract.WatchLogs(opts, "PenaltyPercentChanged")
 	if err != nil {
 		return nil, err
 	}
@@ -945,8 +953,8 @@ func (_Hub *HubFilterer) WatchPenaltyPercentChanged(opts *bind.WatchOpts, sink c
 			select {
 			case log := <-logs:
 				// New log arrived, parse the event and forward to the user
-				event := new(HubPenaltyPercentChanged)
-				if err := _Hub.contract.UnpackLog(event, "PenaltyPercentChanged", log); err != nil {
+				event := new(HubEthPenaltyPercentChanged)
+				if err := _HubEth.contract.UnpackLog(event, "PenaltyPercentChanged", log); err != nil {
 					return err
 				}
 				event.Raw = log
@@ -970,18 +978,18 @@ func (_Hub *HubFilterer) WatchPenaltyPercentChanged(opts *bind.WatchOpts, sink c
 // ParsePenaltyPercentChanged is a log parse operation binding the contract event 0xa7422d81f8725b29775f8eaafb874b2d997bb6e6d2a60eda98f5fb2eaeb58f3e.
 //
 // Solidity: event PenaltyPercentChanged(uint256 newPercentage)
-func (_Hub *HubFilterer) ParsePenaltyPercentChanged(log types.Log) (*HubPenaltyPercentChanged, error) {
-	event := new(HubPenaltyPercentChanged)
-	if err := _Hub.contract.UnpackLog(event, "PenaltyPercentChanged", log); err != nil {
+func (_HubEth *HubEthFilterer) ParsePenaltyPercentChanged(log types.Log) (*HubEthPenaltyPercentChanged, error) {
+	event := new(HubEthPenaltyPercentChanged)
+	if err := _HubEth.contract.UnpackLog(event, "PenaltyPercentChanged", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
 	return event, nil
 }
 
-// HubRelayerBlockedIterator is returned from FilterRelayerBlocked and is used to iterate over the raw logs and unpacked data for RelayerBlocked events raised by the Hub contract.
-type HubRelayerBlockedIterator struct {
-	Event *HubRelayerBlocked // Event containing the contract specifics and raw log
+// HubEthRelayerBlockedIterator is returned from FilterRelayerBlocked and is used to iterate over the raw logs and unpacked data for RelayerBlocked events raised by the HubEth contract.
+type HubEthRelayerBlockedIterator struct {
+	Event *HubEthRelayerBlocked // Event containing the contract specifics and raw log
 
 	contract *bind.BoundContract // Generic contract to use for unpacking event data
 	event    string              // Event name to use for unpacking event data
@@ -995,7 +1003,7 @@ type HubRelayerBlockedIterator struct {
 // Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
-func (it *HubRelayerBlockedIterator) Next() bool {
+func (it *HubEthRelayerBlockedIterator) Next() bool {
 	// If the iterator failed, stop iterating
 	if it.fail != nil {
 		return false
@@ -1004,7 +1012,7 @@ func (it *HubRelayerBlockedIterator) Next() bool {
 	if it.done {
 		select {
 		case log := <-it.logs:
-			it.Event = new(HubRelayerBlocked)
+			it.Event = new(HubEthRelayerBlocked)
 			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 				it.fail = err
 				return false
@@ -1019,7 +1027,7 @@ func (it *HubRelayerBlockedIterator) Next() bool {
 	// Iterator still in progress, wait for either a data or an error event
 	select {
 	case log := <-it.logs:
-		it.Event = new(HubRelayerBlocked)
+		it.Event = new(HubEthRelayerBlocked)
 		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 			it.fail = err
 			return false
@@ -1035,19 +1043,19 @@ func (it *HubRelayerBlockedIterator) Next() bool {
 }
 
 // Error returns any retrieval or parsing error occurred during filtering.
-func (it *HubRelayerBlockedIterator) Error() error {
+func (it *HubEthRelayerBlockedIterator) Error() error {
 	return it.fail
 }
 
 // Close terminates the iteration process, releasing any pending underlying
 // resources.
-func (it *HubRelayerBlockedIterator) Close() error {
+func (it *HubEthRelayerBlockedIterator) Close() error {
 	it.sub.Unsubscribe()
 	return nil
 }
 
-// HubRelayerBlocked represents a RelayerBlocked event raised by the Hub contract.
-type HubRelayerBlocked struct {
+// HubEthRelayerBlocked represents a RelayerBlocked event raised by the HubEth contract.
+type HubEthRelayerBlocked struct {
 	Relayer common.Address
 	Raw     types.Log // Blockchain specific contextual infos
 }
@@ -1055,31 +1063,31 @@ type HubRelayerBlocked struct {
 // FilterRelayerBlocked is a free log retrieval operation binding the contract event 0xa5ea068b2ed8e05403d639cea236649975a9712487c612f9a6945b6bad00d81d.
 //
 // Solidity: event RelayerBlocked(address indexed relayer)
-func (_Hub *HubFilterer) FilterRelayerBlocked(opts *bind.FilterOpts, relayer []common.Address) (*HubRelayerBlockedIterator, error) {
+func (_HubEth *HubEthFilterer) FilterRelayerBlocked(opts *bind.FilterOpts, relayer []common.Address) (*HubEthRelayerBlockedIterator, error) {
 
 	var relayerRule []interface{}
 	for _, relayerItem := range relayer {
 		relayerRule = append(relayerRule, relayerItem)
 	}
 
-	logs, sub, err := _Hub.contract.FilterLogs(opts, "RelayerBlocked", relayerRule)
+	logs, sub, err := _HubEth.contract.FilterLogs(opts, "RelayerBlocked", relayerRule)
 	if err != nil {
 		return nil, err
 	}
-	return &HubRelayerBlockedIterator{contract: _Hub.contract, event: "RelayerBlocked", logs: logs, sub: sub}, nil
+	return &HubEthRelayerBlockedIterator{contract: _HubEth.contract, event: "RelayerBlocked", logs: logs, sub: sub}, nil
 }
 
 // WatchRelayerBlocked is a free log subscription operation binding the contract event 0xa5ea068b2ed8e05403d639cea236649975a9712487c612f9a6945b6bad00d81d.
 //
 // Solidity: event RelayerBlocked(address indexed relayer)
-func (_Hub *HubFilterer) WatchRelayerBlocked(opts *bind.WatchOpts, sink chan<- *HubRelayerBlocked, relayer []common.Address) (event.Subscription, error) {
+func (_HubEth *HubEthFilterer) WatchRelayerBlocked(opts *bind.WatchOpts, sink chan<- *HubEthRelayerBlocked, relayer []common.Address) (event.Subscription, error) {
 
 	var relayerRule []interface{}
 	for _, relayerItem := range relayer {
 		relayerRule = append(relayerRule, relayerItem)
 	}
 
-	logs, sub, err := _Hub.contract.WatchLogs(opts, "RelayerBlocked", relayerRule)
+	logs, sub, err := _HubEth.contract.WatchLogs(opts, "RelayerBlocked", relayerRule)
 	if err != nil {
 		return nil, err
 	}
@@ -1089,8 +1097,8 @@ func (_Hub *HubFilterer) WatchRelayerBlocked(opts *bind.WatchOpts, sink chan<- *
 			select {
 			case log := <-logs:
 				// New log arrived, parse the event and forward to the user
-				event := new(HubRelayerBlocked)
-				if err := _Hub.contract.UnpackLog(event, "RelayerBlocked", log); err != nil {
+				event := new(HubEthRelayerBlocked)
+				if err := _HubEth.contract.UnpackLog(event, "RelayerBlocked", log); err != nil {
 					return err
 				}
 				event.Raw = log
@@ -1114,18 +1122,18 @@ func (_Hub *HubFilterer) WatchRelayerBlocked(opts *bind.WatchOpts, sink chan<- *
 // ParseRelayerBlocked is a log parse operation binding the contract event 0xa5ea068b2ed8e05403d639cea236649975a9712487c612f9a6945b6bad00d81d.
 //
 // Solidity: event RelayerBlocked(address indexed relayer)
-func (_Hub *HubFilterer) ParseRelayerBlocked(log types.Log) (*HubRelayerBlocked, error) {
-	event := new(HubRelayerBlocked)
-	if err := _Hub.contract.UnpackLog(event, "RelayerBlocked", log); err != nil {
+func (_HubEth *HubEthFilterer) ParseRelayerBlocked(log types.Log) (*HubEthRelayerBlocked, error) {
+	event := new(HubEthRelayerBlocked)
+	if err := _HubEth.contract.UnpackLog(event, "RelayerBlocked", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
 	return event, nil
 }
 
-// HubRelayerRegisterIterator is returned from FilterRelayerRegister and is used to iterate over the raw logs and unpacked data for RelayerRegister events raised by the Hub contract.
-type HubRelayerRegisterIterator struct {
-	Event *HubRelayerRegister // Event containing the contract specifics and raw log
+// HubEthRelayerRegisterIterator is returned from FilterRelayerRegister and is used to iterate over the raw logs and unpacked data for RelayerRegister events raised by the HubEth contract.
+type HubEthRelayerRegisterIterator struct {
+	Event *HubEthRelayerRegister // Event containing the contract specifics and raw log
 
 	contract *bind.BoundContract // Generic contract to use for unpacking event data
 	event    string              // Event name to use for unpacking event data
@@ -1139,7 +1147,7 @@ type HubRelayerRegisterIterator struct {
 // Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
-func (it *HubRelayerRegisterIterator) Next() bool {
+func (it *HubEthRelayerRegisterIterator) Next() bool {
 	// If the iterator failed, stop iterating
 	if it.fail != nil {
 		return false
@@ -1148,7 +1156,7 @@ func (it *HubRelayerRegisterIterator) Next() bool {
 	if it.done {
 		select {
 		case log := <-it.logs:
-			it.Event = new(HubRelayerRegister)
+			it.Event = new(HubEthRelayerRegister)
 			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 				it.fail = err
 				return false
@@ -1163,7 +1171,7 @@ func (it *HubRelayerRegisterIterator) Next() bool {
 	// Iterator still in progress, wait for either a data or an error event
 	select {
 	case log := <-it.logs:
-		it.Event = new(HubRelayerRegister)
+		it.Event = new(HubEthRelayerRegister)
 		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 			it.fail = err
 			return false
@@ -1179,19 +1187,19 @@ func (it *HubRelayerRegisterIterator) Next() bool {
 }
 
 // Error returns any retrieval or parsing error occurred during filtering.
-func (it *HubRelayerRegisterIterator) Error() error {
+func (it *HubEthRelayerRegisterIterator) Error() error {
 	return it.fail
 }
 
 // Close terminates the iteration process, releasing any pending underlying
 // resources.
-func (it *HubRelayerRegisterIterator) Close() error {
+func (it *HubEthRelayerRegisterIterator) Close() error {
 	it.sub.Unsubscribe()
 	return nil
 }
 
-// HubRelayerRegister represents a RelayerRegister event raised by the Hub contract.
-type HubRelayerRegister struct {
+// HubEthRelayerRegister represents a RelayerRegister event raised by the HubEth contract.
+type HubEthRelayerRegister struct {
 	Relayer common.Address
 	Raw     types.Log // Blockchain specific contextual infos
 }
@@ -1199,31 +1207,31 @@ type HubRelayerRegister struct {
 // FilterRelayerRegister is a free log retrieval operation binding the contract event 0x03f64c5eb6e7ea7290123c03dbf1d28d676a583815f5f6a8ebd7f153cfb45215.
 //
 // Solidity: event RelayerRegister(address indexed _relayer)
-func (_Hub *HubFilterer) FilterRelayerRegister(opts *bind.FilterOpts, _relayer []common.Address) (*HubRelayerRegisterIterator, error) {
+func (_HubEth *HubEthFilterer) FilterRelayerRegister(opts *bind.FilterOpts, _relayer []common.Address) (*HubEthRelayerRegisterIterator, error) {
 
 	var _relayerRule []interface{}
 	for _, _relayerItem := range _relayer {
 		_relayerRule = append(_relayerRule, _relayerItem)
 	}
 
-	logs, sub, err := _Hub.contract.FilterLogs(opts, "RelayerRegister", _relayerRule)
+	logs, sub, err := _HubEth.contract.FilterLogs(opts, "RelayerRegister", _relayerRule)
 	if err != nil {
 		return nil, err
 	}
-	return &HubRelayerRegisterIterator{contract: _Hub.contract, event: "RelayerRegister", logs: logs, sub: sub}, nil
+	return &HubEthRelayerRegisterIterator{contract: _HubEth.contract, event: "RelayerRegister", logs: logs, sub: sub}, nil
 }
 
 // WatchRelayerRegister is a free log subscription operation binding the contract event 0x03f64c5eb6e7ea7290123c03dbf1d28d676a583815f5f6a8ebd7f153cfb45215.
 //
 // Solidity: event RelayerRegister(address indexed _relayer)
-func (_Hub *HubFilterer) WatchRelayerRegister(opts *bind.WatchOpts, sink chan<- *HubRelayerRegister, _relayer []common.Address) (event.Subscription, error) {
+func (_HubEth *HubEthFilterer) WatchRelayerRegister(opts *bind.WatchOpts, sink chan<- *HubEthRelayerRegister, _relayer []common.Address) (event.Subscription, error) {
 
 	var _relayerRule []interface{}
 	for _, _relayerItem := range _relayer {
 		_relayerRule = append(_relayerRule, _relayerItem)
 	}
 
-	logs, sub, err := _Hub.contract.WatchLogs(opts, "RelayerRegister", _relayerRule)
+	logs, sub, err := _HubEth.contract.WatchLogs(opts, "RelayerRegister", _relayerRule)
 	if err != nil {
 		return nil, err
 	}
@@ -1233,8 +1241,8 @@ func (_Hub *HubFilterer) WatchRelayerRegister(opts *bind.WatchOpts, sink chan<- 
 			select {
 			case log := <-logs:
 				// New log arrived, parse the event and forward to the user
-				event := new(HubRelayerRegister)
-				if err := _Hub.contract.UnpackLog(event, "RelayerRegister", log); err != nil {
+				event := new(HubEthRelayerRegister)
+				if err := _HubEth.contract.UnpackLog(event, "RelayerRegister", log); err != nil {
 					return err
 				}
 				event.Raw = log
@@ -1258,18 +1266,18 @@ func (_Hub *HubFilterer) WatchRelayerRegister(opts *bind.WatchOpts, sink chan<- 
 // ParseRelayerRegister is a log parse operation binding the contract event 0x03f64c5eb6e7ea7290123c03dbf1d28d676a583815f5f6a8ebd7f153cfb45215.
 //
 // Solidity: event RelayerRegister(address indexed _relayer)
-func (_Hub *HubFilterer) ParseRelayerRegister(log types.Log) (*HubRelayerRegister, error) {
-	event := new(HubRelayerRegister)
-	if err := _Hub.contract.UnpackLog(event, "RelayerRegister", log); err != nil {
+func (_HubEth *HubEthFilterer) ParseRelayerRegister(log types.Log) (*HubEthRelayerRegister, error) {
+	event := new(HubEthRelayerRegister)
+	if err := _HubEth.contract.UnpackLog(event, "RelayerRegister", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
 	return event, nil
 }
 
-// HubRelayerUnRegisterIterator is returned from FilterRelayerUnRegister and is used to iterate over the raw logs and unpacked data for RelayerUnRegister events raised by the Hub contract.
-type HubRelayerUnRegisterIterator struct {
-	Event *HubRelayerUnRegister // Event containing the contract specifics and raw log
+// HubEthRelayerUnRegisterIterator is returned from FilterRelayerUnRegister and is used to iterate over the raw logs and unpacked data for RelayerUnRegister events raised by the HubEth contract.
+type HubEthRelayerUnRegisterIterator struct {
+	Event *HubEthRelayerUnRegister // Event containing the contract specifics and raw log
 
 	contract *bind.BoundContract // Generic contract to use for unpacking event data
 	event    string              // Event name to use for unpacking event data
@@ -1283,7 +1291,7 @@ type HubRelayerUnRegisterIterator struct {
 // Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
-func (it *HubRelayerUnRegisterIterator) Next() bool {
+func (it *HubEthRelayerUnRegisterIterator) Next() bool {
 	// If the iterator failed, stop iterating
 	if it.fail != nil {
 		return false
@@ -1292,7 +1300,7 @@ func (it *HubRelayerUnRegisterIterator) Next() bool {
 	if it.done {
 		select {
 		case log := <-it.logs:
-			it.Event = new(HubRelayerUnRegister)
+			it.Event = new(HubEthRelayerUnRegister)
 			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 				it.fail = err
 				return false
@@ -1307,7 +1315,7 @@ func (it *HubRelayerUnRegisterIterator) Next() bool {
 	// Iterator still in progress, wait for either a data or an error event
 	select {
 	case log := <-it.logs:
-		it.Event = new(HubRelayerUnRegister)
+		it.Event = new(HubEthRelayerUnRegister)
 		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 			it.fail = err
 			return false
@@ -1323,19 +1331,19 @@ func (it *HubRelayerUnRegisterIterator) Next() bool {
 }
 
 // Error returns any retrieval or parsing error occurred during filtering.
-func (it *HubRelayerUnRegisterIterator) Error() error {
+func (it *HubEthRelayerUnRegisterIterator) Error() error {
 	return it.fail
 }
 
 // Close terminates the iteration process, releasing any pending underlying
 // resources.
-func (it *HubRelayerUnRegisterIterator) Close() error {
+func (it *HubEthRelayerUnRegisterIterator) Close() error {
 	it.sub.Unsubscribe()
 	return nil
 }
 
-// HubRelayerUnRegister represents a RelayerUnRegister event raised by the Hub contract.
-type HubRelayerUnRegister struct {
+// HubEthRelayerUnRegister represents a RelayerUnRegister event raised by the HubEth contract.
+type HubEthRelayerUnRegister struct {
 	Relayer common.Address
 	Raw     types.Log // Blockchain specific contextual infos
 }
@@ -1343,31 +1351,31 @@ type HubRelayerUnRegister struct {
 // FilterRelayerUnRegister is a free log retrieval operation binding the contract event 0x013c40a2b0c93c7ba3e8b43e7529d1d6f020670e66817894c8f86708afb3e62c.
 //
 // Solidity: event RelayerUnRegister(address indexed _relayer)
-func (_Hub *HubFilterer) FilterRelayerUnRegister(opts *bind.FilterOpts, _relayer []common.Address) (*HubRelayerUnRegisterIterator, error) {
+func (_HubEth *HubEthFilterer) FilterRelayerUnRegister(opts *bind.FilterOpts, _relayer []common.Address) (*HubEthRelayerUnRegisterIterator, error) {
 
 	var _relayerRule []interface{}
 	for _, _relayerItem := range _relayer {
 		_relayerRule = append(_relayerRule, _relayerItem)
 	}
 
-	logs, sub, err := _Hub.contract.FilterLogs(opts, "RelayerUnRegister", _relayerRule)
+	logs, sub, err := _HubEth.contract.FilterLogs(opts, "RelayerUnRegister", _relayerRule)
 	if err != nil {
 		return nil, err
 	}
-	return &HubRelayerUnRegisterIterator{contract: _Hub.contract, event: "RelayerUnRegister", logs: logs, sub: sub}, nil
+	return &HubEthRelayerUnRegisterIterator{contract: _HubEth.contract, event: "RelayerUnRegister", logs: logs, sub: sub}, nil
 }
 
 // WatchRelayerUnRegister is a free log subscription operation binding the contract event 0x013c40a2b0c93c7ba3e8b43e7529d1d6f020670e66817894c8f86708afb3e62c.
 //
 // Solidity: event RelayerUnRegister(address indexed _relayer)
-func (_Hub *HubFilterer) WatchRelayerUnRegister(opts *bind.WatchOpts, sink chan<- *HubRelayerUnRegister, _relayer []common.Address) (event.Subscription, error) {
+func (_HubEth *HubEthFilterer) WatchRelayerUnRegister(opts *bind.WatchOpts, sink chan<- *HubEthRelayerUnRegister, _relayer []common.Address) (event.Subscription, error) {
 
 	var _relayerRule []interface{}
 	for _, _relayerItem := range _relayer {
 		_relayerRule = append(_relayerRule, _relayerItem)
 	}
 
-	logs, sub, err := _Hub.contract.WatchLogs(opts, "RelayerUnRegister", _relayerRule)
+	logs, sub, err := _HubEth.contract.WatchLogs(opts, "RelayerUnRegister", _relayerRule)
 	if err != nil {
 		return nil, err
 	}
@@ -1377,8 +1385,8 @@ func (_Hub *HubFilterer) WatchRelayerUnRegister(opts *bind.WatchOpts, sink chan<
 			select {
 			case log := <-logs:
 				// New log arrived, parse the event and forward to the user
-				event := new(HubRelayerUnRegister)
-				if err := _Hub.contract.UnpackLog(event, "RelayerUnRegister", log); err != nil {
+				event := new(HubEthRelayerUnRegister)
+				if err := _HubEth.contract.UnpackLog(event, "RelayerUnRegister", log); err != nil {
 					return err
 				}
 				event.Raw = log
@@ -1402,18 +1410,18 @@ func (_Hub *HubFilterer) WatchRelayerUnRegister(opts *bind.WatchOpts, sink chan<
 // ParseRelayerUnRegister is a log parse operation binding the contract event 0x013c40a2b0c93c7ba3e8b43e7529d1d6f020670e66817894c8f86708afb3e62c.
 //
 // Solidity: event RelayerUnRegister(address indexed _relayer)
-func (_Hub *HubFilterer) ParseRelayerUnRegister(log types.Log) (*HubRelayerUnRegister, error) {
-	event := new(HubRelayerUnRegister)
-	if err := _Hub.contract.UnpackLog(event, "RelayerUnRegister", log); err != nil {
+func (_HubEth *HubEthFilterer) ParseRelayerUnRegister(log types.Log) (*HubEthRelayerUnRegister, error) {
+	event := new(HubEthRelayerUnRegister)
+	if err := _HubEth.contract.UnpackLog(event, "RelayerUnRegister", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
 	return event, nil
 }
 
-// HubRewardForRelayerIterator is returned from FilterRewardForRelayer and is used to iterate over the raw logs and unpacked data for RewardForRelayer events raised by the Hub contract.
-type HubRewardForRelayerIterator struct {
-	Event *HubRewardForRelayer // Event containing the contract specifics and raw log
+// HubEthRewardForRelayerIterator is returned from FilterRewardForRelayer and is used to iterate over the raw logs and unpacked data for RewardForRelayer events raised by the HubEth contract.
+type HubEthRewardForRelayerIterator struct {
+	Event *HubEthRewardForRelayer // Event containing the contract specifics and raw log
 
 	contract *bind.BoundContract // Generic contract to use for unpacking event data
 	event    string              // Event name to use for unpacking event data
@@ -1427,7 +1435,7 @@ type HubRewardForRelayerIterator struct {
 // Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
-func (it *HubRewardForRelayerIterator) Next() bool {
+func (it *HubEthRewardForRelayerIterator) Next() bool {
 	// If the iterator failed, stop iterating
 	if it.fail != nil {
 		return false
@@ -1436,7 +1444,7 @@ func (it *HubRewardForRelayerIterator) Next() bool {
 	if it.done {
 		select {
 		case log := <-it.logs:
-			it.Event = new(HubRewardForRelayer)
+			it.Event = new(HubEthRewardForRelayer)
 			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 				it.fail = err
 				return false
@@ -1451,7 +1459,7 @@ func (it *HubRewardForRelayerIterator) Next() bool {
 	// Iterator still in progress, wait for either a data or an error event
 	select {
 	case log := <-it.logs:
-		it.Event = new(HubRewardForRelayer)
+		it.Event = new(HubEthRewardForRelayer)
 		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 			it.fail = err
 			return false
@@ -1467,19 +1475,19 @@ func (it *HubRewardForRelayerIterator) Next() bool {
 }
 
 // Error returns any retrieval or parsing error occurred during filtering.
-func (it *HubRewardForRelayerIterator) Error() error {
+func (it *HubEthRewardForRelayerIterator) Error() error {
 	return it.fail
 }
 
 // Close terminates the iteration process, releasing any pending underlying
 // resources.
-func (it *HubRewardForRelayerIterator) Close() error {
+func (it *HubEthRewardForRelayerIterator) Close() error {
 	it.sub.Unsubscribe()
 	return nil
 }
 
-// HubRewardForRelayer represents a RewardForRelayer event raised by the Hub contract.
-type HubRewardForRelayer struct {
+// HubEthRewardForRelayer represents a RewardForRelayer event raised by the HubEth contract.
+type HubEthRewardForRelayer struct {
 	Relayer common.Address
 	Reward  *big.Int
 	Raw     types.Log // Blockchain specific contextual infos
@@ -1488,21 +1496,21 @@ type HubRewardForRelayer struct {
 // FilterRewardForRelayer is a free log retrieval operation binding the contract event 0x63dd553807ea27cb996173133b29a47f29c6b3bec34043271f5a5f7dd1f949c9.
 //
 // Solidity: event RewardForRelayer(address relayer, uint256 reward)
-func (_Hub *HubFilterer) FilterRewardForRelayer(opts *bind.FilterOpts) (*HubRewardForRelayerIterator, error) {
+func (_HubEth *HubEthFilterer) FilterRewardForRelayer(opts *bind.FilterOpts) (*HubEthRewardForRelayerIterator, error) {
 
-	logs, sub, err := _Hub.contract.FilterLogs(opts, "RewardForRelayer")
+	logs, sub, err := _HubEth.contract.FilterLogs(opts, "RewardForRelayer")
 	if err != nil {
 		return nil, err
 	}
-	return &HubRewardForRelayerIterator{contract: _Hub.contract, event: "RewardForRelayer", logs: logs, sub: sub}, nil
+	return &HubEthRewardForRelayerIterator{contract: _HubEth.contract, event: "RewardForRelayer", logs: logs, sub: sub}, nil
 }
 
 // WatchRewardForRelayer is a free log subscription operation binding the contract event 0x63dd553807ea27cb996173133b29a47f29c6b3bec34043271f5a5f7dd1f949c9.
 //
 // Solidity: event RewardForRelayer(address relayer, uint256 reward)
-func (_Hub *HubFilterer) WatchRewardForRelayer(opts *bind.WatchOpts, sink chan<- *HubRewardForRelayer) (event.Subscription, error) {
+func (_HubEth *HubEthFilterer) WatchRewardForRelayer(opts *bind.WatchOpts, sink chan<- *HubEthRewardForRelayer) (event.Subscription, error) {
 
-	logs, sub, err := _Hub.contract.WatchLogs(opts, "RewardForRelayer")
+	logs, sub, err := _HubEth.contract.WatchLogs(opts, "RewardForRelayer")
 	if err != nil {
 		return nil, err
 	}
@@ -1512,8 +1520,8 @@ func (_Hub *HubFilterer) WatchRewardForRelayer(opts *bind.WatchOpts, sink chan<-
 			select {
 			case log := <-logs:
 				// New log arrived, parse the event and forward to the user
-				event := new(HubRewardForRelayer)
-				if err := _Hub.contract.UnpackLog(event, "RewardForRelayer", log); err != nil {
+				event := new(HubEthRewardForRelayer)
+				if err := _HubEth.contract.UnpackLog(event, "RewardForRelayer", log); err != nil {
 					return err
 				}
 				event.Raw = log
@@ -1537,18 +1545,18 @@ func (_Hub *HubFilterer) WatchRewardForRelayer(opts *bind.WatchOpts, sink chan<-
 // ParseRewardForRelayer is a log parse operation binding the contract event 0x63dd553807ea27cb996173133b29a47f29c6b3bec34043271f5a5f7dd1f949c9.
 //
 // Solidity: event RewardForRelayer(address relayer, uint256 reward)
-func (_Hub *HubFilterer) ParseRewardForRelayer(log types.Log) (*HubRewardForRelayer, error) {
-	event := new(HubRewardForRelayer)
-	if err := _Hub.contract.UnpackLog(event, "RewardForRelayer", log); err != nil {
+func (_HubEth *HubEthFilterer) ParseRewardForRelayer(log types.Log) (*HubEthRewardForRelayer, error) {
+	event := new(HubEthRewardForRelayer)
+	if err := _HubEth.contract.UnpackLog(event, "RewardForRelayer", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
 	return event, nil
 }
 
-// HubRewardPercentageChangedIterator is returned from FilterRewardPercentageChanged and is used to iterate over the raw logs and unpacked data for RewardPercentageChanged events raised by the Hub contract.
-type HubRewardPercentageChangedIterator struct {
-	Event *HubRewardPercentageChanged // Event containing the contract specifics and raw log
+// HubEthRewardPercentageChangedIterator is returned from FilterRewardPercentageChanged and is used to iterate over the raw logs and unpacked data for RewardPercentageChanged events raised by the HubEth contract.
+type HubEthRewardPercentageChangedIterator struct {
+	Event *HubEthRewardPercentageChanged // Event containing the contract specifics and raw log
 
 	contract *bind.BoundContract // Generic contract to use for unpacking event data
 	event    string              // Event name to use for unpacking event data
@@ -1562,7 +1570,7 @@ type HubRewardPercentageChangedIterator struct {
 // Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
-func (it *HubRewardPercentageChangedIterator) Next() bool {
+func (it *HubEthRewardPercentageChangedIterator) Next() bool {
 	// If the iterator failed, stop iterating
 	if it.fail != nil {
 		return false
@@ -1571,7 +1579,7 @@ func (it *HubRewardPercentageChangedIterator) Next() bool {
 	if it.done {
 		select {
 		case log := <-it.logs:
-			it.Event = new(HubRewardPercentageChanged)
+			it.Event = new(HubEthRewardPercentageChanged)
 			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 				it.fail = err
 				return false
@@ -1586,7 +1594,7 @@ func (it *HubRewardPercentageChangedIterator) Next() bool {
 	// Iterator still in progress, wait for either a data or an error event
 	select {
 	case log := <-it.logs:
-		it.Event = new(HubRewardPercentageChanged)
+		it.Event = new(HubEthRewardPercentageChanged)
 		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
 			it.fail = err
 			return false
@@ -1602,19 +1610,19 @@ func (it *HubRewardPercentageChangedIterator) Next() bool {
 }
 
 // Error returns any retrieval or parsing error occurred during filtering.
-func (it *HubRewardPercentageChangedIterator) Error() error {
+func (it *HubEthRewardPercentageChangedIterator) Error() error {
 	return it.fail
 }
 
 // Close terminates the iteration process, releasing any pending underlying
 // resources.
-func (it *HubRewardPercentageChangedIterator) Close() error {
+func (it *HubEthRewardPercentageChangedIterator) Close() error {
 	it.sub.Unsubscribe()
 	return nil
 }
 
-// HubRewardPercentageChanged represents a RewardPercentageChanged event raised by the Hub contract.
-type HubRewardPercentageChanged struct {
+// HubEthRewardPercentageChanged represents a RewardPercentageChanged event raised by the HubEth contract.
+type HubEthRewardPercentageChanged struct {
 	NewPercentage *big.Int
 	Raw           types.Log // Blockchain specific contextual infos
 }
@@ -1622,21 +1630,21 @@ type HubRewardPercentageChanged struct {
 // FilterRewardPercentageChanged is a free log retrieval operation binding the contract event 0x23ad5751be9629264e3725ea971a625cff4033b5a3df9f4526e8a32159c0fa89.
 //
 // Solidity: event RewardPercentageChanged(uint256 newPercentage)
-func (_Hub *HubFilterer) FilterRewardPercentageChanged(opts *bind.FilterOpts) (*HubRewardPercentageChangedIterator, error) {
+func (_HubEth *HubEthFilterer) FilterRewardPercentageChanged(opts *bind.FilterOpts) (*HubEthRewardPercentageChangedIterator, error) {
 
-	logs, sub, err := _Hub.contract.FilterLogs(opts, "RewardPercentageChanged")
+	logs, sub, err := _HubEth.contract.FilterLogs(opts, "RewardPercentageChanged")
 	if err != nil {
 		return nil, err
 	}
-	return &HubRewardPercentageChangedIterator{contract: _Hub.contract, event: "RewardPercentageChanged", logs: logs, sub: sub}, nil
+	return &HubEthRewardPercentageChangedIterator{contract: _HubEth.contract, event: "RewardPercentageChanged", logs: logs, sub: sub}, nil
 }
 
 // WatchRewardPercentageChanged is a free log subscription operation binding the contract event 0x23ad5751be9629264e3725ea971a625cff4033b5a3df9f4526e8a32159c0fa89.
 //
 // Solidity: event RewardPercentageChanged(uint256 newPercentage)
-func (_Hub *HubFilterer) WatchRewardPercentageChanged(opts *bind.WatchOpts, sink chan<- *HubRewardPercentageChanged) (event.Subscription, error) {
+func (_HubEth *HubEthFilterer) WatchRewardPercentageChanged(opts *bind.WatchOpts, sink chan<- *HubEthRewardPercentageChanged) (event.Subscription, error) {
 
-	logs, sub, err := _Hub.contract.WatchLogs(opts, "RewardPercentageChanged")
+	logs, sub, err := _HubEth.contract.WatchLogs(opts, "RewardPercentageChanged")
 	if err != nil {
 		return nil, err
 	}
@@ -1646,8 +1654,8 @@ func (_Hub *HubFilterer) WatchRewardPercentageChanged(opts *bind.WatchOpts, sink
 			select {
 			case log := <-logs:
 				// New log arrived, parse the event and forward to the user
-				event := new(HubRewardPercentageChanged)
-				if err := _Hub.contract.UnpackLog(event, "RewardPercentageChanged", log); err != nil {
+				event := new(HubEthRewardPercentageChanged)
+				if err := _HubEth.contract.UnpackLog(event, "RewardPercentageChanged", log); err != nil {
 					return err
 				}
 				event.Raw = log
@@ -1671,9 +1679,9 @@ func (_Hub *HubFilterer) WatchRewardPercentageChanged(opts *bind.WatchOpts, sink
 // ParseRewardPercentageChanged is a log parse operation binding the contract event 0x23ad5751be9629264e3725ea971a625cff4033b5a3df9f4526e8a32159c0fa89.
 //
 // Solidity: event RewardPercentageChanged(uint256 newPercentage)
-func (_Hub *HubFilterer) ParseRewardPercentageChanged(log types.Log) (*HubRewardPercentageChanged, error) {
-	event := new(HubRewardPercentageChanged)
-	if err := _Hub.contract.UnpackLog(event, "RewardPercentageChanged", log); err != nil {
+func (_HubEth *HubEthFilterer) ParseRewardPercentageChanged(log types.Log) (*HubEthRewardPercentageChanged, error) {
+	event := new(HubEthRewardPercentageChanged)
+	if err := _HubEth.contract.UnpackLog(event, "RewardPercentageChanged", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
