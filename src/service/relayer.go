@@ -70,6 +70,7 @@ func (r *BridgeSRV) Run() {
 			go r.emitUnregistered(worker)
 		} else if worker.GetChain() != storage.EthChain {
 			go r.emitPenalty(worker)
+			go r.emitReward(worker)
 		}
 		go r.CheckTxSentRoutine(worker)
 	}
@@ -89,49 +90,18 @@ func (r *BridgeSRV) ConfirmWorkerTx(worker workers.IWorker) {
 		newEvents := make([]*storage.Event, 0)
 
 		for _, txLog := range txLogs {
-			if txLog.TxType == storage.TxTypeRegister {
-				r.logger.Infoln("register worker")
+			if txLog.Status == storage.TxStatusInit {
+				r.logger.Infoln("New Evant")
 				newEvent := &storage.Event{
 					RelayerAddress: txLog.Data,
 					ChainID:        txLog.Chain,
 					Height:         txLog.Height,
-					Status:         storage.EventStatusRegisterInit,
-					CreateTime:     time.Now().Unix(),
-				}
-				newEvents = append(newEvents, newEvent)
-			} else if txLog.TxType == storage.TxTypeUnregister {
-				r.logger.Infoln("unregister worker")
-				newEvent := &storage.Event{
-					RelayerAddress: txLog.Data,
-					ChainID:        txLog.Chain,
-					Height:         txLog.Height,
-					Status:         storage.EventStatusUnregisterInit,
-					CreateTime:     time.Now().Unix(),
-				}
-				newEvents = append(newEvents, newEvent)
-			} else if txLog.TxType == storage.TxTypeFelony {
-				r.logger.Infoln("Felony worker")
-				newEvent := &storage.Event{
-					RelayerAddress: txLog.Data,
-					ChainID:        txLog.Chain,
-					Height:         txLog.Height,
-					Status:         storage.EventStatusFelonyInit,
-					CreateTime:     time.Now().Unix(),
-				}
-				newEvents = append(newEvents, newEvent)
-			} else if txLog.TxType == storage.TxTypePenalty {
-				r.logger.Infoln("Penalty worker")
-				newEvent := &storage.Event{
-					RelayerAddress: txLog.Data,
-					ChainID:        txLog.Chain,
-					Height:         txLog.Height,
-					Status:         storage.EventStatusPenaltyInit,
-					CreateTime:     time.Now().Unix(),
+					Status:         txLog.EventStatus,
 					Penalty:        txLog.Penalty,
+					CreateTime:     time.Now().Unix(),
 				}
 				newEvents = append(newEvents, newEvent)
 			}
-
 			txHashes = append(txHashes, txLog.TxHash)
 		}
 

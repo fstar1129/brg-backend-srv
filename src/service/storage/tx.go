@@ -96,6 +96,12 @@ func (d *DataBase) ConfirmTx(tx *gorm.DB, txLog *TxLog) error {
 			nil, EventStatusPenaltyConfirmed); err != nil {
 			return err
 		}
+	case TxTypeReward:
+		if err := d.UpdateEventStatusWhenConfirmTx(tx, txLog, []EventStatus{
+			EventStatusRewardConfirmed, EventStatusRewardSent, EventStatusRewardFailed},
+			nil, EventStatusRewardConfirmed); err != nil {
+			return err
+		}
 
 		//	case TxTypeUnregister:
 	}

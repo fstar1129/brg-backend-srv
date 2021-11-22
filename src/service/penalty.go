@@ -22,7 +22,7 @@ func (r *BridgeSRV) emitPenalty(worker workers.IWorker) {
 					r.logger.Errorf("submit claim failed: %s", err)
 				}
 			} else {
-				r.handleTxSent(r.laWorker.GetChain(), event, storage.TxTypePenalty,
+				r.handleTxSent(event.ChainID, event, storage.TxTypePenalty,
 					storage.EventStatusPenaltyConfirmed, storage.EventStatusPenaltyFailed)
 			}
 		}
@@ -50,7 +50,7 @@ func (r *BridgeSRV) sendPenalty(worker workers.IWorker, event *storage.Event) (s
 		return "", fmt.Errorf("could not send claim tx: %w", err)
 	}
 	txSent.TxHash = txHash
-
+	r.storage.UpdateEventStatus(event, storage.EventStatusPenaltySent)
 	r.logger.Infof("send Penalty tx success | chain=%s, tx_hash=%s", worker.GetChain(), txSent.TxHash)
 	// create new tx(claimed)
 	r.storage.CreateTxSent(txSent)

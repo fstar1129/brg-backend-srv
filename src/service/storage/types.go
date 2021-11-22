@@ -38,6 +38,7 @@ const (
 	TxTypeUnregister TxType = "UNREGISTER"
 	TxTypeFelony     TxType = "FELONY"
 	TxTypePenalty    TxType = "PENALTY"
+	TxTypeReward     TxType = "REWARD"
 )
 
 type EventStatus string
@@ -74,6 +75,14 @@ const (
 	EventStatusPenaltyConfirmed     EventStatus = "PENALTY_CONFIRMED"
 	EventStatusPenaltyFailed        EventStatus = "PENALTY_FAILED"
 	EventStatusPenaltySentFailed    EventStatus = "PENALTY_SENT_FAILED"
+
+	// REWARD
+	EventStatusRewardInit          EventStatus = "REWARD_INIT"
+	EventStatusRewardInitConfrimed EventStatus = "REWARD_INIT_CONFIRMED"
+	EventStatusRewardSent          EventStatus = "REWARD_SENT"
+	EventStatusRewardConfirmed     EventStatus = "REWARD_CONFIRMED"
+	EventStatusRewardFailed        EventStatus = "REWARD_FAILED"
+	EventStatusRewardSentFailed    EventStatus = "REWARD_SENT_FAILED"
 )
 
 // TxLogStatus ...

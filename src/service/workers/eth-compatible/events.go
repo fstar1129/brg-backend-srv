@@ -25,12 +25,13 @@ const (
 	RelayerUnregisterEventName = "RelayerUnRegister"
 	RelayerBlockedEventName    = "RelayerBlocked"
 	PenaltyForRelayerEventName = "PenaltyForRelayer"
+	RewardForRelayerEventName  = "RewardForRelayer"
 )
 
 // RegisterRelayer = 0x03f64c5eb6e7ea7290123c03dbf1d28d676a583815f5f6a8ebd7f153cfb45215
 // RelayerUnRegister  = 0x013c40a2b0c93c7ba3e8b43e7529d1d6f020670e66817894c8f86708afb3e62c
 // PenaltyForRelayer = 0xf771f6f0a64d5cbff2d92da9bcc1b2ff0c4ba763dec1a9a50a7b06a60429a93a
-// RewardForRelayer = 0x823083e86e79d611ae5083c45dd88f8f38ed42a14f0884540d09a3273c6100e5
+// RewardForRelayer = 0x63dd553807ea27cb996173133b29a47f29c6b3bec34043271f5a5f7dd1f949c9
 // RelayerBlocked = 0xa5ea068b2ed8e05403d639cea236649975a9712487c612f9a6945b6bad00d81d
 
 var (
@@ -38,6 +39,7 @@ var (
 	RelayerUnregisterEventHash = common.HexToHash("0x013c40a2b0c93c7ba3e8b43e7529d1d6f020670e66817894c8f86708afb3e62c")
 	RelayerBlockedEventHash    = common.HexToHash("0xa5ea068b2ed8e05403d639cea236649975a9712487c612f9a6945b6bad00d81d")
 	PenaltyForRelayerEventHash = common.HexToHash("0x73f262bdf0c3145b25a03d5c75d5989bdab8ecb77968d7ff6de8a3bd83b8b13b")
+	RewardForRelayerEventHash  = common.HexToHash("0x63dd553807ea27cb996173133b29a47f29c6b3bec34043271f5a5f7dd1f949c9")
 )
 
 // DepositEvent represents a Deposit event raised by the Bridge.sol contract.
@@ -60,6 +62,12 @@ type PenaltyForRelayerEvent struct {
 	Reason  string
 	Relayer common.Address
 	Penalty *big.Int
+	Raw     types.Log
+}
+
+type RewardForRelayerEvent struct {
+	Relayer common.Address
+	Reward  *big.Int
 	Raw     types.Log
 }
 
@@ -113,39 +121,66 @@ func ParsePenaltyForRelayerEvent(abi *abi.ABI, log *types.Log) (ContractEvent, e
 	return ev, nil
 }
 
+func ParseRewardForRelayerEvent(abi *abi.ABI, log *types.Log) (ContractEvent, error) {
+	var ev RewardForRelayerEvent
+	if err := abi.UnpackIntoInterface(&ev, RewardForRelayerEventName, log.Data); err != nil {
+		fmt.Println("AA", err)
+		return nil, err
+	}
+	fmt.Printf("RewardForRelayer\n")
+	fmt.Printf("relayer address: %s with reward %s\n", ev.Relayer.Hex(), ev.Reward.String())
+
+	return ev, nil
+}
+
 // !!! TODO !!!
 
 // ToTxLog ...
 func (ev RelayerRegisterEvent) ToTxLog(chain string) *storage.TxLog {
 	return &storage.TxLog{
-		Chain:  chain,
-		TxType: storage.TxTypeRegister,
-		Data:   ev.Relayer.Hex(),
+		Chain:       chain,
+		TxType:      storage.TxTypeRegister,
+		Data:        ev.Relayer.Hex(),
+		Status:      storage.TxStatusInit,
+		EventStatus: storage.EventStatusRegisterInit,
 	}
 }
 
 func (ev RelayerUnregisterEvent) ToTxLog(chain string) *storage.TxLog {
 	return &storage.TxLog{
-		Chain:  chain,
-		TxType: storage.TxTypeUnregister,
-		Data:   ev.Relayer.Hex(),
+		Chain:       chain,
+		TxType:      storage.TxTypeUnregister,
+		Data:        ev.Relayer.Hex(),
+		EventStatus: storage.EventStatusUnregisterInit,
 	}
 }
 
 func (ev RelayerBlockedEvent) ToTxLog(chain string) *storage.TxLog {
 	return &storage.TxLog{
-		Chain:  chain,
-		TxType: storage.TxTypeFelony,
-		Data:   ev.Relayer.Hex(),
+		Chain:       chain,
+		TxType:      storage.TxTypeFelony,
+		Data:        ev.Relayer.Hex(),
+		EventStatus: storage.EventStatusFelonyInit,
 	}
 }
 
 func (ev PenaltyForRelayerEvent) ToTxLog(chain string) *storage.TxLog {
 	return &storage.TxLog{
-		Chain:   storage.EthChain,
-		TxType:  storage.TxTypePenalty,
-		Data:    ev.Relayer.Hex(),
-		Penalty: ev.Penalty.String(),
+		Chain:       chain,
+		TxType:      storage.TxTypePenalty,
+		Data:        ev.Relayer.Hex(),
+		Penalty:     ev.Penalty.String(),
+		EventStatus: storage.EventStatusPenaltyInit,
+	}
+}
+
+func (ev RewardForRelayerEvent) ToTxLog(chain string) *storage.TxLog {
+	return &storage.TxLog{
+		Chain:       chain,
+		TxType:      storage.TxTypeReward,
+		Data:        ev.Relayer.Hex(),
+		Penalty:     ev.Reward.String(),
+		EventStatus: storage.EventStatusRewardInit,
 	}
 }
 
@@ -163,6 +198,9 @@ func ParseEvent(log *types.Log) (ContractEvent, error) {
 	} else if bytes.Equal(log.Topics[0][:], PenaltyForRelayerEventHash[:]) {
 		abi, _ := abi.JSON(strings.NewReader(hubEth.HubEthABI))
 		return ParsePenaltyForRelayerEvent(&abi, log)
+	} else if bytes.Equal(log.Topics[0][:], RewardForRelayerEventHash[:]) {
+		abi, _ := abi.JSON(strings.NewReader(hubEth.HubEthABI))
+		return ParseRewardForRelayerEvent(&abi, log)
 	}
 
 	return nil, nil

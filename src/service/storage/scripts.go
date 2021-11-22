@@ -6,7 +6,7 @@ var (
         BEGIN
             IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'tx_types') THEN
                 CREATE TYPE tx_types AS ENUM
-            ('REGISTER', 'UNREGISTER', 'FELONY', 'PENALTY');
+            ('REGISTER', 'UNREGISTER', 'FELONY', 'PENALTY', 'REWARD');
             END IF;
         END$$;
     `

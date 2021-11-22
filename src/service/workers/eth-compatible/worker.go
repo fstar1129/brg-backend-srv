@@ -188,6 +188,26 @@ func (w *Erc20Worker) Penalty(relayerAddress common.Address, amount string) (str
 	return tx.Hash().String(), nil
 }
 
+//Reward
+func (w *Erc20Worker) Reward(relayerAddress common.Address, amount string) (string, error) {
+	auth, err := w.getTransactor()
+	if err != nil {
+		return "", err
+	}
+
+	instance, err := hubLA.NewHubLA(w.contractAddr, w.client)
+	if err != nil {
+		return "", err
+	}
+	value, _ := new(big.Int).SetString(amount, 10)
+	tx, err := instance.AddReward(auth, relayerAddress, value)
+	if err != nil {
+		return "", err
+	}
+
+	return tx.Hash().String(), nil
+}
+
 // // GetStatus returns status of relayer account(balance eg)
 // func (w *Erc20Worker) GetStatus(symbol string) (interface{}, error) {
 // 	ethStatus := &EthStatus{}
@@ -258,7 +278,7 @@ func (w *Erc20Worker) getLogs(blockHash common.Hash) ([]*storage.TxLog, error) {
 	//	topics := [][]common.Hash{{DepositEventHash, ProposalEventHash, ProposalVoteHash}}
 	logs, err := w.client.FilterLogs(context.Background(), ethereum.FilterQuery{
 		BlockHash: &blockHash,
-		//	Topics:    topics,
+		// Topics:    topics,
 		Addresses: []common.Address{w.contractAddr},
 	})
 	if err != nil {
@@ -348,24 +368,24 @@ func (w *Erc20Worker) getTransactor() (auth *bind.TransactOpts, err error) {
 	}
 
 	var nonce uint64
-	// if w.chainID == storage.LaChain {
-	// 	nonce, err = w.GetTxCountLatest()
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
+	if w.chainID == storage.LaChain {
+		nonce, err = w.GetTxCountLatest()
+		if err != nil {
+			return nil, err
+		}
 
-	// 	auth, err = bind.NewKeyedTransactorWithChainID(privateKey, big.NewInt(int64(26)))
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
+		auth, err = bind.NewKeyedTransactorWithChainID(privateKey, big.NewInt(int64(26)))
+		if err != nil {
+			return nil, err
+		}
 
-	// } else {
-	nonce, err = w.client.PendingNonceAt(context.Background(), w.config.WorkerAddr)
-	if err != nil {
-		return nil, err
+	} else {
+		nonce, err = w.client.PendingNonceAt(context.Background(), w.config.WorkerAddr)
+		if err != nil {
+			return nil, err
+		}
+		auth = bind.NewKeyedTransactor(privateKey)
 	}
-	auth = bind.NewKeyedTransactor(privateKey)
-	// }
 
 	auth.Nonce = big.NewInt(int64(nonce))
 	auth.Value = big.NewInt(0)                // in wei
