@@ -64,12 +64,12 @@ func (r *BridgeSRV) Run() {
 	// run Worker workers
 	for _, worker := range r.Workers {
 		go r.ConfirmWorkerTx(worker)
-		go r.emitFelony(worker)
 		if worker.GetChain() != storage.LaChain {
 			go r.emitRegistered(worker)
 			go r.emitUnregistered(worker)
 		} else if worker.GetChain() != storage.EthChain {
 			go r.emitPenalty(worker)
+			go r.emitFelony(worker)
 			go r.emitReward(worker)
 		}
 		go r.CheckTxSentRoutine(worker)

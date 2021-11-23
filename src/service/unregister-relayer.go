@@ -50,7 +50,7 @@ func (r *BridgeSRV) sendUnregister(worker workers.IWorker, event *storage.Event)
 		return "", fmt.Errorf("could not send claim tx: %w", err)
 	}
 	txSent.TxHash = txHash
-
+	r.storage.UpdateEventStatus(event, storage.EventStatusUnregisterSent)
 	r.logger.Infof("send unregister tx success | chain=%s, tx_hash=%s", worker.GetChain(), txSent.TxHash)
 	// create new tx(claimed)
 	r.storage.CreateTxSent(txSent)

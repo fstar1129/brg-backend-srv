@@ -15,7 +15,7 @@ func (r *BridgeSRV) emitFelony(worker workers.IWorker) {
 		events := r.storage.GetEventsByTypeAndStatuses([]storage.EventStatus{storage.EventStatusFelonyInit, storage.EventStatusFelonySent})
 		for _, event := range events {
 			println(worker.GetChain(), event.ChainID)
-			if event.Status == storage.EventStatusFelonyInit && worker.GetChain() != event.ChainID {
+			if event.Status == storage.EventStatusFelonyInit {
 				r.logger.Infoln("attempting to send felony")
 				if _, err := r.sendFelony(worker, event); err != nil {
 					r.logger.Errorf("submit claim failed: %s", err)

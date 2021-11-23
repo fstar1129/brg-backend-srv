@@ -384,7 +384,10 @@ func (w *Erc20Worker) getTransactor() (auth *bind.TransactOpts, err error) {
 		if err != nil {
 			return nil, err
 		}
-		auth = bind.NewKeyedTransactor(privateKey)
+		auth, err = bind.NewKeyedTransactorWithChainID(privateKey, big.NewInt((int64(80001))))
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	auth.Nonce = big.NewInt(int64(nonce))
