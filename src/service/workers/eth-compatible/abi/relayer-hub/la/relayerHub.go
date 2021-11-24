@@ -30,7 +30,7 @@ var (
 
 // HubLAMetaData contains all meta data concerning the HubLA contract.
 var HubLAMetaData = &bind.MetaData{
-	ABI: "[{\"name\":\"owner\",\"type\":\"function\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"address\",\"internalType\":\"address\"}],\"stateMutability\":\"view\"},{\"name\":\"renounceOwnership\",\"type\":\"function\",\"inputs\":[],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"name\":\"transferOwnership\",\"type\":\"function\",\"inputs\":[{\"name\":\"newOwner\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"name\":\"_relayerBlocked\",\"type\":\"function\",\"inputs\":[{\"name\":\"\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[{\"name\":\"\",\"type\":\"bool\",\"internalType\":\"bool\"}],\"stateMutability\":\"view\"},{\"name\":\"_penalty\",\"type\":\"function\",\"inputs\":[{\"name\":\"\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"name\":\"_penaltyPercentage\",\"type\":\"function\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"name\":\"_relayerRewards\",\"type\":\"function\",\"inputs\":[{\"name\":\"\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"name\":\"_rewardPercentage\",\"type\":\"function\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"name\":\"_systemRewardAddress\",\"type\":\"function\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"address\",\"internalType\":\"address\"}],\"stateMutability\":\"view\"},{\"name\":\"_bridgeAddress\",\"type\":\"function\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"address\",\"internalType\":\"address\"}],\"stateMutability\":\"view\"},{\"name\":\"_requiredDeposit\",\"type\":\"function\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"name\":\"_dues\",\"type\":\"function\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"name\":\"INIT_REQUIRED_DEPOSIT\",\"type\":\"function\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"name\":\"INIT_DUES\",\"type\":\"function\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"name\":\"INIT_PENALTY_PERCENTAGE\",\"type\":\"function\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"name\":\"INIT_REWARD_PERCENTAGE\",\"type\":\"function\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"name\":\"init\",\"type\":\"function\",\"inputs\":[{\"name\":\"initBridgeAddress\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"name\":\"register\",\"type\":\"function\",\"inputs\":[],\"outputs\":[],\"stateMutability\":\"payable\"},{\"name\":\"unregister\",\"type\":\"function\",\"inputs\":[],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"name\":\"isRelayer\",\"type\":\"function\",\"inputs\":[{\"name\":\"sender\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[{\"name\":\"\",\"type\":\"bool\",\"internalType\":\"bool\"}],\"stateMutability\":\"view\"},{\"name\":\"updateSystemRewardAddr\",\"type\":\"function\",\"inputs\":[{\"name\":\"newAddr\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"name\":\"alreadyExecuted\",\"type\":\"function\",\"inputs\":[{\"name\":\"_relayer\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"swapValue\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"name\":\"alreadyVoted\",\"type\":\"function\",\"inputs\":[{\"name\":\"_relayer\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"swapValue\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"name\":\"slash\",\"type\":\"function\",\"inputs\":[{\"name\":\"_relayer\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"penalty\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"name\":\"felony\",\"type\":\"function\",\"inputs\":[{\"name\":\"_relayer\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"name\":\"updatePenaltyPercentage\",\"type\":\"function\",\"inputs\":[{\"name\":\"penaltyPercentage\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"name\":\"swapReward\",\"type\":\"function\",\"inputs\":[{\"name\":\"_relayer\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"swapValue\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"name\":\"updateRewardPercentage\",\"type\":\"function\",\"inputs\":[{\"name\":\"rewardPercent\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"name\":\"addReward\",\"type\":\"function\",\"inputs\":[{\"name\":\"_relayer\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"reward\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"name\":\"getTotalReward\",\"type\":\"function\",\"inputs\":[{\"name\":\"_relayer\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[{\"name\":\"totalReward\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"name\":\"updateReward\",\"type\":\"function\",\"inputs\":[{\"name\":\"_relayer\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"reward\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"name\":\"OwnershipTransferred\",\"type\":\"event\",\"inputs\":[{\"name\":\"previousOwner\",\"type\":\"address\",\"internalType\":\"address\",\"indexed\":true},{\"name\":\"newOwner\",\"type\":\"address\",\"internalType\":\"address\",\"indexed\":true}],\"anonymous\":false},{\"name\":\"RelayerBlocked\",\"type\":\"event\",\"inputs\":[{\"name\":\"relayer\",\"type\":\"address\",\"internalType\":\"address\"}],\"anonymous\":false},{\"name\":\"PenaltyPercentChanged\",\"type\":\"event\",\"inputs\":[{\"name\":\"newPercent\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"anonymous\":false},{\"name\":\"RewardPercentageChanged\",\"type\":\"event\",\"inputs\":[{\"name\":\"newPercentage\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"anonymous\":false},{\"name\":\"RelayerRegister\",\"type\":\"event\",\"inputs\":[{\"name\":\"_relayer\",\"type\":\"address\",\"internalType\":\"address\"}],\"anonymous\":false},{\"name\":\"RelayerUnRegister\",\"type\":\"event\",\"inputs\":[{\"name\":\"_relayer\",\"type\":\"address\",\"internalType\":\"address\"}],\"anonymous\":false},{\"name\":\"SystemRewardAddressChanged\",\"type\":\"event\",\"inputs\":[{\"name\":\"newAddr\",\"type\":\"address\",\"internalType\":\"address\"}],\"anonymous\":false},{\"name\":\"PenaltyForRelayer\",\"type\":\"event\",\"inputs\":[{\"name\":\"reason\",\"type\":\"string\",\"internalType\":\"string\"},{\"name\":\"relayer\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"penalty\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"anonymous\":false},{\"name\":\"RewardForRelayer\",\"type\":\"event\",\"inputs\":[{\"name\":\"relayer\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"reward\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"anonymous\":false}]",
+	ABI: "[{\"name\":\"owner\",\"type\":\"function\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"address\",\"internalType\":\"address\"}],\"stateMutability\":\"view\"},{\"name\":\"renounceOwnership\",\"type\":\"function\",\"inputs\":[],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"name\":\"transferOwnership\",\"type\":\"function\",\"inputs\":[{\"name\":\"newOwner\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"name\":\"_relayerBlocked\",\"type\":\"function\",\"inputs\":[{\"name\":\"\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[{\"name\":\"\",\"type\":\"bool\",\"internalType\":\"bool\"}],\"stateMutability\":\"view\"},{\"name\":\"_penalty\",\"type\":\"function\",\"inputs\":[{\"name\":\"\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"name\":\"_penaltyPercentage\",\"type\":\"function\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"name\":\"_relayerRewards\",\"type\":\"function\",\"inputs\":[{\"name\":\"\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"name\":\"_rewardPercentage\",\"type\":\"function\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"name\":\"_systemRewardAddress\",\"type\":\"function\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"address\",\"internalType\":\"address\"}],\"stateMutability\":\"view\"},{\"name\":\"_bridgeAddress\",\"type\":\"function\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"address\",\"internalType\":\"address\"}],\"stateMutability\":\"view\"},{\"name\":\"_backendSrvAddress\",\"type\":\"function\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"address\",\"internalType\":\"address\"}],\"stateMutability\":\"view\"},{\"name\":\"_requiredDeposit\",\"type\":\"function\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"name\":\"_dues\",\"type\":\"function\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"name\":\"INIT_REQUIRED_DEPOSIT\",\"type\":\"function\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"name\":\"INIT_DUES\",\"type\":\"function\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"name\":\"INIT_PENALTY_PERCENTAGE\",\"type\":\"function\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"name\":\"INIT_REWARD_PERCENTAGE\",\"type\":\"function\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"name\":\"init\",\"type\":\"function\",\"inputs\":[{\"name\":\"initBridgeAddress\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"initBackendSrvAddress\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"name\":\"register\",\"type\":\"function\",\"inputs\":[],\"outputs\":[],\"stateMutability\":\"payable\"},{\"name\":\"unregister\",\"type\":\"function\",\"inputs\":[],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"name\":\"isRelayer\",\"type\":\"function\",\"inputs\":[{\"name\":\"sender\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[{\"name\":\"\",\"type\":\"bool\",\"internalType\":\"bool\"}],\"stateMutability\":\"view\"},{\"name\":\"updateSystemRewardAddr\",\"type\":\"function\",\"inputs\":[{\"name\":\"newAddr\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"name\":\"updateBackendSrvAddr\",\"type\":\"function\",\"inputs\":[{\"name\":\"newAddr\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"name\":\"alreadyExecuted\",\"type\":\"function\",\"inputs\":[{\"name\":\"_relayer\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"swapValue\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"name\":\"alreadyVoted\",\"type\":\"function\",\"inputs\":[{\"name\":\"_relayer\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"swapValue\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"name\":\"slash\",\"type\":\"function\",\"inputs\":[{\"name\":\"_relayer\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"penalty\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"name\":\"felony\",\"type\":\"function\",\"inputs\":[{\"name\":\"_relayer\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"name\":\"updatePenaltyPercentage\",\"type\":\"function\",\"inputs\":[{\"name\":\"penaltyPercentage\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"name\":\"swapReward\",\"type\":\"function\",\"inputs\":[{\"name\":\"_relayer\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"swapValue\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"name\":\"updateRewardPercentage\",\"type\":\"function\",\"inputs\":[{\"name\":\"rewardPercent\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"name\":\"addReward\",\"type\":\"function\",\"inputs\":[{\"name\":\"_relayer\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"reward\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"name\":\"getTotalReward\",\"type\":\"function\",\"inputs\":[{\"name\":\"_relayer\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[{\"name\":\"totalReward\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"name\":\"updateReward\",\"type\":\"function\",\"inputs\":[{\"name\":\"_relayer\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"reward\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"name\":\"OwnershipTransferred\",\"type\":\"event\",\"inputs\":[{\"name\":\"previousOwner\",\"type\":\"address\",\"internalType\":\"address\",\"indexed\":true},{\"name\":\"newOwner\",\"type\":\"address\",\"internalType\":\"address\",\"indexed\":true}],\"anonymous\":false},{\"name\":\"RelayerBlocked\",\"type\":\"event\",\"inputs\":[{\"name\":\"relayer\",\"type\":\"address\",\"internalType\":\"address\"}],\"anonymous\":false},{\"name\":\"PenaltyPercentChanged\",\"type\":\"event\",\"inputs\":[{\"name\":\"newPercent\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"anonymous\":false},{\"name\":\"RewardPercentageChanged\",\"type\":\"event\",\"inputs\":[{\"name\":\"newPercentage\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"anonymous\":false},{\"name\":\"RelayerRegister\",\"type\":\"event\",\"inputs\":[{\"name\":\"_relayer\",\"type\":\"address\",\"internalType\":\"address\"}],\"anonymous\":false},{\"name\":\"RelayerUnRegister\",\"type\":\"event\",\"inputs\":[{\"name\":\"_relayer\",\"type\":\"address\",\"internalType\":\"address\"}],\"anonymous\":false},{\"name\":\"SystemRewardAddressChanged\",\"type\":\"event\",\"inputs\":[{\"name\":\"newAddr\",\"type\":\"address\",\"internalType\":\"address\"}],\"anonymous\":false},{\"name\":\"PenaltyForRelayer\",\"type\":\"event\",\"inputs\":[{\"name\":\"reason\",\"type\":\"string\",\"internalType\":\"string\"},{\"name\":\"relayer\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"penalty\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"anonymous\":false},{\"name\":\"RewardForRelayer\",\"type\":\"event\",\"inputs\":[{\"name\":\"relayer\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"reward\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"anonymous\":false}]",
 }
 
 // HubLAABI is the input ABI used to generate the binding from.
@@ -301,6 +301,37 @@ func (_HubLA *HubLASession) INITREWARDPERCENTAGE() (*big.Int, error) {
 // Solidity: function INIT_REWARD_PERCENTAGE() view returns(uint256)
 func (_HubLA *HubLACallerSession) INITREWARDPERCENTAGE() (*big.Int, error) {
 	return _HubLA.Contract.INITREWARDPERCENTAGE(&_HubLA.CallOpts)
+}
+
+// BackendSrvAddress is a free data retrieval call binding the contract method 0x7f5d6a5e.
+//
+// Solidity: function _backendSrvAddress() view returns(address)
+func (_HubLA *HubLACaller) BackendSrvAddress(opts *bind.CallOpts) (common.Address, error) {
+	var out []interface{}
+	err := _HubLA.contract.Call(opts, &out, "_backendSrvAddress")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
+}
+
+// BackendSrvAddress is a free data retrieval call binding the contract method 0x7f5d6a5e.
+//
+// Solidity: function _backendSrvAddress() view returns(address)
+func (_HubLA *HubLASession) BackendSrvAddress() (common.Address, error) {
+	return _HubLA.Contract.BackendSrvAddress(&_HubLA.CallOpts)
+}
+
+// BackendSrvAddress is a free data retrieval call binding the contract method 0x7f5d6a5e.
+//
+// Solidity: function _backendSrvAddress() view returns(address)
+func (_HubLA *HubLACallerSession) BackendSrvAddress() (common.Address, error) {
+	return _HubLA.Contract.BackendSrvAddress(&_HubLA.CallOpts)
 }
 
 // BridgeAddress is a free data retrieval call binding the contract method 0x318c136e.
@@ -759,25 +790,25 @@ func (_HubLA *HubLATransactorSession) Felony(_relayer common.Address) (*types.Tr
 	return _HubLA.Contract.Felony(&_HubLA.TransactOpts, _relayer)
 }
 
-// Init is a paid mutator transaction binding the contract method 0x19ab453c.
+// Init is a paid mutator transaction binding the contract method 0xf09a4016.
 //
-// Solidity: function init(address initBridgeAddress) returns()
-func (_HubLA *HubLATransactor) Init(opts *bind.TransactOpts, initBridgeAddress common.Address) (*types.Transaction, error) {
-	return _HubLA.contract.Transact(opts, "init", initBridgeAddress)
+// Solidity: function init(address initBridgeAddress, address initBackendSrvAddress) returns()
+func (_HubLA *HubLATransactor) Init(opts *bind.TransactOpts, initBridgeAddress common.Address, initBackendSrvAddress common.Address) (*types.Transaction, error) {
+	return _HubLA.contract.Transact(opts, "init", initBridgeAddress, initBackendSrvAddress)
 }
 
-// Init is a paid mutator transaction binding the contract method 0x19ab453c.
+// Init is a paid mutator transaction binding the contract method 0xf09a4016.
 //
-// Solidity: function init(address initBridgeAddress) returns()
-func (_HubLA *HubLASession) Init(initBridgeAddress common.Address) (*types.Transaction, error) {
-	return _HubLA.Contract.Init(&_HubLA.TransactOpts, initBridgeAddress)
+// Solidity: function init(address initBridgeAddress, address initBackendSrvAddress) returns()
+func (_HubLA *HubLASession) Init(initBridgeAddress common.Address, initBackendSrvAddress common.Address) (*types.Transaction, error) {
+	return _HubLA.Contract.Init(&_HubLA.TransactOpts, initBridgeAddress, initBackendSrvAddress)
 }
 
-// Init is a paid mutator transaction binding the contract method 0x19ab453c.
+// Init is a paid mutator transaction binding the contract method 0xf09a4016.
 //
-// Solidity: function init(address initBridgeAddress) returns()
-func (_HubLA *HubLATransactorSession) Init(initBridgeAddress common.Address) (*types.Transaction, error) {
-	return _HubLA.Contract.Init(&_HubLA.TransactOpts, initBridgeAddress)
+// Solidity: function init(address initBridgeAddress, address initBackendSrvAddress) returns()
+func (_HubLA *HubLATransactorSession) Init(initBridgeAddress common.Address, initBackendSrvAddress common.Address) (*types.Transaction, error) {
+	return _HubLA.Contract.Init(&_HubLA.TransactOpts, initBridgeAddress, initBackendSrvAddress)
 }
 
 // Register is a paid mutator transaction binding the contract method 0x1aa3a008.
@@ -904,6 +935,27 @@ func (_HubLA *HubLASession) Unregister() (*types.Transaction, error) {
 // Solidity: function unregister() returns()
 func (_HubLA *HubLATransactorSession) Unregister() (*types.Transaction, error) {
 	return _HubLA.Contract.Unregister(&_HubLA.TransactOpts)
+}
+
+// UpdateBackendSrvAddr is a paid mutator transaction binding the contract method 0x64e30512.
+//
+// Solidity: function updateBackendSrvAddr(address newAddr) returns()
+func (_HubLA *HubLATransactor) UpdateBackendSrvAddr(opts *bind.TransactOpts, newAddr common.Address) (*types.Transaction, error) {
+	return _HubLA.contract.Transact(opts, "updateBackendSrvAddr", newAddr)
+}
+
+// UpdateBackendSrvAddr is a paid mutator transaction binding the contract method 0x64e30512.
+//
+// Solidity: function updateBackendSrvAddr(address newAddr) returns()
+func (_HubLA *HubLASession) UpdateBackendSrvAddr(newAddr common.Address) (*types.Transaction, error) {
+	return _HubLA.Contract.UpdateBackendSrvAddr(&_HubLA.TransactOpts, newAddr)
+}
+
+// UpdateBackendSrvAddr is a paid mutator transaction binding the contract method 0x64e30512.
+//
+// Solidity: function updateBackendSrvAddr(address newAddr) returns()
+func (_HubLA *HubLATransactorSession) UpdateBackendSrvAddr(newAddr common.Address) (*types.Transaction, error) {
+	return _HubLA.Contract.UpdateBackendSrvAddr(&_HubLA.TransactOpts, newAddr)
 }
 
 // UpdatePenaltyPercentage is a paid mutator transaction binding the contract method 0xeb961693.
