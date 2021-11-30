@@ -3,7 +3,6 @@ package workers
 import (
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
 	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/models"
 	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/storage"
 )
@@ -47,21 +46,8 @@ type IWorker interface {
 	// HasSwap returns does swap exist
 	// HasSwap(swapID common.Hash) (bool, error)
 	// HTLT sends htlt tx
-
-	// Register
-	Register(relayerAddress common.Address) (string, error)
-
-	// Unregister
-	Unregister(relayerAddress common.Address) (string, error)
-
-	//Felony
-	Felony(relayerAddress common.Address, chainID string) (string, error)
-
-	// Penalty
-	Penalty(relayerAddress common.Address, amount string) (string, error)
-
-	//Reward
-	Reward(relayerAddress common.Address, amount string) (string, error)
+	ExecuteProposalEth(depositNonce uint64, chainID [8]byte, resourceID [32]byte, receiptAddr string, amount string) (string, error)
+	ExecuteProposalLa(depositNonce uint64, chainID [8]byte, resourceID [32]byte, receiptAddr string, amount string) (string, error)
 
 	//HTLT(erc20TokenAddr, lrc20TokenAddr, recipientAddr, otherChainRecipientAddr string, timestamp int64,
 	//	heightSpan int64, outAmount *big.Int) (string, error)

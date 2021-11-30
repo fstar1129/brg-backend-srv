@@ -27,10 +27,17 @@ type TxLog struct {
 	Height             int64       `gorm:"type:BIGINT"`
 	Status             TxLogStatus `gorm:"type:tx_log_statuses"`
 	EventStatus        EventStatus
-	ConfirmedNum       int64 `gorm:"type:BIGINT"`
-	CreateTime         int64 `gorm:"type:BIGINT"`
-	UpdateTime         int64 `gorm:"type:BIGINT"`
-	Penalty            string
+	ConfirmedNum       int64  `gorm:"type:BIGINT"`
+	CreateTime         int64  `gorm:"type:BIGINT"`
+	UpdateTime         int64  `gorm:"type:BIGINT"`
+	SwapID             string `gorm:"type:TEXT"`
+	OriginСhainID      string `gorm:"type:TEXT"`
+	DepositNonce       uint64 `gorm:"type:BIGINT"`
+	SwapStatus         uint8
+	ResourceID         string `gorm:"type:TEXT"`
+	ReceiverAddr       string `gorm:"type:TEXT"`
+	WorkerChainAddr    string `gorm:"type:TEXT"`
+	OutAmount          string `gorm:"type:TEXT"`
 }
 
 // Registration
@@ -43,20 +50,25 @@ type Registration struct {
 
 // Event ...
 type Event struct {
-	ID             int64
-	EventID        string
-	Type           EventStatus
-	ChainID        string
-	RelayerAddress string
-	InTokenAddr    string
-	OutTokenAddr   string
-	InAmount       string
-	OutAmount      string
-	Height         int64
-	Status         EventStatus
-	CreateTime     int64
-	UpdateTime     int64
-	Penalty        string
+	ID                 int64
+	EventID            string
+	Type               EventStatus
+	ChainID            string
+	DestinationChainID string
+	SenderAddr         string
+	ReceiverAddr       string
+	InTokenAddr        string
+	OutTokenAddr       string
+	InAmount           string
+	OutAmount          string
+	Height             int64
+	Status             EventStatus
+	CreateTime         int64
+	UpdateTime         int64
+	DepositNonce       uint64
+	ResourceID         string
+	SwapID             string
+	TxType             string
 }
 
 // TxSent ...

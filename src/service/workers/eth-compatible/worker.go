@@ -8,8 +8,8 @@ import (
 	"math/big"
 	"time"
 
-	hubEth "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/eth-compatible/abi/relayer-hub/eth"
-	hubLA "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/eth-compatible/abi/relayer-hub/la"
+	ethBr "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/eth-compatible/abi/bridge/eth"
+	laBr "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/eth-compatible/abi/bridge/la"
 	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/utils"
 
 	"github.com/ethereum/go-ethereum"
@@ -91,96 +91,19 @@ func (w *Erc20Worker) GetConfirmNum() int64 {
 	return w.config.ConfirmNum
 }
 
-// Register ...
-func (w *Erc20Worker) Register(relayerAddress common.Address) (string, error) {
+func (w *Erc20Worker) ExecuteProposalEth(depositNonce uint64, chainID [8]byte, resourceID [32]byte, receiptAddr string, amount string) (string, error) {
 	auth, err := w.getTransactor()
 	if err != nil {
 		return "", err
 	}
 
-	instance, err := hubEth.NewHubEth(w.contractAddr, w.client)
+	instance, err := ethBr.NewEthBr(w.contractAddr, w.client)
 	if err != nil {
 		return "", err
 	}
 
-	tx, err := instance.Register(auth, relayerAddress)
-	if err != nil {
-		return "", err
-	}
-
-	return tx.Hash().String(), nil
-}
-
-// Unregister ...
-func (w *Erc20Worker) Unregister(relayerAddress common.Address) (string, error) {
-	auth, err := w.getTransactor()
-	if err != nil {
-		return "", err
-	}
-
-	instance, err := hubEth.NewHubEth(w.contractAddr, w.client)
-	if err != nil {
-		return "", err
-	}
-
-	tx, err := instance.Unregister(auth, relayerAddress)
-	if err != nil {
-		return "", err
-	}
-
-	return tx.Hash().String(), nil
-}
-
-// Felony ...
-func (w *Erc20Worker) Felony(relayerAddress common.Address, chainID string) (string, error) {
-	auth, err := w.getTransactor()
-	if err != nil {
-		return "", err
-	}
-	if chainID != storage.LaChain {
-		instance, err := hubEth.NewHubEth(w.contractAddr, w.client)
-		if err != nil {
-			return "", err
-		}
-
-		tx, err := instance.Felony(auth, relayerAddress)
-		if err != nil {
-			return "", err
-		}
-
-		return tx.Hash().String(), nil
-
-	} else if chainID != storage.EthChain {
-		instance, err := hubLA.NewHubLA(w.contractAddr, w.client)
-		if err != nil {
-			return "", err
-		}
-
-		tx, err := instance.Felony(auth, relayerAddress)
-		if err != nil {
-			return "", err
-		}
-
-		return tx.Hash().String(), nil
-
-	}
-
-	return "", nil
-}
-
-//Penalty
-func (w *Erc20Worker) Penalty(relayerAddress common.Address, amount string) (string, error) {
-	auth, err := w.getTransactor()
-	if err != nil {
-		return "", err
-	}
-
-	instance, err := hubLA.NewHubLA(w.contractAddr, w.client)
-	if err != nil {
-		return "", err
-	}
 	value, _ := new(big.Int).SetString(amount, 10)
-	tx, err := instance.Slash(auth, relayerAddress, value)
+	tx, err := instance.ExecuteProposal(auth, chainID, depositNonce, resourceID, common.HexToAddress(receiptAddr), value)
 	if err != nil {
 		return "", err
 	}
@@ -188,19 +111,19 @@ func (w *Erc20Worker) Penalty(relayerAddress common.Address, amount string) (str
 	return tx.Hash().String(), nil
 }
 
-//Reward
-func (w *Erc20Worker) Reward(relayerAddress common.Address, amount string) (string, error) {
+func (w *Erc20Worker) ExecuteProposalLa(depositNonce uint64, chainID [8]byte, resourceID [32]byte, receiptAddr string, amount string) (string, error) {
 	auth, err := w.getTransactor()
 	if err != nil {
 		return "", err
 	}
 
-	instance, err := hubLA.NewHubLA(w.contractAddr, w.client)
+	instance, err := laBr.NewLaBr(w.contractAddr, w.client)
 	if err != nil {
 		return "", err
 	}
+
 	value, _ := new(big.Int).SetString(amount, 10)
-	tx, err := instance.AddReward(auth, relayerAddress, value)
+	tx, err := instance.ExecuteProposal(auth, chainID, depositNonce, resourceID, common.HexToAddress(receiptAddr), value)
 	if err != nil {
 		return "", err
 	}
@@ -288,7 +211,7 @@ func (w *Erc20Worker) getLogs(blockHash common.Hash) ([]*storage.TxLog, error) {
 	models := make([]*storage.TxLog, 0, len(logs))
 	for _, log := range logs {
 		w.logger.Infof("WORKER(%s) NEW EVENT: %v\n\n", w.chainID, log)
-		event, err := ParseEvent(&log)
+		event, err := w.parseEvent(&log)
 		if err != nil {
 			w.logger.WithFields(logrus.Fields{"function": "GetLogs()"}).Errorf("parse event log error, err=%s", err)
 			continue
