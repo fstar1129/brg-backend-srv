@@ -44,11 +44,11 @@ func (w *WatcherSRV) Run() {
 
 func (w *WatcherSRV) collector(worker workers.IWorker, threshold time.Duration, startHeight int64) {
 	for {
-		curBlockLog := w.storage.GetCurrentBlockLog(worker.GetChain())
+		curBlockLog := w.storage.GetCurrentBlockLog(worker.GetChainName())
 		if curBlockLog.Height == 0 {
-			w.logger.Warnf("%s current height: %d", worker.GetChain(), curBlockLog.Height)
+			w.logger.Warnf("%s current height: %d", worker.GetChainName(), curBlockLog.Height)
 		} else {
-			w.logger.Infof("%s current height: %d", worker.GetChain(), curBlockLog.Height)
+			w.logger.Infof("%s current height: %d", worker.GetChainName(), curBlockLog.Height)
 		}
 
 		nextHeight := curBlockLog.Height + 1
@@ -61,7 +61,7 @@ func (w *WatcherSRV) collector(worker workers.IWorker, threshold time.Duration, 
 			if strings.Contains(normalizedErr, "height must be less than or equal to the current blockchain height") ||
 				strings.Contains(normalizedErr, "not found") ||
 				strings.Contains(normalizedErr, "block number out of range") {
-				w.logger.Infof("try to get ahead block, chain=%s, height=%d", worker.GetChain(), nextHeight)
+				w.logger.Infof("try to get ahead block, chain=%s, height=%d", worker.GetChainName(), nextHeight)
 			} else {
 				w.logger.Error(normalizedErr)
 			}
@@ -76,18 +76,18 @@ func (w *WatcherSRV) collector(worker workers.IWorker, threshold time.Duration, 
 func (w *WatcherSRV) getBlock(worker workers.IWorker, curHeight, nextHeight int64, curBlockHash string) error {
 	blockAndTxLogs, err := worker.GetBlockAndTxs(nextHeight)
 	if err != nil {
-		return fmt.Errorf("get %s block info error, height=%d, err=%s", worker.GetChain(), nextHeight, err.Error())
+		return fmt.Errorf("get %s block info error, height=%d, err=%s", worker.GetChainName(), nextHeight, err.Error())
 	}
 
 	parentHash := blockAndTxLogs.ParentBlockHash
 	if curHeight != 0 && parentHash != curBlockHash {
 		w.logger.Infof("delete %s block at height %d, hash=%s(parent hash = %s)",
-			worker.GetChain(), curHeight, curBlockHash, parentHash)
-		return w.storage.DeleteBlockAndTxs(worker.GetChain(), curHeight)
+			worker.GetChainName(), curHeight, curBlockHash, parentHash)
+		return w.storage.DeleteBlockAndTxs(worker.GetChainName(), curHeight)
 	}
 
 	nextBlockLog := storage.BlockLog{
-		Chain:      worker.GetChain(),
+		Chain:      worker.GetChainName(),
 		BlockHash:  blockAndTxLogs.BlockHash,
 		ParentHash: parentHash,
 		Height:     blockAndTxLogs.Height,
@@ -97,12 +97,12 @@ func (w *WatcherSRV) getBlock(worker workers.IWorker, curHeight, nextHeight int6
 	}
 
 	// put block header and block txs into database
-	if err := w.storage.SaveBlockAndTxs(worker.GetChain(), &nextBlockLog, blockAndTxLogs.TxLogs); err != nil {
+	if err := w.storage.SaveBlockAndTxs(worker.GetChainName(), &nextBlockLog, blockAndTxLogs.TxLogs); err != nil {
 		return err
 	}
 
 	// update prev txs confirmed number(&& update_time)
-	if err := w.storage.UpdateConfirmedNum(worker.GetChain(), nextBlockLog.Height); err != nil {
+	if err := w.storage.UpdateConfirmedNum(worker.GetChainName(), nextBlockLog.Height); err != nil {
 		return err
 	}
 

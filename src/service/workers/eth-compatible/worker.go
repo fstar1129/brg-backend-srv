@@ -28,7 +28,8 @@ import (
 // Erc20Worker ...
 type Erc20Worker struct {
 	provider     string
-	chainID      string
+	chainName    string
+	chainID      int64
 	logger       *logrus.Entry // logger
 	config       *models.WorkerConfig
 	client       *ethclient.Client
@@ -64,8 +65,9 @@ func NewErc20Worker(logger *logrus.Logger, cfg *models.WorkerConfig) *Erc20Worke
 
 	// init token addresses
 	return &Erc20Worker{
+		chainName:    cfg.ChainName,
 		chainID:      cfg.ChainID,
-		logger:       logger.WithField("worker", cfg.ChainID),
+		logger:       logger.WithField("worker", cfg.ChainName),
 		provider:     cfg.Provider,
 		config:       cfg,
 		client:       client,
@@ -73,8 +75,13 @@ func NewErc20Worker(logger *logrus.Logger, cfg *models.WorkerConfig) *Erc20Worke
 	}
 }
 
-// GetChain returns chain ID
-func (w *Erc20Worker) GetChain() string {
+// GetChainName returns chain ID
+func (w *Erc20Worker) GetChainName() string {
+	return w.chainName
+}
+
+// GetChainName returns chain ID
+func (w *Erc20Worker) GetChainID() string {
 	return string(w.chainID)
 }
 
@@ -91,7 +98,7 @@ func (w *Erc20Worker) GetConfirmNum() int64 {
 	return w.config.ConfirmNum
 }
 
-func (w *Erc20Worker) ExecuteProposalEth(depositNonce uint64, chainID [8]byte, resourceID [32]byte, receiptAddr string, amount string) (string, error) {
+func (w *Erc20Worker) ExecuteProposalEth(depositNonce uint64, originChainID [8]byte, destinationChainID [8]byte, resourceID [32]byte, receiptAddr string, amount string) (string, error) {
 	auth, err := w.getTransactor()
 	if err != nil {
 		return "", err
@@ -101,9 +108,8 @@ func (w *Erc20Worker) ExecuteProposalEth(depositNonce uint64, chainID [8]byte, r
 	if err != nil {
 		return "", err
 	}
-
 	value, _ := new(big.Int).SetString(amount, 10)
-	tx, err := instance.ExecuteProposal(auth, chainID, depositNonce, resourceID, common.HexToAddress(receiptAddr), value)
+	tx, err := instance.ExecuteProposal(auth, originChainID, destinationChainID, depositNonce, resourceID, common.HexToAddress(receiptAddr), value)
 	if err != nil {
 		return "", err
 	}
@@ -111,7 +117,7 @@ func (w *Erc20Worker) ExecuteProposalEth(depositNonce uint64, chainID [8]byte, r
 	return tx.Hash().String(), nil
 }
 
-func (w *Erc20Worker) ExecuteProposalLa(depositNonce uint64, chainID [8]byte, resourceID [32]byte, receiptAddr string, amount string) (string, error) {
+func (w *Erc20Worker) ExecuteProposalLa(depositNonce uint64, originChainID [8]byte, destinationChainID [8]byte, resourceID [32]byte, receiptAddr string, amount string) (string, error) {
 	auth, err := w.getTransactor()
 	if err != nil {
 		return "", err
@@ -123,7 +129,7 @@ func (w *Erc20Worker) ExecuteProposalLa(depositNonce uint64, chainID [8]byte, re
 	}
 
 	value, _ := new(big.Int).SetString(amount, 10)
-	tx, err := instance.ExecuteProposal(auth, chainID, depositNonce, resourceID, common.HexToAddress(receiptAddr), value)
+	tx, err := instance.ExecuteProposal(auth, originChainID, destinationChainID, depositNonce, resourceID, common.HexToAddress(receiptAddr), value)
 	if err != nil {
 		return "", err
 	}
@@ -210,7 +216,7 @@ func (w *Erc20Worker) getLogs(blockHash common.Hash) ([]*storage.TxLog, error) {
 
 	models := make([]*storage.TxLog, 0, len(logs))
 	for _, log := range logs {
-		w.logger.Infof("WORKER(%s) NEW EVENT: %v\n\n", w.chainID, log)
+		w.logger.Infof("WORKER(%s) NEW EVENT: %v\n\n", w.chainName, log)
 		event, err := w.parseEvent(&log)
 		if err != nil {
 			w.logger.WithFields(logrus.Fields{"function": "GetLogs()"}).Errorf("parse event log error, err=%s", err)
@@ -220,8 +226,8 @@ func (w *Erc20Worker) getLogs(blockHash common.Hash) ([]*storage.TxLog, error) {
 			continue
 		}
 
-		txLog := event.ToTxLog(w.chainID)
-		txLog.Chain = w.chainID
+		txLog := event.ToTxLog(w.chainName)
+		txLog.Chain = w.chainName
 		txLog.Height = int64(log.BlockNumber)
 		txLog.EventID = log.TxHash.Hex()
 		txLog.BlockHash = log.BlockHash.Hex()
@@ -291,27 +297,27 @@ func (w *Erc20Worker) getTransactor() (auth *bind.TransactOpts, err error) {
 	}
 
 	var nonce uint64
-	if w.chainID == storage.LaChain {
-		nonce, err = w.GetTxCountLatest()
-		if err != nil {
-			return nil, err
-		}
+	// if w.chainID == storage.LaChain {
+	// 	nonce, err = w.GetTxCountLatest()
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
 
-		auth, err = bind.NewKeyedTransactorWithChainID(privateKey, big.NewInt(int64(26)))
-		if err != nil {
-			return nil, err
-		}
+	// 	auth, err = bind.NewKeyedTransactorWithChainID(privateKey, big.NewInt(int64(26)))
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
 
-	} else {
-		nonce, err = w.client.PendingNonceAt(context.Background(), w.config.WorkerAddr)
-		if err != nil {
-			return nil, err
-		}
-		auth, err = bind.NewKeyedTransactorWithChainID(privateKey, big.NewInt((int64(80001))))
-		if err != nil {
-			return nil, err
-		}
+	// } else {
+	nonce, err = w.client.PendingNonceAt(context.Background(), w.config.WorkerAddr)
+	if err != nil {
+		return nil, err
 	}
+	auth, err = bind.NewKeyedTransactorWithChainID(privateKey, big.NewInt(w.chainID))
+	if err != nil {
+		return nil, err
+	}
+	// }
 
 	auth.Nonce = big.NewInt(int64(nonce))
 	auth.Value = big.NewInt(0)                // in wei

@@ -34,7 +34,7 @@ const (
 type TxType string
 
 const (
-	TxTypeClaim  TxType = "CLAIM"
+	TxTypeClaim  TxType = "VOTE"
 	TxTypePassed TxType = "PASSED"
 	TxTypeSpend  TxType = "SPEND"
 )
@@ -49,6 +49,12 @@ const (
 	EventStatusPassedConfirmed     EventStatus = "PASSSED_CONFIRMED"
 	EventStatusPassedFailed        EventStatus = "PASSSED_FAILED"
 	EventStatusPassedSentFailed    EventStatus = "PASSSED_SENT_FAILED"
+
+	EventStatusSpendConfirmed EventStatus = "SPEND_CONFIRMED"
+	EventStatusSpendSent      EventStatus = "SPEND_SENT"
+
+	EventStatusClaimSent      EventStatus = "CLAIM_SENT"
+	EventStatusClaimConfirmed EventStatus = "CLAIM_CONFIRM"
 )
 
 // TxLogStatus ...

@@ -8,6 +8,7 @@ import (
 	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/models"
 
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
 )
 
@@ -62,7 +63,7 @@ func StringToBytes32(b string) [32]byte {
 
 func StringToBytes8(b string) [8]byte {
 	var byteArr [8]byte
-	copy(byteArr[:], b)
+	copy(byteArr[:], common.RightPadBytes(common.Hex2Bytes(b), 8))
 	return byteArr
 }
 
@@ -70,4 +71,9 @@ func BytesToBytes8(b []byte) [8]byte {
 	var byteArr [8]byte
 	copy(byteArr[:], b)
 	return byteArr
+}
+
+func CalcutateSwapID(dataHash, nonce string) string {
+
+	return hexutil.Encode(crypto.Keccak256([]byte(dataHash))) + nonce
 }

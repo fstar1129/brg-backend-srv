@@ -55,6 +55,7 @@ type Event struct {
 	Type               EventStatus
 	ChainID            string
 	DestinationChainID string
+	OriginChainID      string
 	SenderAddr         string
 	ReceiverAddr       string
 	InTokenAddr        string

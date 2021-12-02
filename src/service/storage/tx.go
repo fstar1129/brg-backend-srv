@@ -72,13 +72,24 @@ func (d *DataBase) ConfirmWorkerTx(chainID string, txLogs []*TxLog, txHashes []s
 // ConfirmTx ...
 func (d *DataBase) ConfirmTx(tx *gorm.DB, txLog *TxLog) error {
 	switch txLog.TxType {
+	case TxTypeClaim:
+		if err := d.UpdateEventStatusWhenConfirmTx(tx, txLog, []EventStatus{
+			EventStatusClaimConfirmed},
+			nil, EventStatusClaimConfirmed); err != nil {
+			return err
+		}
 	case TxTypePassed:
 		if err := d.UpdateEventStatusWhenConfirmTx(tx, txLog, []EventStatus{
-			EventStatusPassedConfirmed, EventStatusPassedSent, EventStatusPassedFailed},
+			EventStatusClaimConfirmed, EventStatusPassedInit},
 			nil, EventStatusPassedConfirmed); err != nil {
 			return err
 		}
-
+	case TxTypeSpend:
+		if err := d.UpdateEventStatusWhenConfirmTx(tx, txLog, []EventStatus{
+			EventStatusPassedSent},
+			nil, EventStatusSpendConfirmed); err != nil {
+			return err
+		}
 	}
 
 	return nil

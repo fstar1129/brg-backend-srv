@@ -7,13 +7,12 @@ import (
 	"strings"
 
 	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/storage"
-	ethBr "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/eth-compatible/abi/bridge/eth"
 	laBr "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/eth-compatible/abi/bridge/la"
+	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/utils"
 
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
-	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/utils"
 )
 
 ////
@@ -25,11 +24,12 @@ const (
 )
 
 var (
-	ProposalEventHash = common.HexToHash("0x8dc49847a011c3b316cd0f50cf982e0fd5b3ddb7fdf970fc81a25557f0923a73")
+	ProposalEventHash = common.HexToHash("0x9686dcabd0450cad86a88df15a9d35b08b35d1b08a19008df37cf8538c467516")
 )
 
 // ProposalEvent represents a ProposalEvent event raised by the Bridge.sol contract.
 type ProposalEvent struct {
+	OriginChainID      [8]byte
 	DestinationChainID [8]byte
 	RecipientAddress   common.Address
 	Amount             *big.Int
@@ -40,39 +40,20 @@ type ProposalEvent struct {
 	Raw                types.Log // Blockchain specific contextual infos
 }
 
-func ParseEthProposalEvent(abi *abi.ABI, log *types.Log) (ContractEvent, error) {
-	var ev ProposalEvent
-	// abi, _ := abi.JSON(strings.NewReader(ethBr.EthBrABI))
-	if err := abi.UnpackIntoInterface(&ev, ProposalEventName, log.Data); err != nil {
-		return nil, err
-	}
-	ev.DestinationChainID = utils.BytesToBytes8(log.Topics[1].Bytes())
-	ev.RecipientAddress = common.HexToAddress(log.Topics[1].Hex())
-	ev.Amount = big.NewInt(0).SetBytes(log.Topics[3].Bytes())
-
-	fmt.Printf("ProposalEvent\n")
-	fmt.Printf("destination chain ID: 0x%s\n", common.Bytes2Hex(ev.DestinationChainID[:]))
-	fmt.Printf("deposit nonce: %d\n", ev.DepositNonce)
-	fmt.Printf("status: %d\n", ev.Status)
-	fmt.Printf("resource ID: 0x%s\n", common.Bytes2Hex(ev.ResourceID[:]))
-	fmt.Printf("DataHash: 0x%s\n\n", common.Bytes2Hex(ev.DataHash[:]))
-
-	return ev, nil
-}
-
 func ParseLAProposalEvent(abi *abi.ABI, log *types.Log) (ContractEvent, error) {
 	var ev ProposalEvent
-	// abi, _ := abi.JSON(strings.NewReader(ethBr.EthBrABI))
 	if err := abi.UnpackIntoInterface(&ev, ProposalEventName, log.Data); err != nil {
 		return nil, err
 	}
 
 	fmt.Printf("ProposalEvent\n")
+	fmt.Printf("origin chain ID: 0x%s\n", common.Bytes2Hex(ev.OriginChainID[:]))
 	fmt.Printf("destination chain ID: 0x%s\n", common.Bytes2Hex(ev.DestinationChainID[:]))
 	fmt.Printf("deposit nonce: %d\n", ev.DepositNonce)
 	fmt.Printf("status: %d\n", ev.Status)
 	fmt.Printf("resource ID: 0x%s\n", common.Bytes2Hex(ev.ResourceID[:]))
 	fmt.Printf("DataHash: 0x%s\n\n", common.Bytes2Hex(ev.DataHash[:]))
+	fmt.Printf("amount: ", ev.Amount.String())
 
 	return ev, nil
 }
@@ -88,8 +69,9 @@ func (ev ProposalEvent) ToTxLog(chain string) *storage.TxLog {
 		TxType:             storage.TxTypeClaim,
 		ReceiverAddr:       ev.RecipientAddress.String(),
 		OutAmount:          ev.Amount.String(),
-		SwapID:             fmt.Sprintf("0x%s", common.Bytes2Hex(ev.DataHash[:])),
+		SwapID:             utils.CalcutateSwapID(string(ev.DataHash[:]), string(ev.DepositNonce)),
 		DestinationChainID: common.Bytes2Hex(ev.DestinationChainID[:]),
+		OriginСhainID:      common.Bytes2Hex(ev.OriginChainID[:]),
 		DepositNonce:       ev.DepositNonce,
 		SwapStatus:         ev.Status,
 		ResourceID:         common.Bytes2Hex(ev.ResourceID[:]),
@@ -107,13 +89,8 @@ func (ev ProposalEvent) ToTxLog(chain string) *storage.TxLog {
 // ParseEvent ...
 func (w *Erc20Worker) parseEvent(log *types.Log) (ContractEvent, error) {
 	if bytes.Equal(log.Topics[0][:], ProposalEventHash[:]) {
-		if w.GetChain() == storage.EthChain {
-			abi, _ := abi.JSON(strings.NewReader(ethBr.EthBrABI))
-			return ParseEthProposalEvent(&abi, log)
-		} else if w.GetChain() == storage.LaChain {
-			abi, _ := abi.JSON(strings.NewReader(laBr.LaBrABI))
-			return ParseLAProposalEvent(&abi, log)
-		}
+		abi, _ := abi.JSON(strings.NewReader(laBr.LaBrABI))
+		return ParseLAProposalEvent(&abi, log)
 	}
 	return nil, nil
 }
