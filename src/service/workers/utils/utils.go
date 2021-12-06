@@ -74,6 +74,5 @@ func BytesToBytes8(b []byte) [8]byte {
 }
 
 func CalcutateSwapID(dataHash, nonce string) string {
-
 	return hexutil.Encode(crypto.Keccak256([]byte(dataHash))) + nonce
 }

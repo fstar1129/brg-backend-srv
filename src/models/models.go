@@ -87,6 +87,7 @@ type WorkerConfig struct {
 	ChainDecimal                   int            `json:"chain_decimal"`
 	ConfirmNum                     int64          `json:"confirm_num"`
 	StartBlockHeight               int64          `json:"start_block_height"`
+	DestinationChainID             string         `json:"dest_id"`
 }
 
 type TssConfig struct {

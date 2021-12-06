@@ -27,13 +27,14 @@ import (
 
 // Erc20Worker ...
 type Erc20Worker struct {
-	provider     string
-	chainName    string
-	chainID      int64
-	logger       *logrus.Entry // logger
-	config       *models.WorkerConfig
-	client       *ethclient.Client
-	contractAddr common.Address
+	provider           string
+	chainName          string
+	chainID            int64
+	destinationChainID string
+	logger             *logrus.Entry // logger
+	config             *models.WorkerConfig
+	client             *ethclient.Client
+	contractAddr       common.Address
 }
 
 // NewErc20Worker ...
@@ -65,13 +66,14 @@ func NewErc20Worker(logger *logrus.Logger, cfg *models.WorkerConfig) *Erc20Worke
 
 	// init token addresses
 	return &Erc20Worker{
-		chainName:    cfg.ChainName,
-		chainID:      cfg.ChainID,
-		logger:       logger.WithField("worker", cfg.ChainName),
-		provider:     cfg.Provider,
-		config:       cfg,
-		client:       client,
-		contractAddr: cfg.ContractAddr,
+		chainName:          cfg.ChainName,
+		chainID:            cfg.ChainID,
+		destinationChainID: cfg.DestinationChainID,
+		logger:             logger.WithField("worker", cfg.ChainName),
+		provider:           cfg.Provider,
+		config:             cfg,
+		client:             client,
+		contractAddr:       cfg.ContractAddr,
 	}
 }
 
@@ -83,6 +85,11 @@ func (w *Erc20Worker) GetChainName() string {
 // GetChainName returns chain ID
 func (w *Erc20Worker) GetChainID() string {
 	return string(w.chainID)
+}
+
+//returns destinationChainID to be checked to execute proposal
+func (w *Erc20Worker) GetDestinationID() string {
+	return w.destinationChainID
 }
 
 // GetStartHeight returns start blockchain height from config

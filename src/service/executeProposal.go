@@ -17,8 +17,7 @@ func (r *BridgeSRV) emitProposal(worker workers.IWorker) {
 		events := r.storage.GetEventsByTypeAndStatuses([]storage.EventStatus{storage.EventStatusPassedInit, storage.EventStatusPassedSent})
 		for _, event := range events {
 			if event.Status == storage.EventStatusPassedInit &&
-				((worker.GetChainName() == storage.EthChain && event.DestinationChainID == "00000000004c4131") ||
-					(worker.GetChainName() == storage.LaChain && event.DestinationChainID == "00000000574c4131")) {
+				worker.GetDestinationID() == event.DestinationChainID {
 				r.logger.Infoln("attempting to send execute proposal")
 				if _, err := r.sendExecuteProposal(worker, event); err != nil {
 					r.logger.Errorf("submit claim failed: %s", err)
@@ -43,10 +42,10 @@ func (r *BridgeSRV) sendExecuteProposal(worker workers.IWorker, event *storage.E
 
 	r.logger.Infof("Execute parameters:  depositNonce(%d) | sender(%s) | outAmount(%s) | resourceID(%s) | chainID(%s)\n",
 		event.DepositNonce, event.SenderAddr, event.OutAmount, event.ResourceID, worker.GetChainName())
-	if worker.GetChainName() == storage.EthChain && event.DestinationChainID == "00000000004c4131" {
+	if worker.GetChainName() == storage.EthChain {
 		txHash, err = worker.ExecuteProposalEth(event.DepositNonce, utils.StringToBytes8(event.OriginChainID), utils.StringToBytes8(event.DestinationChainID), utils.StringToBytes32(event.ResourceID),
 			event.ReceiverAddr, event.OutAmount)
-	} else if worker.GetChainName() == storage.LaChain && event.DestinationChainID == "00000000574c4131" {
+	} else if worker.GetChainName() == storage.LaChain {
 		txHash, err = worker.ExecuteProposalLa(event.DepositNonce, utils.StringToBytes8(event.OriginChainID), utils.StringToBytes8(event.DestinationChainID), utils.StringToBytes32(event.ResourceID),
 			event.ReceiverAddr, event.OutAmount)
 	}
