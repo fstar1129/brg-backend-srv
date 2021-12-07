@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/storage"
+	ethBr "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/eth-compatible/abi/bridge/eth"
 	laBr "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/eth-compatible/abi/bridge/la"
 	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/utils"
 
@@ -58,6 +59,27 @@ func ParseLAProposalEvent(abi *abi.ABI, log *types.Log) (ContractEvent, error) {
 	return ev, nil
 }
 
+func ParseETHProposalEvent(abi *abi.ABI, log *types.Log) (ContractEvent, error) {
+	var ev ProposalEvent
+	if err := abi.UnpackIntoInterface(&ev, ProposalEventName, log.Data); err != nil {
+		return nil, err
+	}
+	ev.OriginChainID = utils.BytesToBytes8(log.Topics[1].Bytes())
+	ev.DestinationChainID = utils.BytesToBytes8(log.Topics[2].Bytes())
+	ev.RecipientAddress = common.BytesToAddress(log.Topics[3].Bytes())
+
+	fmt.Printf("ProposalEvent\n")
+	fmt.Printf("origin chain ID: 0x%s\n", common.Bytes2Hex(ev.OriginChainID[:]))
+	fmt.Printf("destination chain ID: 0x%s\n", common.Bytes2Hex(ev.DestinationChainID[:]))
+	fmt.Printf("deposit nonce: %d\n", ev.DepositNonce)
+	fmt.Printf("status: %d\n", ev.Status)
+	fmt.Printf("resource ID: 0x%s\n", common.Bytes2Hex(ev.ResourceID[:]))
+	fmt.Printf("DataHash: 0x%s\n\n", common.Bytes2Hex(ev.DataHash[:]))
+	fmt.Printf("amount: ", ev.Amount.String())
+
+	return ev, nil
+}
+
 // !!! TODO !!!
 
 // ToTxLog ...
@@ -89,8 +111,13 @@ func (ev ProposalEvent) ToTxLog(chain string) *storage.TxLog {
 // ParseEvent ...
 func (w *Erc20Worker) parseEvent(log *types.Log) (ContractEvent, error) {
 	if bytes.Equal(log.Topics[0][:], ProposalEventHash[:]) {
-		abi, _ := abi.JSON(strings.NewReader(laBr.LaBrABI))
-		return ParseLAProposalEvent(&abi, log)
+		if w.GetChainName() == storage.LaChain {
+			abi, _ := abi.JSON(strings.NewReader(laBr.LaBrABI))
+			return ParseLAProposalEvent(&abi, log)
+		} else {
+			abi, _ := abi.JSON(strings.NewReader(ethBr.EthBrABI))
+			return ParseETHProposalEvent(&abi, log)
+		}
 	}
 	return nil, nil
 }
