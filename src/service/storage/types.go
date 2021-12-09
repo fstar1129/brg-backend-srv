@@ -34,55 +34,27 @@ const (
 type TxType string
 
 const (
-	TxTypeRegister   TxType = "REGISTER"
-	TxTypeUnregister TxType = "UNREGISTER"
-	TxTypeFelony     TxType = "FELONY"
-	TxTypePenalty    TxType = "PENALTY"
-	TxTypeReward     TxType = "REWARD"
+	TxTypeClaim  TxType = "VOTE"
+	TxTypePassed TxType = "PASSED"
+	TxTypeSpend  TxType = "SPEND"
 )
 
 type EventStatus string
 
 const (
-	// REGISTER
-	EventStatusRegisterInit          EventStatus = "REGISTER_INIT"
-	EventStatusRegisterInitConfrimed EventStatus = "REGISTER_INIT_CONFIRMED"
-	EventStatusRegisterSent          EventStatus = "REGISTER_SENT"
-	EventStatusRegisterConfirmed     EventStatus = "REGISTER_CONFIRMED"
-	EventStatusRegisterFailed        EventStatus = "REGISTER_FAILED"
-	EventStatusRegisterSentFailed    EventStatus = "REGISTER_SENT_FAILED"
+	// PASSSED
+	EventStatusPassedInit          EventStatus = "PASSSED_INIT"
+	EventStatusPassedInitConfrimed EventStatus = "PASSSED_INIT_CONFIRMED"
+	EventStatusPassedSent          EventStatus = "PASSSED_SENT"
+	EventStatusPassedConfirmed     EventStatus = "PASSSED_CONFIRMED"
+	EventStatusPassedFailed        EventStatus = "PASSSED_FAILED"
+	EventStatusPassedSentFailed    EventStatus = "PASSSED_SENT_FAILED"
 
-	// UNREGISTER
-	EventStatusUnregisterInit          EventStatus = "UNREGISTER_INIT"
-	EventStatusUnregisterInitConfrimed EventStatus = "UNREGISTER_INIT_CONFIRMED"
-	EventStatusUnregisterSent          EventStatus = "UNREGISTER_SENT"
-	EventStatusUnregisterConfirmed     EventStatus = "UNREGISTER_CONFIRMED"
-	EventStatusUnregisterFailed        EventStatus = "UNREGISTER_FAILED"
-	EventStatusUnregisterSentFailed    EventStatus = "UNREGISTER_SENT_FAILED"
+	EventStatusSpendConfirmed EventStatus = "SPEND_CONFIRMED"
+	EventStatusSpendSent      EventStatus = "SPEND_SENT"
 
-	// FELONY
-	EventStatusFelonyInit          EventStatus = "FELONY_INIT"
-	EventStatusFelonyInitConfrimed EventStatus = "FELONY_INIT_CONFIRMED"
-	EventStatusFelonySent          EventStatus = "FELONY_SENT"
-	EventStatusFelonyConfirmed     EventStatus = "FELONY_CONFIRMED"
-	EventStatusFelonyFailed        EventStatus = "FELONY_FAILED"
-	EventStatusFelonySentFailed    EventStatus = "FELONY_SENT_FAILED"
-
-	// PENALTY
-	EventStatusPenaltyInit          EventStatus = "PENALTY_INIT"
-	EventStatusPenaltyInitConfrimed EventStatus = "PENALTY_INIT_CONFIRMED"
-	EventStatusPenaltySent          EventStatus = "PENALTY_SENT"
-	EventStatusPenaltyConfirmed     EventStatus = "PENALTY_CONFIRMED"
-	EventStatusPenaltyFailed        EventStatus = "PENALTY_FAILED"
-	EventStatusPenaltySentFailed    EventStatus = "PENALTY_SENT_FAILED"
-
-	// REWARD
-	EventStatusRewardInit          EventStatus = "REWARD_INIT"
-	EventStatusRewardInitConfrimed EventStatus = "REWARD_INIT_CONFIRMED"
-	EventStatusRewardSent          EventStatus = "REWARD_SENT"
-	EventStatusRewardConfirmed     EventStatus = "REWARD_CONFIRMED"
-	EventStatusRewardFailed        EventStatus = "REWARD_FAILED"
-	EventStatusRewardSentFailed    EventStatus = "REWARD_SENT_FAILED"
+	EventStatusClaimSent      EventStatus = "CLAIM_SENT"
+	EventStatusClaimConfirmed EventStatus = "CLAIM_CONFIRM"
 )
 
 // TxLogStatus ...

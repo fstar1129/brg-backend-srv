@@ -41,7 +41,7 @@ func CreateNewBridgeSRV(logger *logrus.Logger, gormDB *gorm.DB, laConfig, ethCon
 		Workers:  make(map[string]workers.IWorker),
 	}
 	// create erc20 worker
-	inst.Workers["ERC20"] = eth.NewErc20Worker(logger, ethConfig)
+	inst.Workers[storage.EthChain] = eth.NewErc20Worker(logger, ethConfig)
 	// create la worker
 	inst.Workers[storage.LaChain] = inst.laWorker
 
@@ -64,14 +64,7 @@ func (r *BridgeSRV) Run() {
 	// run Worker workers
 	for _, worker := range r.Workers {
 		go r.ConfirmWorkerTx(worker)
-		if worker.GetChain() != storage.LaChain {
-			go r.emitRegistered(worker)
-			go r.emitUnregistered(worker)
-		} else if worker.GetChain() != storage.EthChain {
-			go r.emitPenalty(worker)
-			go r.emitFelony(worker)
-			go r.emitReward(worker)
-		}
+		go r.emitProposal(worker)
 		go r.CheckTxSentRoutine(worker)
 	}
 }
@@ -79,7 +72,7 @@ func (r *BridgeSRV) Run() {
 // ConfirmWorkerTx ...
 func (r *BridgeSRV) ConfirmWorkerTx(worker workers.IWorker) {
 	for {
-		txLogs, err := r.storage.FindTxLogs(worker.GetChain(), worker.GetConfirmNum())
+		txLogs, err := r.storage.FindTxLogs(worker.GetChainName(), worker.GetConfirmNum())
 		if err != nil {
 			r.logger.Errorf("ConfirmWorkerTx(), err = %s", err)
 			time.Sleep(10 * time.Second)
@@ -90,15 +83,24 @@ func (r *BridgeSRV) ConfirmWorkerTx(worker workers.IWorker) {
 		newEvents := make([]*storage.Event, 0)
 
 		for _, txLog := range txLogs {
-			if txLog.Status == storage.TxStatusInit {
-				r.logger.Infoln("New Evant")
+			// reject swap request if receiver addr and worker chain addr both are r addr
+			if worker.IsSameAddress(txLog.ReceiverAddr, worker.GetWorkerAddress()) &&
+				!r.laWorker.IsSameAddress(txLog.WorkerChainAddr, r.laWorker.GetWorkerAddress()) {
+				r.logger.Warnln("THE SAME")
+			}
+			if txLog.TxType == storage.TxTypePassed {
+				r.logger.Infoln("New Event")
 				newEvent := &storage.Event{
-					RelayerAddress: txLog.Data,
-					ChainID:        txLog.Chain,
-					Height:         txLog.Height,
-					Status:         txLog.EventStatus,
-					Penalty:        txLog.Penalty,
-					CreateTime:     time.Now().Unix(),
+					ReceiverAddr:       txLog.ReceiverAddr,
+					DepositNonce:       txLog.DepositNonce,
+					ResourceID:         txLog.ResourceID,
+					ChainID:            txLog.Chain,
+					DestinationChainID: txLog.DestinationChainID,
+					OriginChainID:      txLog.OriginСhainID,
+					OutAmount:          txLog.OutAmount,
+					Height:             txLog.Height,
+					Status:             storage.EventStatusPassedInit,
+					CreateTime:         time.Now().Unix(),
 				}
 				newEvents = append(newEvents, newEvent)
 			}
@@ -106,7 +108,7 @@ func (r *BridgeSRV) ConfirmWorkerTx(worker workers.IWorker) {
 		}
 
 		//
-		if err := r.storage.ConfirmWorkerTx(worker.GetChain(), txLogs, txHashes, newEvents); err != nil {
+		if err := r.storage.ConfirmWorkerTx(worker.GetChainName(), txLogs, txHashes, newEvents); err != nil {
 			r.logger.Errorf("compensate new swap tx error, err=%s", err)
 		}
 
@@ -124,7 +126,7 @@ func (r *BridgeSRV) CheckTxSentRoutine(worker workers.IWorker) {
 
 // CheckTxSent ...
 func (r *BridgeSRV) CheckTxSent(worker workers.IWorker) {
-	txsSent, err := r.storage.GetTxsSentByStatus(worker.GetChain())
+	txsSent, err := r.storage.GetTxsSentByStatus(worker.GetChainName())
 	if err != nil {
 		r.logger.WithFields(logrus.Fields{"function": "CheckTxSent() | GetTxsSentByStatus()"}).Errorln(err)
 		return
