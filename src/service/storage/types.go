@@ -2,8 +2,10 @@ package storage
 
 var (
 	LaChain string = "LA"
-	// EthChain - Ethereum chain
-	EthChain string = "ETH"
+	// PosChain - polygon mumbai chain
+	PosChain string = "POS"
+	// BscChain - BSC testnet chain
+	BscChain string = "BSC"
 	// BtcChain - Bitcoin chain
 	BtcChain string = "BTC"
 )

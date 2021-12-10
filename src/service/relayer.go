@@ -26,7 +26,7 @@ type BridgeSRV struct {
 }
 
 // CreateNewBridgeSRV ...
-func CreateNewBridgeSRV(logger *logrus.Logger, gormDB *gorm.DB, laConfig, ethConfig *models.WorkerConfig) *BridgeSRV {
+func CreateNewBridgeSRV(logger *logrus.Logger, gormDB *gorm.DB, laConfig, posCfg, bscCfg *models.WorkerConfig) *BridgeSRV {
 	// init database
 	db, err := storage.InitStorage(gormDB)
 	if err != nil {
@@ -41,7 +41,8 @@ func CreateNewBridgeSRV(logger *logrus.Logger, gormDB *gorm.DB, laConfig, ethCon
 		Workers:  make(map[string]workers.IWorker),
 	}
 	// create erc20 worker
-	inst.Workers[storage.EthChain] = eth.NewErc20Worker(logger, ethConfig)
+	inst.Workers[storage.PosChain] = eth.NewErc20Worker(logger, posCfg)
+	inst.Workers[storage.BscChain] = eth.NewErc20Worker(logger, bscCfg)
 	// create la worker
 	inst.Workers[storage.LaChain] = inst.laWorker
 
