@@ -22,8 +22,8 @@ func (v *viperConfig) ReadLachainConfig() *models.WorkerConfig {
 }
 
 // ReadEthWorkerConfig reads ethereum chain worker params from config.json
-func (v *viperConfig) ReadWorkersConfig() (pos *models.WorkerConfig, bsc *models.WorkerConfig) {
-	return v.readWorkerConfig(storage.PosChain), v.readWorkerConfig(storage.BscChain)
+func (v *viperConfig) ReadWorkersConfig() (pos *models.WorkerConfig, bsc *models.WorkerConfig, eth *models.WorkerConfig) {
+	return v.readWorkerConfig(storage.PosChain), v.readWorkerConfig(storage.BscChain), v.readWorkerConfig(storage.EthChain)
 }
 
 // readETHWorkerConfig reads ethereum chain worker params from config.json

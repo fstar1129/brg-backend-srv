@@ -19,7 +19,7 @@ func main() {
 	cfg := config.NewViperConfig()
 	srvURL := cfg.ReadServiceConfig()
 	laCfg := cfg.ReadLachainConfig()
-	posCfg, bscCfg := cfg.ReadWorkersConfig()
+	posCfg, bscCfg, ethCfg := cfg.ReadWorkersConfig()
 	dbConfig := cfg.ReadDBConfig()
 	dbURL := fmt.Sprintf(dbConfig.URL, dbConfig.DBHOST, dbConfig.DBPORT, dbConfig.DBUser, dbConfig.DBName, dbConfig.DBPassword, dbConfig.DBSSL)
 	// init logrus logger
@@ -54,7 +54,7 @@ func main() {
 		cancel()
 	}()
 
-	app := app.NewApp(logger, srvURL, db, laCfg, posCfg, bscCfg)
+	app := app.NewApp(logger, srvURL, db, laCfg, posCfg, bscCfg, ethCfg)
 
 	//run App
 	app.Run(ctx)
