@@ -6,6 +6,8 @@ import (
 	"crypto/ecdsa"
 	"fmt"
 	"math/big"
+	"strconv"
+	"strings"
 	"time"
 
 	ethBr "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/eth-compatible/abi/bridge/eth"
@@ -281,19 +283,19 @@ func (w *Erc20Worker) GetSentTxStatus(hash string) storage.TxStatus {
 }
 
 func (w *Erc20Worker) GetTxCountLatest() (uint64, error) {
-	var result uint64
+	var result string
 	rpcClient := jsonrpc.NewClient(w.provider)
 
 	resp, err := rpcClient.Call("eth_getTransactionCount", w.config.WorkerAddr.Hex(), "latest")
 	if err != nil {
 		return 0, err
 	}
-
 	if err := resp.GetObject(&result); err != nil {
 		return 0, err
 	}
-
-	return result, nil
+	cleaned := strings.Replace(result, "0x", "", -1)
+	uintnonce, _ := strconv.ParseUint(cleaned, 16, 64)
+	return uintnonce, nil
 }
 
 // GetTransactor ...
