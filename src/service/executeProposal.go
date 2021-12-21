@@ -14,7 +14,7 @@ import (
 // emitRegistreted ...
 func (r *BridgeSRV) emitProposal(worker workers.IWorker) {
 	for {
-		events := r.storage.GetEventsByTypeAndStatuses([]storage.EventStatus{storage.EventStatusPassedInit, storage.EventStatusPassedSent})
+		events := r.storage.GetEventsByTypeAndStatuses([]storage.EventStatus{storage.EventStatusPassedInit, storage.EventStatusPassedSentFailed})
 		for _, event := range events {
 			if event.Status == storage.EventStatusPassedInit &&
 				worker.GetDestinationID() == event.DestinationChainID {
@@ -24,7 +24,7 @@ func (r *BridgeSRV) emitProposal(worker workers.IWorker) {
 				}
 			} else {
 				r.handleTxSent(event.ChainID, event, storage.TxTypePassed,
-					storage.EventStatusPassedConfirmed, storage.EventStatusPassedFailed)
+					storage.EventStatusPassedConfirmed, storage.EventStatusPassedInit)
 			}
 		}
 
