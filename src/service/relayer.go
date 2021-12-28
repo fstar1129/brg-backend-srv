@@ -101,7 +101,7 @@ func (r *BridgeSRV) ConfirmWorkerTx(worker workers.IWorker) {
 					OriginChainID:      txLog.OriginСhainID,
 					OutAmount:          txLog.OutAmount,
 					Height:             txLog.Height,
-					Status:             storage.EventStatusPassedInit,
+					Status:             storage.EventStatusPassedConfirmed,
 					CreateTime:         time.Now().Unix(),
 				}
 				newEvents = append(newEvents, newEvent)
