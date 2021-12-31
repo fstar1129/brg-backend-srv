@@ -284,7 +284,7 @@ func (w *Erc20Worker) GetTxCountLatest() (uint64, error) {
 	var result uint64
 	rpcClient := jsonrpc.NewClient(w.provider)
 
-	resp, err := rpcClient.Call("eth_getTransactionCount", w.config.WorkerAddr.Hex(), "pending")
+	resp, err := rpcClient.Call("eth_getTransactionCount", w.config.WorkerAddr.Hex(), "latest")
 	if err != nil {
 		return 0, err
 	}
