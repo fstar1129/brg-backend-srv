@@ -16,7 +16,7 @@ func (r *BridgeSRV) emitProposal(worker workers.IWorker) {
 	for {
 		events := r.storage.GetEventsByTypeAndStatuses([]storage.EventStatus{storage.EventStatusPassedConfirmed, storage.EventStatusPassedSentFailed})
 		for _, event := range events {
-			println("in execute")
+			println("in ex", worker.GetChainName())
 			if event.Status == storage.EventStatusPassedConfirmed &&
 				worker.GetDestinationID() == event.DestinationChainID {
 				r.logger.Infoln("attempting to send execute proposal")
@@ -53,6 +53,7 @@ func (r *BridgeSRV) sendExecuteProposal(worker workers.IWorker, event *storage.E
 	if err != nil {
 		txSent.ErrMsg = err.Error()
 		txSent.Status = storage.TxSentStatusFailed
+		txSent.TxHash = txHash
 		r.storage.UpdateEventStatus(event, storage.EventStatusPassedSentFailed)
 		r.storage.CreateTxSent(txSent)
 		return "", fmt.Errorf("could not send claim tx: %w", err)
@@ -61,7 +62,10 @@ func (r *BridgeSRV) sendExecuteProposal(worker workers.IWorker, event *storage.E
 	r.storage.UpdateEventStatus(event, storage.EventStatusPassedSent)
 	r.logger.Infof("send execute proposal tx success | chain=%s, tx_hash=%s", worker.GetChainName(), txSent.TxHash)
 	// create new tx(claimed)
-	r.storage.CreateTxSent(txSent)
+	err = r.storage.CreateTxSent(txSent)
+	if err != nil {
+		println("db txsent err", err)
+	}
 
 	return txSent.TxHash, nil
 

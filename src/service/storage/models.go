@@ -52,7 +52,6 @@ type Registration struct {
 type Event struct {
 	ID                 int64
 	EventID            string
-	Type               EventStatus
 	ChainID            string
 	DestinationChainID string
 	OriginChainID      string
