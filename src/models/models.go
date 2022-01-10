@@ -99,3 +99,9 @@ type TssConfig struct {
 type RelayerConfig struct {
 	Address common.Address
 }
+
+// GasPriceComfig
+type GasPriceConfig struct {
+	ChainName string
+	GasPrice  *big.Int
+}

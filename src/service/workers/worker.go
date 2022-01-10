@@ -1,6 +1,7 @@
 package workers
 
 import (
+	"math/big"
 	"time"
 
 	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/models"
@@ -25,6 +26,7 @@ type IWorker interface {
 	GetBlockAndTxs(height int64) (*models.BlockAndTxLogs, error)
 	// GetFetchInterval returns fetch interval of the chain like average blocking time, it is used in observer
 	GetFetchInterval() time.Duration
+	GetGasPrice() *big.Int
 	// GetWorkerAddress returns relayer account address
 	// GetWorkerAddress() string
 	// // GetColdWalletAddress returns the address of the relayer's cold wallet

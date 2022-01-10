@@ -342,6 +342,11 @@ func (w *Erc20Worker) GetWorkerAddress() string {
 	return w.config.WorkerAddr.String()
 }
 
+//GetGasPrice
+func (w *Erc20Worker) GetGasPrice() *big.Int {
+	return w.config.GasPrice
+}
+
 // GetColdWalletAddress ...
 func (w *Erc20Worker) GetColdWalletAddress() string {
 	return w.config.ColdWalletAddr.String()

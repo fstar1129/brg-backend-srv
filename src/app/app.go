@@ -55,7 +55,7 @@ func (a *App) Get(path string, f func(w http.ResponseWriter, r *http.Request)) {
 func (a *App) setRouters() {
 	a.Get("/", a.Endpoints)
 	a.Get("/status", a.StatusHandler)
-	// a.Get("/failed_swaps/{page}", a.FailedSwapsHandler)
+	a.Get("/gas-price", a.GasPriceHandler)
 	// a.Get("/resend_tx/{id}", a.ResendTxHandler)
 	// a.Get("/set_mode/{mode}", a.SetModeHandler)
 }

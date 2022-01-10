@@ -16,7 +16,6 @@ func (r *BridgeSRV) emitProposal(worker workers.IWorker) {
 	for {
 		events := r.storage.GetEventsByTypeAndStatuses([]storage.EventStatus{storage.EventStatusPassedConfirmed, storage.EventStatusPassedSentFailed})
 		for _, event := range events {
-			println("in ex", worker.GetChainName())
 			if event.Status == storage.EventStatusPassedConfirmed &&
 				worker.GetDestinationID() == event.DestinationChainID {
 				r.logger.Infoln("attempting to send execute proposal")
