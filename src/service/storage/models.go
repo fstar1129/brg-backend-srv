@@ -83,3 +83,10 @@ type TxSent struct {
 	CreateTime int64    `json:"create_time" gorm:"type:BIGINT"`
 	UpdateTime int64    `json:"update_time" gorm:"type:BIGINT"`
 }
+
+// GasPrice
+type GasPrice struct {
+	ChainName  string `gorm:"primaryKey"`
+	Price      string `gorm:"type:TEXT"`
+	UpdateTime int64  `json:"update_time" gorm:"type:BIGINT"`
+}

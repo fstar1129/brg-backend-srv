@@ -56,13 +56,7 @@ func (r *BridgeSRV) GetWorkers() {
 	//	r.Workers
 }
 
-func (r *BridgeSRV) GetGasPrice() *[]models.GasPriceConfig {
-	gasPrices := make([]models.GasPriceConfig, 0)
-	for _, worker := range r.Workers {
-		gasPrices = append(gasPrices, models.GasPriceConfig{
-			ChainName: worker.GetChainName(),
-			GasPrice:  worker.GetGasPrice(),
-		})
-	}
-	return &gasPrices
+func (r *BridgeSRV) GetGasPrice(name string) string {
+	priceLog := r.storage.GetGasPrice(name)
+	return priceLog.Price
 }

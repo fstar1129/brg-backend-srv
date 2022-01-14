@@ -16,6 +16,18 @@ func (v *viperConfig) ReadServiceConfig() string {
 	return fmt.Sprintf("%s:%s", v.GetString("service.host"), v.GetString("service.port"))
 }
 
+//reads ethereum chain apis to fetch gas price
+func (v *viperConfig) ReadFetcherConfig() (pos, bsc, eth *models.FetcherConfig) {
+	return v.readFetcherConfig(storage.PosChain), v.readFetcherConfig(storage.BscChain), v.readFetcherConfig(storage.EthChain)
+}
+
+func (v *viperConfig) readFetcherConfig(name string) *models.FetcherConfig {
+	return &models.FetcherConfig{
+		ChainName: name,
+		URL:       v.GetString(fmt.Sprintf("gas_price_api.%s", name)),
+	}
+}
+
 // ReadLachainConfig reads lachain chain params from config.json
 func (v *viperConfig) ReadLachainConfig() *models.WorkerConfig {
 	return v.readWorkerConfig(storage.LaChain)

@@ -47,6 +47,11 @@ func InitStorage(db *gorm.DB) (*DataBase, error) {
 		return nil, err
 	}
 
+	// migrate table "gas_price"
+	if err := db.AutoMigrate(GasPrice{}).Error; err != nil {
+		return nil, err
+	}
+
 	return &DataBase{db: db}, nil
 }
 

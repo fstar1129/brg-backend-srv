@@ -100,8 +100,8 @@ type RelayerConfig struct {
 	Address common.Address
 }
 
-// GasPriceComfig
-type GasPriceConfig struct {
+// FetcherConfig
+type FetcherConfig struct {
 	ChainName string
-	GasPrice  *big.Int
+	URL       string
 }

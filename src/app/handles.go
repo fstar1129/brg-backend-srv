@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/common"
 )
 
@@ -16,7 +17,7 @@ func (a *App) Endpoints(w http.ResponseWriter, r *http.Request) {
 	}{
 		Endpoints: []string{
 			"/status",
-			"/gas-price",
+			"/gas-price/{chain}",
 		},
 	}
 
@@ -49,6 +50,13 @@ func (a *App) StatusHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) GasPriceHandler(w http.ResponseWriter, r *http.Request) {
-	gasPrice := a.relayer.GetGasPrice()
+	msg := mux.Vars(r)["chain"]
+
+	if msg == "" {
+		a.logger.Errorf("Empty request(gas-price/{chain})")
+		common.ResponJSON(w, http.StatusInternalServerError, createNewError("empty request", ""))
+		return
+	}
+	gasPrice := a.relayer.GetGasPrice(msg)
 	common.ResponJSON(w, http.StatusOK, gasPrice)
 }

@@ -15,6 +15,7 @@ type Config interface {
 	ReadServiceConfig() string
 	ReadWorkersConfig() (*models.WorkerConfig, *models.WorkerConfig, *models.WorkerConfig)
 	ReadLachainConfig() *models.WorkerConfig
+	ReadFetcherConfig() (*models.FetcherConfig, *models.FetcherConfig, *models.FetcherConfig)
 	ReadDBConfig() *models.StorageConfig
 	GetString(key string) string
 	GetStringMap(key string) map[string]string

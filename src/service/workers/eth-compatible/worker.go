@@ -6,6 +6,7 @@ import (
 	"crypto/ecdsa"
 	"fmt"
 	"math/big"
+	"strconv"
 	"time"
 
 	ethBr "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/eth-compatible/abi/bridge/eth"
@@ -31,6 +32,7 @@ type Erc20Worker struct {
 	chainName          string
 	chainID            int64
 	destinationChainID string
+	storage            *storage.DataBase
 	logger             *logrus.Entry // logger
 	config             *models.WorkerConfig
 	client             *ethclient.Client
@@ -38,7 +40,7 @@ type Erc20Worker struct {
 }
 
 // NewErc20Worker ...
-func NewErc20Worker(logger *logrus.Logger, cfg *models.WorkerConfig) *Erc20Worker {
+func NewErc20Worker(logger *logrus.Logger, cfg *models.WorkerConfig, db *storage.DataBase) *Erc20Worker {
 	client, err := ethclient.Dial(cfg.Provider)
 	if err != nil {
 		panic("new eth client error")
@@ -74,6 +76,7 @@ func NewErc20Worker(logger *logrus.Logger, cfg *models.WorkerConfig) *Erc20Worke
 		config:             cfg,
 		client:             client,
 		contractAddr:       cfg.ContractAddr,
+		storage:            db,
 	}
 }
 
@@ -323,11 +326,19 @@ func (w *Erc20Worker) getTransactor() (auth *bind.TransactOpts, err error) {
 			return nil, err
 		}
 	}
+	var gasPrice float64
+	if w.chainName == storage.LaChain {
+		gasPrice = 1
+	} else {
+		gasPriceGWei, _ := strconv.ParseFloat(w.storage.GetGasPrice(w.chainName).Price, 64)
+		gasPrice = gasPriceGWei * 1000000000
 
+	}
+	println(int64(gasPrice))
 	auth.Nonce = big.NewInt(int64(nonce))
 	auth.Value = big.NewInt(0)                // in wei
 	auth.GasLimit = uint64(w.config.GasLimit) // in units
-	auth.GasPrice = w.config.GasPrice
+	auth.GasPrice = big.NewInt(int64(gasPrice))
 
 	return auth, nil
 }
@@ -343,9 +354,20 @@ func (w *Erc20Worker) GetWorkerAddress() string {
 }
 
 //GetGasPrice
-func (w *Erc20Worker) GetGasPrice() *big.Int {
-	return w.config.GasPrice
-}
+// func (w *Erc20Worker) GetGasPrice() (uint64, error) {
+// 	var result hexutil.Uint64
+// 	rpcClient := jsonrpc.NewClient(w.provider)
+// 	resp, err := rpcClient.Call("eth_gasPrice")
+// 	if err != nil {
+// 		return 0, err
+// 	}
+// 	if err := resp.GetObject(&result); err != nil {
+// 		println("err in obj")
+// 		return 0, err
+// 	}
+// 	return uint64(result), nil
+// 	time.Sleep(time.Second * 30)
+// }
 
 // GetColdWalletAddress ...
 func (w *Erc20Worker) GetColdWalletAddress() string {
