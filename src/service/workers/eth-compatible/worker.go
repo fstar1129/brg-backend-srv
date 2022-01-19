@@ -328,17 +328,18 @@ func (w *Erc20Worker) getTransactor() (auth *bind.TransactOpts, err error) {
 	}
 	var gasPrice float64
 	if w.chainName == storage.LaChain {
-		gasPrice = 1
+		auth.GasPrice = big.NewInt(1)
 	} else {
 		gasPriceGWei, _ := strconv.ParseFloat(w.storage.GetGasPrice(w.chainName).Price, 64)
-		gasPrice = gasPriceGWei * 1000000000
-
+		if gasPriceGWei > 0 {
+			gasPrice = gasPriceGWei * 1000000000
+			auth.GasPrice = big.NewInt((int64(gasPrice)))
+		}
 	}
 	println(int64(gasPrice))
 	auth.Nonce = big.NewInt(int64(nonce))
 	auth.Value = big.NewInt(0)                // in wei
 	auth.GasLimit = uint64(w.config.GasLimit) // in units
-	auth.GasPrice = big.NewInt(int64(gasPrice))
 
 	return auth, nil
 }
