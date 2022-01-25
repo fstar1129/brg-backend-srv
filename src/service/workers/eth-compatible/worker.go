@@ -137,7 +137,6 @@ func (w *Erc20Worker) ExecuteProposalLa(depositNonce uint64, originChainID [8]by
 	if err != nil {
 		return "", err
 	}
-	println(auth.GasPrice)
 	value, _ := new(big.Int).SetString(amount, 10)
 	tx, err := instance.ExecuteProposal(auth, originChainID, destinationChainID, depositNonce, resourceID, common.HexToAddress(receiptAddr), value)
 	if err != nil {
@@ -328,14 +327,15 @@ func (w *Erc20Worker) getTransactor() (auth *bind.TransactOpts, err error) {
 	}
 	var gasPrice float64
 	if w.chainName == storage.LaChain {
-		auth.GasPrice = big.NewInt(1000000000000000000)
+		gasPrice = 1
 	} else {
 		gasPriceGWei, _ := strconv.ParseFloat(w.storage.GetGasPrice(w.chainName).Price, 64)
 		if gasPriceGWei > 0 {
 			gasPrice = gasPriceGWei * 1000000000
-			auth.GasPrice = big.NewInt((int64(gasPrice)))
 		}
 	}
+	println(gasPrice)
+	auth.GasPrice = big.NewInt((int64(gasPrice)))
 	auth.Nonce = big.NewInt(int64(nonce))
 	auth.Value = big.NewInt(0)                // in wei
 	auth.GasLimit = uint64(w.config.GasLimit) // in units
