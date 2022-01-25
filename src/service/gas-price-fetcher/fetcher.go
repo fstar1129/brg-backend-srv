@@ -67,7 +67,7 @@ func (f *FetcherSrv) getBscGasPrice() *storage.GasPrice {
 	// 	return &storage.GasPrice{}
 	// }
 	// var gasPrice = (*resp)["standard"].(float64)
-	return &storage.GasPrice{ChainName: "BSC", Price: fmt.Sprintf("%f", 10), UpdateTime: time.Now().Unix()}
+	return &storage.GasPrice{ChainName: "BSC", Price: fmt.Sprintf("%f", 10.0), UpdateTime: time.Now().Unix()}
 }
 
 func (f *FetcherSrv) getEthGasPrice() *storage.GasPrice {
