@@ -328,7 +328,7 @@ func (w *Erc20Worker) getTransactor() (auth *bind.TransactOpts, err error) {
 	}
 	var gasPrice float64
 	if w.chainName == storage.LaChain {
-		auth.GasPrice = big.NewInt(1)
+		auth.GasPrice = big.NewInt(1000000000000000000)
 	} else {
 		gasPriceGWei, _ := strconv.ParseFloat(w.storage.GetGasPrice(w.chainName).Price, 64)
 		if gasPriceGWei > 0 {
