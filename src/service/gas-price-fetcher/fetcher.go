@@ -57,17 +57,17 @@ func (f *FetcherSrv) getAllGasPrice() {
 }
 
 func (f *FetcherSrv) getBscGasPrice() *storage.GasPrice {
-	httpClient := &http.Client{
-		Timeout: time.Second * 10,
-	}
+	// httpClient := &http.Client{
+	// 	Timeout: time.Second * 10,
+	// }
 
-	resp, err := f.makeReq(f.bscFetCfg.URL, httpClient)
-	if err != nil {
-		logrus.Warnf("fetch BSC gas price error = %s", err)
-		return &storage.GasPrice{}
-	}
-	var gasPrice = (*resp)["standard"].(float64)
-	return &storage.GasPrice{ChainName: "BSC", Price: fmt.Sprintf("%f", gasPrice), UpdateTime: time.Now().Unix()}
+	// resp, err := f.makeReq(f.bscFetCfg.URL, httpClient)
+	// if err != nil {
+	// 	logrus.Warnf("fetch BSC gas price error = %s", err)
+	// 	return &storage.GasPrice{}
+	// }
+	// var gasPrice = (*resp)["standard"].(float64)
+	return &storage.GasPrice{ChainName: "BSC", Price: fmt.Sprintf("%f", 10), UpdateTime: time.Now().Unix()}
 }
 
 func (f *FetcherSrv) getEthGasPrice() *storage.GasPrice {
