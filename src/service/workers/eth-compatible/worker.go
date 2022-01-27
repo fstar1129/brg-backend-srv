@@ -218,8 +218,10 @@ func (w *Erc20Worker) getLogs(blockHash common.Hash) ([]*storage.TxLog, error) {
 		BlockHash: &blockHash,
 		// Topics:    topics,
 		Addresses: []common.Address{w.contractAddr},
+		Topics:    [][]common.Hash{},
 	})
 	if err != nil {
+		w.logger.WithFields(logrus.Fields{"function": "GetLogs()"}).Errorf("get event log error, err=%s", err)
 		return nil, err
 	}
 
