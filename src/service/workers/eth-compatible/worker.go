@@ -133,13 +133,15 @@ func (w *Erc20Worker) ExecuteProposalLa(depositNonce uint64, originChainID [8]by
 		return "", err
 	}
 
-	instance, err := laBr.NewLaBr(w.contractAddr, w.client)
+	instance, err := laBr.NewLabr(w.contractAddr, w.client)
 	if err != nil {
 		return "", err
 	}
+	println(destinationChainID[7])
 	value, _ := new(big.Int).SetString(amount, 10)
 	tx, err := instance.ExecuteProposal(auth, originChainID, destinationChainID, depositNonce, resourceID, common.HexToAddress(receiptAddr), value)
 	if err != nil {
+		println(err.Error())
 		return "", err
 	}
 
@@ -312,7 +314,7 @@ func (w *Erc20Worker) getTransactor() (auth *bind.TransactOpts, err error) {
 			return nil, err
 		}
 
-		auth, err = bind.NewKeyedTransactorWithChainID(privateKey, big.NewInt(int64(26)))
+		auth, err = bind.NewKeyedTransactorWithChainID(privateKey, big.NewInt(w.chainID))
 		if err != nil {
 			return nil, err
 		}
@@ -336,7 +338,6 @@ func (w *Erc20Worker) getTransactor() (auth *bind.TransactOpts, err error) {
 			gasPrice = gasPriceGWei * 1000000000
 		}
 	}
-	println(gasPrice)
 	auth.GasPrice = big.NewInt((int64(gasPrice)))
 	auth.Nonce = big.NewInt(int64(nonce))
 	auth.Value = big.NewInt(0)                // in wei

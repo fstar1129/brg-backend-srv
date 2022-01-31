@@ -53,6 +53,7 @@ func ParseLAProposalEvent(abi *abi.ABI, log *types.Log) (ContractEvent, error) {
 	fmt.Printf("deposit nonce: %d\n", ev.DepositNonce)
 	fmt.Printf("status: %d\n", ev.Status)
 	fmt.Printf("resource ID: 0x%s\n", common.Bytes2Hex(ev.ResourceID[:]))
+	fmt.Printf("recipient: 0x%s\n", common.Bytes2Hex(ev.RecipientAddress[:]))
 	fmt.Printf("DataHash: 0x%s\n\n", common.Bytes2Hex(ev.DataHash[:]))
 	fmt.Printf("amount: ", ev.Amount.String())
 
@@ -112,7 +113,7 @@ func (ev ProposalEvent) ToTxLog(chain string) *storage.TxLog {
 func (w *Erc20Worker) parseEvent(log *types.Log) (ContractEvent, error) {
 	if bytes.Equal(log.Topics[0][:], ProposalEventHash[:]) {
 		if w.GetChainName() == storage.LaChain {
-			abi, _ := abi.JSON(strings.NewReader(laBr.LaBrABI))
+			abi, _ := abi.JSON(strings.NewReader(laBr.LabrABI))
 			return ParseLAProposalEvent(&abi, log)
 		} else {
 			abi, _ := abi.JSON(strings.NewReader(ethBr.EthBrABI))

@@ -41,7 +41,7 @@ func (r *BridgeSRV) sendExecuteProposal(worker workers.IWorker, event *storage.E
 	}
 
 	r.logger.Infof("Execute parameters:  depositNonce(%d) | sender(%s) | outAmount(%s) | resourceID(%s) | chainID(%s)\n",
-		event.DepositNonce, event.SenderAddr, event.OutAmount, event.ResourceID, worker.GetChainName())
+		event.DepositNonce, event.ReceiverAddr, event.OutAmount, event.ResourceID, worker.GetChainName())
 	if worker.GetChainName() == storage.LaChain {
 		txHash, err = worker.ExecuteProposalLa(event.DepositNonce, utils.StringToBytes8(event.OriginChainID), utils.StringToBytes8(event.DestinationChainID), utils.StringToBytes32(event.ResourceID),
 			event.ReceiverAddr, event.OutAmount)
