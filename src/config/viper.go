@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/models"
+	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/storage"
 
 	"github.com/spf13/viper"
 )
@@ -17,6 +18,7 @@ type Config interface {
 	ReadLachainConfig() *models.WorkerConfig
 	ReadFetcherConfig() (*models.FetcherConfig, *models.FetcherConfig, *models.FetcherConfig)
 	ReadDBConfig() *models.StorageConfig
+	ReadResourceIDs() []*storage.ResourceId
 	GetString(key string) string
 	GetStringMap(key string) map[string]string
 	GetInt64(key string) int64

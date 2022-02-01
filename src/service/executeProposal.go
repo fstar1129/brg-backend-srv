@@ -2,6 +2,7 @@ package rlr
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
 	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/storage"
@@ -40,14 +41,23 @@ func (r *BridgeSRV) sendExecuteProposal(worker workers.IWorker, event *storage.E
 		CreateTime: time.Now().Unix(),
 	}
 
+	var amount int64
+	if event.OriginChainID == r.Workers[storage.BscChain].GetDestinationID() && event.ResourceID == r.storage.FetchResourceID("tether").Name {
+		amount = utils.ConvertDecimals(event.OutAmount, 18, 6)
+	} else if event.DestinationChainID == r.Workers[storage.BscChain].GetDestinationID() && event.ResourceID == r.storage.FetchResourceID("tether").Name {
+		amount = utils.ConvertDecimals(event.OutAmount, 6, 18)
+	} else {
+		amount, _ = strconv.ParseInt(event.OutAmount, 10, 32)
+	}
+
 	r.logger.Infof("Execute parameters:  depositNonce(%d) | sender(%s) | outAmount(%s) | resourceID(%s) | chainID(%s)\n",
 		event.DepositNonce, event.ReceiverAddr, event.OutAmount, event.ResourceID, worker.GetChainName())
 	if worker.GetChainName() == storage.LaChain {
 		txHash, err = worker.ExecuteProposalLa(event.DepositNonce, utils.StringToBytes8(event.OriginChainID), utils.StringToBytes8(event.DestinationChainID), utils.StringToBytes32(event.ResourceID),
-			event.ReceiverAddr, event.OutAmount)
+			event.ReceiverAddr, fmt.Sprint(amount))
 	} else {
 		txHash, err = worker.ExecuteProposalEth(event.DepositNonce, utils.StringToBytes8(event.OriginChainID), utils.StringToBytes8(event.DestinationChainID), utils.StringToBytes32(event.ResourceID),
-			event.ReceiverAddr, event.OutAmount)
+			event.ReceiverAddr, fmt.Sprint(amount))
 	}
 	if err != nil {
 		txSent.ErrMsg = err.Error()

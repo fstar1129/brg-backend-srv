@@ -90,3 +90,8 @@ type GasPrice struct {
 	Price      string `gorm:"type:TEXT"`
 	UpdateTime int64  `json:"update_time" gorm:"type:BIGINT"`
 }
+
+type ResourceId struct {
+	Name string `gorm:"primaryKey"`
+	ID   string `gorm:"type:TEXT"`
+}

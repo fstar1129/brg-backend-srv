@@ -28,7 +28,8 @@ type BridgeSRV struct {
 }
 
 // CreateNewBridgeSRV ...
-func CreateNewBridgeSRV(logger *logrus.Logger, gormDB *gorm.DB, laConfig, posCfg, bscCfg, ethCfg *models.WorkerConfig, posFetCfg, bscFetCfg, ethFetCfg *models.FetcherConfig) *BridgeSRV {
+func CreateNewBridgeSRV(logger *logrus.Logger, gormDB *gorm.DB, laConfig, posCfg, bscCfg, ethCfg *models.WorkerConfig,
+	posFetCfg, bscFetCfg, ethFetCfg *models.FetcherConfig, resourceIDs []*storage.ResourceId) *BridgeSRV {
 	// init database
 	db, err := storage.InitStorage(gormDB)
 	if err != nil {
@@ -56,6 +57,8 @@ func CreateNewBridgeSRV(logger *logrus.Logger, gormDB *gorm.DB, laConfig, posCfg
 	}
 	inst.Watcher = watcher.CreateNewWatcherSRV(logger, db, inst.Workers)
 	inst.Fetcher = fetcher.CreateFetcherSrv(logger, db, posFetCfg, bscFetCfg, ethFetCfg)
+
+	db.SaveResourceIDs(resourceIDs)
 	return &inst
 }
 

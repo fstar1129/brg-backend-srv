@@ -73,3 +73,15 @@ func (v *viperConfig) ReadDBConfig() *models.StorageConfig {
 		DBPassword: v.GetString("storage.password"),
 	}
 }
+
+func (v *viperConfig) ReadResourceIDs() []*storage.ResourceId {
+	tokens := [5]string{"tether", "matic-network", "latoken", "binancecoin", "ethereum"}
+	resouceIDs := make([]*storage.ResourceId, len(tokens))
+	for index, name := range tokens {
+		resouceIDs[index] = &storage.ResourceId{
+			Name: name,
+			ID:   v.GetString(fmt.Sprintf("resourceIDs.%s", name)),
+		}
+	}
+	return resouceIDs
+}
