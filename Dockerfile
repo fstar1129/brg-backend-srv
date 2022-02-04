@@ -16,7 +16,6 @@ WORKDIR /app
 RUN  apk --no-cache add ca-certificates
 # Copy our static executable.
 COPY --from=builder /go/bin/src .
-COPY --from=builder /go/app/src/config.json .
 EXPOSE 8000
 # # Run the src binary.
 CMD ["./src"]
