@@ -178,7 +178,7 @@ func (w *Erc20Worker) GetBlockAndTxs(height int64) (*models.BlockAndTxLogs, erro
 	var head *Header
 	rpcClient := jsonrpc.NewClient(w.provider)
 
-	resp, err := rpcClient.Call("eth_getBlockByNumber", fmt.Sprintf("0x%x", height), false)
+	resp, err := rpcClient.Call("eth_getBlockByNumber", "latest", false)
 	if err != nil {
 		w.logger.Errorln("while call eth_getBlockByNumber, err = ", err)
 		return nil, err
@@ -193,14 +193,18 @@ func (w *Erc20Worker) GetBlockAndTxs(height int64) (*models.BlockAndTxLogs, erro
 		return nil, fmt.Errorf("not found")
 	}
 
-	logs, err := w.getLogs(head.Hash)
+	if height == int64(head.Number) {
+		return nil, fmt.Errorf("not found")
+	}
+
+	logs, err := w.getLogs(height, int64(head.Number))
 	if err != nil {
-		w.logger.Errorf("while getEvents(blockhash = %s), err = %v", head.Hash, err)
+		w.logger.Errorf("while getEvents(from = %d, to = %d), err = %v", height, int64(head.Number), err)
 		return nil, err
 	}
 
 	return &models.BlockAndTxLogs{
-		Height:          height,
+		Height:          int64(head.Number),
 		BlockHash:       head.Hash.String(),
 		ParentBlockHash: head.ParentHash.Hex(),
 		BlockTime:       int64(head.Time),
@@ -214,10 +218,16 @@ func (w *Erc20Worker) GetFetchInterval() time.Duration {
 }
 
 // getLogs ...
-func (w *Erc20Worker) getLogs(blockHash common.Hash) ([]*storage.TxLog, error) {
+func (w *Erc20Worker) getLogs(curHeight, nextHeight int64) ([]*storage.TxLog, error) {
 	//	topics := [][]common.Hash{{DepositEventHash, ProposalEventHash, ProposalVoteHash}}
+	if curHeight == 0 {
+		curHeight = nextHeight - 1
+	}
+
 	logs, err := w.client.FilterLogs(context.Background(), ethereum.FilterQuery{
-		BlockHash: &blockHash,
+		// BlockHash: &blockHash,
+		FromBlock: big.NewInt(curHeight),
+		ToBlock:   big.NewInt(nextHeight),
 		// Topics:    topics,
 		Addresses: []common.Address{w.contractAddr},
 		Topics:    [][]common.Hash{},
@@ -329,16 +339,17 @@ func (w *Erc20Worker) getTransactor() (auth *bind.TransactOpts, err error) {
 			return nil, err
 		}
 	}
-	var gasPrice float64
+	var gasPrice int64
 	if w.chainName == storage.LaChain {
 		gasPrice = 1
 	} else {
-		gasPriceGWei, _ := strconv.ParseFloat(w.storage.GetGasPrice(w.chainName).Price, 64)
+		gasPriceGWei, _ := strconv.ParseInt(w.storage.GetGasPrice(w.chainName).Price, 10, 64)
 		if gasPriceGWei > 0 {
 			gasPrice = gasPriceGWei * 1000000000
 		}
 	}
-	auth.GasPrice = big.NewInt((int64(gasPrice)))
+	println(gasPrice, "gasPrice")
+	auth.GasPrice = big.NewInt((gasPrice))
 	auth.Nonce = big.NewInt(int64(nonce))
 	auth.Value = big.NewInt(0)                // in wei
 	auth.GasLimit = uint64(w.config.GasLimit) // in units
