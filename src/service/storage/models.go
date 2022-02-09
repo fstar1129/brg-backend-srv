@@ -13,7 +13,6 @@ type BlockLog struct {
 
 // TxLog ...
 type TxLog struct {
-	ID                 int64
 	Chain              string `gorm:"type:TEXT"`
 	EventID            string
 	TxType             TxType      `gorm:"type:tx_types"`
@@ -30,7 +29,7 @@ type TxLog struct {
 	ConfirmedNum       int64  `gorm:"type:BIGINT"`
 	CreateTime         int64  `gorm:"type:BIGINT"`
 	UpdateTime         int64  `gorm:"type:BIGINT"`
-	SwapID             string `gorm:"type:TEXT"`
+	SwapID             string `gorm:"primaryKey"`
 	OriginСhainID      string `gorm:"type:TEXT"`
 	DepositNonce       uint64 `gorm:"type:BIGINT"`
 	SwapStatus         uint8

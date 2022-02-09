@@ -16,6 +16,7 @@ import (
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
@@ -137,11 +138,9 @@ func (w *Erc20Worker) ExecuteProposalLa(depositNonce uint64, originChainID [8]by
 	if err != nil {
 		return "", err
 	}
-	println(destinationChainID[7])
 	value, _ := new(big.Int).SetString(amount, 10)
 	tx, err := instance.ExecuteProposal(auth, originChainID, destinationChainID, depositNonce, resourceID, common.HexToAddress(receiptAddr), value)
 	if err != nil {
-		println(err.Error())
 		return "", err
 	}
 
@@ -193,7 +192,7 @@ func (w *Erc20Worker) GetBlockAndTxs(height int64) (*models.BlockAndTxLogs, erro
 		return nil, fmt.Errorf("not found")
 	}
 
-	if height == int64(head.Number) {
+	if height >= int64(head.Number) {
 		return nil, fmt.Errorf("not found")
 	}
 
@@ -223,10 +222,9 @@ func (w *Erc20Worker) getLogs(curHeight, nextHeight int64) ([]*storage.TxLog, er
 	if curHeight == 0 {
 		curHeight = nextHeight - 1
 	}
-
 	logs, err := w.client.FilterLogs(context.Background(), ethereum.FilterQuery{
 		// BlockHash: &blockHash,
-		FromBlock: big.NewInt(curHeight),
+		FromBlock: big.NewInt(curHeight + 1),
 		ToBlock:   big.NewInt(nextHeight),
 		// Topics:    topics,
 		Addresses: []common.Address{w.contractAddr},
@@ -296,7 +294,7 @@ func (w *Erc20Worker) GetSentTxStatus(hash string) storage.TxStatus {
 	return storage.TxSentStatusSuccess
 }
 
-func (w *Erc20Worker) GetTxCountLatest() (uint64, error) {
+func (w *Erc20Worker) GetTxCountLatestLA() (uint64, error) {
 	var result uint64
 	rpcClient := jsonrpc.NewClient(w.provider)
 
@@ -310,6 +308,20 @@ func (w *Erc20Worker) GetTxCountLatest() (uint64, error) {
 	return result, nil
 }
 
+func (w *Erc20Worker) GetTxCountLatestPOS() (uint64, error) {
+	var result hexutil.Uint64
+	rpcClient := jsonrpc.NewClient(w.provider)
+
+	resp, err := rpcClient.Call("eth_getTransactionCount", w.config.WorkerAddr.Hex(), "latest")
+	if err != nil {
+		return 0, err
+	}
+	if err := resp.GetObject(&result); err != nil {
+		return 0, err
+	}
+	return uint64(result), nil
+}
+
 // GetTransactor ...
 func (w *Erc20Worker) getTransactor() (auth *bind.TransactOpts, err error) {
 	privateKey, err := utils.GetPrivateKey(w.config)
@@ -319,37 +331,37 @@ func (w *Erc20Worker) getTransactor() (auth *bind.TransactOpts, err error) {
 
 	var nonce uint64
 	if w.chainName == storage.LaChain {
-		nonce, err = w.GetTxCountLatest()
+		nonce, err = w.GetTxCountLatestLA()
 		if err != nil {
 			return nil, err
 		}
-
-		auth, err = bind.NewKeyedTransactorWithChainID(privateKey, big.NewInt(w.chainID))
+	} else if w.chainName == storage.PosChain {
+		nonce, err = w.GetTxCountLatestPOS()
 		if err != nil {
 			return nil, err
 		}
-
 	} else {
 		nonce, err = w.client.PendingNonceAt(context.Background(), w.config.WorkerAddr)
 		if err != nil {
 			return nil, err
 		}
-		auth, err = bind.NewKeyedTransactorWithChainID(privateKey, big.NewInt(w.chainID))
-		if err != nil {
-			return nil, err
-		}
 	}
-	var gasPrice int64
+
+	auth, err = bind.NewKeyedTransactorWithChainID(privateKey, big.NewInt(w.chainID))
+	if err != nil {
+		return nil, err
+	}
+
+	var gasPrice float64
 	if w.chainName == storage.LaChain {
 		gasPrice = 1
 	} else {
-		gasPriceGWei, _ := strconv.ParseInt(w.storage.GetGasPrice(w.chainName).Price, 10, 64)
+		gasPriceGWei, _ := strconv.ParseFloat(w.storage.GetGasPrice(w.chainName).Price, 64)
 		if gasPriceGWei > 0 {
 			gasPrice = gasPriceGWei * 1000000000
 		}
 	}
-	println(gasPrice, "gasPrice")
-	auth.GasPrice = big.NewInt((gasPrice))
+	auth.GasPrice = big.NewInt((int64(gasPrice)))
 	auth.Nonce = big.NewInt(int64(nonce))
 	auth.Value = big.NewInt(0)                // in wei
 	auth.GasLimit = uint64(w.config.GasLimit) // in units
