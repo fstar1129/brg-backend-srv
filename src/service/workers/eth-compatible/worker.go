@@ -294,21 +294,7 @@ func (w *Erc20Worker) GetSentTxStatus(hash string) storage.TxStatus {
 	return storage.TxSentStatusSuccess
 }
 
-func (w *Erc20Worker) GetTxCountLatestLA() (uint64, error) {
-	var result uint64
-	rpcClient := jsonrpc.NewClient(w.provider)
-
-	resp, err := rpcClient.Call("eth_getTransactionCount", w.config.WorkerAddr.Hex(), "latest")
-	if err != nil {
-		return 0, err
-	}
-	if err := resp.GetObject(&result); err != nil {
-		return 0, err
-	}
-	return result, nil
-}
-
-func (w *Erc20Worker) GetTxCountLatestPOS() (uint64, error) {
+func (w *Erc20Worker) GetTxCountLatest() (uint64, error) {
 	var result hexutil.Uint64
 	rpcClient := jsonrpc.NewClient(w.provider)
 
@@ -330,13 +316,8 @@ func (w *Erc20Worker) getTransactor() (auth *bind.TransactOpts, err error) {
 	}
 
 	var nonce uint64
-	if w.chainName == storage.LaChain {
-		nonce, err = w.GetTxCountLatestLA()
-		if err != nil {
-			return nil, err
-		}
-	} else if w.chainName == storage.PosChain {
-		nonce, err = w.GetTxCountLatestPOS()
+	if w.chainName == storage.LaChain || w.chainName == storage.PosChain {
+		nonce, err = w.GetTxCountLatest()
 		if err != nil {
 			return nil, err
 		}
