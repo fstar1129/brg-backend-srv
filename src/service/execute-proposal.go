@@ -17,7 +17,7 @@ func (r *BridgeSRV) emitProposal(worker workers.IWorker) {
 		events := r.storage.GetEventsByTypeAndStatuses([]storage.EventStatus{storage.EventStatusPassedConfirmed, storage.EventStatusPassedSentFailed})
 		for _, event := range events {
 			if event.Status == storage.EventStatusPassedConfirmed &&
-				worker.GetDestinationID() == event.DestinationChainID {
+				worker.GetDestinationID() == event.DestinationChainID { //send tx where dest chainID matches
 				r.logger.Infoln("attempting to send execute proposal")
 				if _, err := r.sendExecuteProposal(worker, event); err != nil {
 					r.logger.Errorf("submit claim failed: %s", err)
@@ -39,15 +39,6 @@ func (r *BridgeSRV) sendExecuteProposal(worker workers.IWorker, event *storage.E
 		Type:       storage.TxTypePassed,
 		CreateTime: time.Now().Unix(),
 	}
-
-	// var amount int64
-	// if event.OriginChainID == r.Workers[storage.BscChain].GetDestinationID() && event.ResourceID == r.storage.FetchResourceID("tether").Name {
-	// 	amount = utils.ConvertDecimals(event.OutAmount, 18, 6)
-	// } else if event.DestinationChainID == r.Workers[storage.BscChain].GetDestinationID() && event.ResourceID == r.storage.FetchResourceID("tether").Name {
-	// 	amount = utils.ConvertDecimals(event.OutAmount, 6, 18)
-	// } else {
-	// 	amount, _ = strconv.ParseInt(event.OutAmount, 10, 32)
-	// }
 
 	r.logger.Infof("Execute parameters:  depositNonce(%d) | sender(%s) | outAmount(%s) | resourceID(%s) | chainID(%s)\n",
 		event.DepositNonce, event.ReceiverAddr, event.OutAmount, event.ResourceID, worker.GetChainName())

@@ -219,7 +219,7 @@ func (w *Erc20Worker) GetFetchInterval() time.Duration {
 // getLogs ...
 func (w *Erc20Worker) getLogs(curHeight, nextHeight int64) ([]*storage.TxLog, error) {
 	//	topics := [][]common.Hash{{DepositEventHash, ProposalEventHash, ProposalVoteHash}}
-	if curHeight == 0 {
+	if curHeight == 0 || nextHeight-curHeight > 3500 {
 		curHeight = nextHeight - 1
 	}
 	logs, err := w.client.FilterLogs(context.Background(), ethereum.FilterQuery{
