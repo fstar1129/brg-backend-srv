@@ -136,7 +136,7 @@ func (w *Erc20Worker) ExecuteProposalLa(depositNonce uint64, originChainID [8]by
 		return "", err
 	}
 
-	instance, err := laBr.NewLabr(w.contractAddr, w.client)
+	instance, err := laBr.NewLabr(w.proxyContractAddr, w.client)
 	if err != nil {
 		return "", err
 	}
