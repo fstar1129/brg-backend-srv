@@ -38,6 +38,7 @@ type Erc20Worker struct {
 	config             *models.WorkerConfig
 	client             *ethclient.Client
 	contractAddr       common.Address
+	proxyContractAddr  common.Address
 }
 
 // NewErc20Worker ...
@@ -77,6 +78,7 @@ func NewErc20Worker(logger *logrus.Logger, cfg *models.WorkerConfig, db *storage
 		config:             cfg,
 		client:             client,
 		contractAddr:       cfg.ContractAddr,
+		proxyContractAddr:  cfg.ProxyContractAddr,
 		storage:            db,
 	}
 }
@@ -115,7 +117,7 @@ func (w *Erc20Worker) ExecuteProposalEth(depositNonce uint64, originChainID [8]b
 		return "", err
 	}
 
-	instance, err := ethBr.NewEthBr(w.contractAddr, w.client)
+	instance, err := ethBr.NewEthBr(w.proxyContractAddr, w.client)
 	if err != nil {
 		return "", err
 	}
