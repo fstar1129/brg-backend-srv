@@ -6,15 +6,17 @@ import (
 	"crypto/ecdsa"
 	"fmt"
 	"math/big"
+	"strconv"
 	"time"
 
-	hubEth "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/eth-compatible/abi/relayer-hub/eth"
-	hubLA "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/eth-compatible/abi/relayer-hub/la"
+	ethBr "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/eth-compatible/abi/bridge/eth"
+	laBr "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/eth-compatible/abi/bridge/la"
 	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/utils"
 
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
@@ -27,16 +29,19 @@ import (
 
 // Erc20Worker ...
 type Erc20Worker struct {
-	provider     string
-	chainID      string
-	logger       *logrus.Entry // logger
-	config       *models.WorkerConfig
-	client       *ethclient.Client
-	contractAddr common.Address
+	provider           string
+	chainName          string
+	chainID            int64
+	destinationChainID string
+	storage            *storage.DataBase
+	logger             *logrus.Entry // logger
+	config             *models.WorkerConfig
+	client             *ethclient.Client
+	contractAddr       common.Address
 }
 
 // NewErc20Worker ...
-func NewErc20Worker(logger *logrus.Logger, cfg *models.WorkerConfig) *Erc20Worker {
+func NewErc20Worker(logger *logrus.Logger, cfg *models.WorkerConfig, db *storage.DataBase) *Erc20Worker {
 	client, err := ethclient.Dial(cfg.Provider)
 	if err != nil {
 		panic("new eth client error")
@@ -64,18 +69,31 @@ func NewErc20Worker(logger *logrus.Logger, cfg *models.WorkerConfig) *Erc20Worke
 
 	// init token addresses
 	return &Erc20Worker{
-		chainID:      cfg.ChainID,
-		logger:       logger.WithField("worker", cfg.ChainID),
-		provider:     cfg.Provider,
-		config:       cfg,
-		client:       client,
-		contractAddr: cfg.ContractAddr,
+		chainName:          cfg.ChainName,
+		chainID:            cfg.ChainID,
+		destinationChainID: cfg.DestinationChainID,
+		logger:             logger.WithField("worker", cfg.ChainName),
+		provider:           cfg.Provider,
+		config:             cfg,
+		client:             client,
+		contractAddr:       cfg.ContractAddr,
+		storage:            db,
 	}
 }
 
-// GetChain returns chain ID
-func (w *Erc20Worker) GetChain() string {
+// GetChainName returns chain ID
+func (w *Erc20Worker) GetChainName() string {
+	return w.chainName
+}
+
+// GetChainName returns chain ID
+func (w *Erc20Worker) GetChainID() string {
 	return string(w.chainID)
+}
+
+//returns destinationChainID to be checked to execute proposal
+func (w *Erc20Worker) GetDestinationID() string {
+	return w.destinationChainID
 }
 
 // GetStartHeight returns start blockchain height from config
@@ -91,96 +109,37 @@ func (w *Erc20Worker) GetConfirmNum() int64 {
 	return w.config.ConfirmNum
 }
 
-// Register ...
-func (w *Erc20Worker) Register(relayerAddress common.Address) (string, error) {
+func (w *Erc20Worker) ExecuteProposalEth(depositNonce uint64, originChainID [8]byte, destinationChainID [8]byte, resourceID [32]byte, receiptAddr string, amount string) (string, error) {
 	auth, err := w.getTransactor()
 	if err != nil {
 		return "", err
 	}
 
-	instance, err := hubEth.NewHubEth(w.contractAddr, w.client)
-	if err != nil {
-		return "", err
-	}
-
-	tx, err := instance.Register(auth, relayerAddress)
-	if err != nil {
-		return "", err
-	}
-
-	return tx.Hash().String(), nil
-}
-
-// Unregister ...
-func (w *Erc20Worker) Unregister(relayerAddress common.Address) (string, error) {
-	auth, err := w.getTransactor()
-	if err != nil {
-		return "", err
-	}
-
-	instance, err := hubEth.NewHubEth(w.contractAddr, w.client)
-	if err != nil {
-		return "", err
-	}
-
-	tx, err := instance.Unregister(auth, relayerAddress)
-	if err != nil {
-		return "", err
-	}
-
-	return tx.Hash().String(), nil
-}
-
-// Felony ...
-func (w *Erc20Worker) Felony(relayerAddress common.Address, chainID string) (string, error) {
-	auth, err := w.getTransactor()
-	if err != nil {
-		return "", err
-	}
-	if chainID != storage.LaChain {
-		instance, err := hubEth.NewHubEth(w.contractAddr, w.client)
-		if err != nil {
-			return "", err
-		}
-
-		tx, err := instance.Felony(auth, relayerAddress)
-		if err != nil {
-			return "", err
-		}
-
-		return tx.Hash().String(), nil
-
-	} else if chainID != storage.EthChain {
-		instance, err := hubLA.NewHubLA(w.contractAddr, w.client)
-		if err != nil {
-			return "", err
-		}
-
-		tx, err := instance.Felony(auth, relayerAddress)
-		if err != nil {
-			return "", err
-		}
-
-		return tx.Hash().String(), nil
-
-	}
-
-	return "", nil
-}
-
-//Penalty
-func (w *Erc20Worker) Penalty(relayerAddress common.Address, amount string) (string, error) {
-	auth, err := w.getTransactor()
-	if err != nil {
-		return "", err
-	}
-
-	instance, err := hubLA.NewHubLA(w.contractAddr, w.client)
+	instance, err := ethBr.NewEthBr(w.contractAddr, w.client)
 	if err != nil {
 		return "", err
 	}
 	value, _ := new(big.Int).SetString(amount, 10)
-	tx, err := instance.Slash(auth, relayerAddress, value)
+	tx, err := instance.ExecuteProposal(auth, originChainID, destinationChainID, depositNonce, resourceID, common.HexToAddress(receiptAddr), value)
+	if err != nil {
+		return "", err
+	}
+
+	return tx.Hash().String(), nil
+}
+
+func (w *Erc20Worker) ExecuteProposalLa(depositNonce uint64, originChainID [8]byte, destinationChainID [8]byte, resourceID [32]byte, receiptAddr string, amount string) (string, error) {
+	auth, err := w.getTransactor()
+	if err != nil {
+		return "", err
+	}
+
+	instance, err := laBr.NewLabr(w.contractAddr, w.client)
+	if err != nil {
+		return "", err
+	}
+	value, _ := new(big.Int).SetString(amount, 10)
+	tx, err := instance.ExecuteProposal(auth, originChainID, destinationChainID, depositNonce, resourceID, common.HexToAddress(receiptAddr), value)
 	if err != nil {
 		return "", err
 	}
@@ -218,7 +177,7 @@ func (w *Erc20Worker) GetBlockAndTxs(height int64) (*models.BlockAndTxLogs, erro
 	var head *Header
 	rpcClient := jsonrpc.NewClient(w.provider)
 
-	resp, err := rpcClient.Call("eth_getBlockByNumber", fmt.Sprintf("0x%x", height), false)
+	resp, err := rpcClient.Call("eth_getBlockByNumber", "latest", false)
 	if err != nil {
 		w.logger.Errorln("while call eth_getBlockByNumber, err = ", err)
 		return nil, err
@@ -233,14 +192,18 @@ func (w *Erc20Worker) GetBlockAndTxs(height int64) (*models.BlockAndTxLogs, erro
 		return nil, fmt.Errorf("not found")
 	}
 
-	logs, err := w.getLogs(head.Hash)
+	if height >= int64(head.Number) {
+		return nil, fmt.Errorf("not found")
+	}
+
+	logs, err := w.getLogs(height, int64(head.Number))
 	if err != nil {
-		w.logger.Errorf("while getEvents(blockhash = %s), err = %v", head.Hash, err)
+		w.logger.Errorf("while getEvents(from = %d, to = %d), err = %v", height, int64(head.Number), err)
 		return nil, err
 	}
 
 	return &models.BlockAndTxLogs{
-		Height:          height,
+		Height:          int64(head.Number),
 		BlockHash:       head.Hash.String(),
 		ParentBlockHash: head.ParentHash.Hex(),
 		BlockTime:       int64(head.Time),
@@ -254,21 +217,28 @@ func (w *Erc20Worker) GetFetchInterval() time.Duration {
 }
 
 // getLogs ...
-func (w *Erc20Worker) getLogs(blockHash common.Hash) ([]*storage.TxLog, error) {
+func (w *Erc20Worker) getLogs(curHeight, nextHeight int64) ([]*storage.TxLog, error) {
 	//	topics := [][]common.Hash{{DepositEventHash, ProposalEventHash, ProposalVoteHash}}
+	if curHeight == 0 {
+		curHeight = nextHeight - 1
+	}
 	logs, err := w.client.FilterLogs(context.Background(), ethereum.FilterQuery{
-		BlockHash: &blockHash,
-		//	Topics:    topics,
+		// BlockHash: &blockHash,
+		FromBlock: big.NewInt(curHeight + 1),
+		ToBlock:   big.NewInt(nextHeight),
+		// Topics:    topics,
 		Addresses: []common.Address{w.contractAddr},
+		Topics:    [][]common.Hash{},
 	})
 	if err != nil {
+		w.logger.WithFields(logrus.Fields{"function": "GetLogs()"}).Errorf("get event log error, err=%s", err)
 		return nil, err
 	}
 
 	models := make([]*storage.TxLog, 0, len(logs))
 	for _, log := range logs {
-		w.logger.Infof("WORKER(%s) NEW EVENT: %v\n\n", w.chainID, log)
-		event, err := ParseEvent(&log)
+		w.logger.Infof("WORKER(%s) NEW EVENT: %v\n\n", w.chainName, log)
+		event, err := w.parseEvent(&log)
 		if err != nil {
 			w.logger.WithFields(logrus.Fields{"function": "GetLogs()"}).Errorf("parse event log error, err=%s", err)
 			continue
@@ -277,8 +247,8 @@ func (w *Erc20Worker) getLogs(blockHash common.Hash) ([]*storage.TxLog, error) {
 			continue
 		}
 
-		txLog := event.ToTxLog(w.chainID)
-		txLog.Chain = w.chainID
+		txLog := event.ToTxLog(w.chainName)
+		txLog.Chain = w.chainName
 		txLog.Height = int64(log.BlockNumber)
 		txLog.EventID = log.TxHash.Hex()
 		txLog.BlockHash = log.BlockHash.Hex()
@@ -324,7 +294,7 @@ func (w *Erc20Worker) GetSentTxStatus(hash string) storage.TxStatus {
 	return storage.TxSentStatusSuccess
 }
 
-func (w *Erc20Worker) GetTxCountLatest() (uint64, error) {
+func (w *Erc20Worker) GetTxCountLatestLA() (uint64, error) {
 	var result uint64
 	rpcClient := jsonrpc.NewClient(w.provider)
 
@@ -332,12 +302,24 @@ func (w *Erc20Worker) GetTxCountLatest() (uint64, error) {
 	if err != nil {
 		return 0, err
 	}
-
 	if err := resp.GetObject(&result); err != nil {
 		return 0, err
 	}
-
 	return result, nil
+}
+
+func (w *Erc20Worker) GetTxCountLatestPOS() (uint64, error) {
+	var result hexutil.Uint64
+	rpcClient := jsonrpc.NewClient(w.provider)
+
+	resp, err := rpcClient.Call("eth_getTransactionCount", w.config.WorkerAddr.Hex(), "latest")
+	if err != nil {
+		return 0, err
+	}
+	if err := resp.GetObject(&result); err != nil {
+		return 0, err
+	}
+	return uint64(result), nil
 }
 
 // GetTransactor ...
@@ -348,29 +330,41 @@ func (w *Erc20Worker) getTransactor() (auth *bind.TransactOpts, err error) {
 	}
 
 	var nonce uint64
-	// if w.chainID == storage.LaChain {
-	// 	nonce, err = w.GetTxCountLatest()
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
+	if w.chainName == storage.LaChain {
+		nonce, err = w.GetTxCountLatestLA()
+		if err != nil {
+			return nil, err
+		}
+	} else if w.chainName == storage.PosChain {
+		nonce, err = w.GetTxCountLatestPOS()
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		nonce, err = w.client.PendingNonceAt(context.Background(), w.config.WorkerAddr)
+		if err != nil {
+			return nil, err
+		}
+	}
 
-	// 	auth, err = bind.NewKeyedTransactorWithChainID(privateKey, big.NewInt(int64(26)))
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-
-	// } else {
-	nonce, err = w.client.PendingNonceAt(context.Background(), w.config.WorkerAddr)
+	auth, err = bind.NewKeyedTransactorWithChainID(privateKey, big.NewInt(w.chainID))
 	if err != nil {
 		return nil, err
 	}
-	auth = bind.NewKeyedTransactor(privateKey)
-	// }
 
+	var gasPrice float64
+	if w.chainName == storage.LaChain {
+		gasPrice = 1
+	} else {
+		gasPriceGWei, _ := strconv.ParseFloat(w.storage.GetGasPrice(w.chainName).Price, 64)
+		if gasPriceGWei > 0 {
+			gasPrice = gasPriceGWei * 1000000000
+		}
+	}
+	auth.GasPrice = big.NewInt((int64(gasPrice)))
 	auth.Nonce = big.NewInt(int64(nonce))
 	auth.Value = big.NewInt(0)                // in wei
 	auth.GasLimit = uint64(w.config.GasLimit) // in units
-	auth.GasPrice = w.config.GasPrice
 
 	return auth, nil
 }
@@ -384,6 +378,22 @@ func (w *Erc20Worker) EthBalance(address common.Address) (*big.Int, error) {
 func (w *Erc20Worker) GetWorkerAddress() string {
 	return w.config.WorkerAddr.String()
 }
+
+//GetGasPrice
+// func (w *Erc20Worker) GetGasPrice() (uint64, error) {
+// 	var result hexutil.Uint64
+// 	rpcClient := jsonrpc.NewClient(w.provider)
+// 	resp, err := rpcClient.Call("eth_gasPrice")
+// 	if err != nil {
+// 		return 0, err
+// 	}
+// 	if err := resp.GetObject(&result); err != nil {
+// 		println("err in obj")
+// 		return 0, err
+// 	}
+// 	return uint64(result), nil
+// 	time.Sleep(time.Second * 30)
+// }
 
 // GetColdWalletAddress ...
 func (w *Erc20Worker) GetColdWalletAddress() string {

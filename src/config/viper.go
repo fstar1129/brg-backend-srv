@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/models"
+	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/storage"
 
 	"github.com/spf13/viper"
 )
@@ -13,9 +14,11 @@ import (
 // Config ...
 type Config interface {
 	ReadServiceConfig() string
-	ReadWorkersConfig() (*models.WorkerConfig, *models.WorkerConfig)
+	ReadWorkersConfig() (*models.WorkerConfig, *models.WorkerConfig, *models.WorkerConfig)
 	ReadLachainConfig() *models.WorkerConfig
+	ReadFetcherConfig() (*models.FetcherConfig, *models.FetcherConfig, *models.FetcherConfig)
 	ReadDBConfig() *models.StorageConfig
+	ReadResourceIDs() []*storage.ResourceId
 	GetString(key string) string
 	GetStringMap(key string) map[string]string
 	GetInt64(key string) int64
@@ -29,11 +32,13 @@ type viperConfig struct {
 
 func (v *viperConfig) Init() {
 	viper.AutomaticEnv()
-	viper.AddConfigPath(".")
+	viper.AddConfigPath(os.Getenv("FILE_PATH"))
+	// viper.AddConfigPath(".")
 	replacer := strings.NewReplacer(`.`, `_`)
 	viper.SetEnvKeyReplacer(replacer)
 	viper.SetConfigType(`json`)
-	viper.SetConfigFile(`config.json`)
+	viper.SetConfigName(os.Getenv("FILE_NAME"))
+	// viper.SetConfigFile(`config.json`)
 	if _, err := os.Stat("./config.json.local"); !os.IsNotExist(err) {
 		viper.SetConfigFile(`config.json.local`)
 	}

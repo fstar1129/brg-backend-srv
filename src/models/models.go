@@ -64,7 +64,8 @@ type StorageConfig struct {
 // WorkerConfig ...
 type WorkerConfig struct {
 	NetworkType                    string         `json:"type"`
-	ChainID                        string         `json:"chain_id"`
+	ChainID                        int64          `json:"chain_id"`
+	ChainName                      string         `json:"chain_id"`
 	User                           string         `json:"user"`
 	Password                       string         `json:"password"`
 	SwapType                       string         `json:"swap_type"`
@@ -86,6 +87,7 @@ type WorkerConfig struct {
 	ChainDecimal                   int            `json:"chain_decimal"`
 	ConfirmNum                     int64          `json:"confirm_num"`
 	StartBlockHeight               int64          `json:"start_block_height"`
+	DestinationChainID             string         `json:"dest_id"`
 }
 
 type TssConfig struct {
@@ -96,4 +98,10 @@ type TssConfig struct {
 // RelayerConfig ...
 type RelayerConfig struct {
 	Address common.Address
+}
+
+// FetcherConfig
+type FetcherConfig struct {
+	ChainName string
+	URL       string
 }

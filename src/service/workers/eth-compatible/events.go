@@ -7,8 +7,9 @@ import (
 	"strings"
 
 	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/storage"
-	hubEth "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/eth-compatible/abi/relayer-hub/eth"
-	hubLA "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/eth-compatible/abi/relayer-hub/la"
+	ethBr "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/eth-compatible/abi/bridge/eth"
+	laBr "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/eth-compatible/abi/bridge/la"
+	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/utils"
 
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
@@ -20,95 +21,62 @@ import (
 ////
 
 const (
-	// RelayerRegisterEventName ...
-	RelayerRegisterEventName   = "RelayerRegister"
-	RelayerUnregisterEventName = "RelayerUnRegister"
-	RelayerBlockedEventName    = "RelayerBlocked"
-	PenaltyForRelayerEventName = "PenaltyForRelayer"
+	ProposalEventName = "ProposalEvent"
 )
-
-// RegisterRelayer = 0x03f64c5eb6e7ea7290123c03dbf1d28d676a583815f5f6a8ebd7f153cfb45215
-// RelayerUnRegister  = 0x013c40a2b0c93c7ba3e8b43e7529d1d6f020670e66817894c8f86708afb3e62c
-// PenaltyForRelayer = 0xf771f6f0a64d5cbff2d92da9bcc1b2ff0c4ba763dec1a9a50a7b06a60429a93a
-// RewardForRelayer = 0x823083e86e79d611ae5083c45dd88f8f38ed42a14f0884540d09a3273c6100e5
-// RelayerBlocked = 0xa5ea068b2ed8e05403d639cea236649975a9712487c612f9a6945b6bad00d81d
 
 var (
-	RelayerRegisterEventHash   = common.HexToHash("0x03f64c5eb6e7ea7290123c03dbf1d28d676a583815f5f6a8ebd7f153cfb45215")
-	RelayerUnregisterEventHash = common.HexToHash("0x013c40a2b0c93c7ba3e8b43e7529d1d6f020670e66817894c8f86708afb3e62c")
-	RelayerBlockedEventHash    = common.HexToHash("0xa5ea068b2ed8e05403d639cea236649975a9712487c612f9a6945b6bad00d81d")
-	PenaltyForRelayerEventHash = common.HexToHash("0x73f262bdf0c3145b25a03d5c75d5989bdab8ecb77968d7ff6de8a3bd83b8b13b")
+	ProposalEventHash = common.HexToHash("0x9686dcabd0450cad86a88df15a9d35b08b35d1b08a19008df37cf8538c467516")
 )
 
-// DepositEvent represents a Deposit event raised by the Bridge.sol contract.
-type RelayerRegisterEvent struct {
-	Relayer common.Address
-	Raw     types.Log
+// ProposalEvent represents a ProposalEvent event raised by the Bridge.sol contract.
+type ProposalEvent struct {
+	OriginChainID      [8]byte
+	DestinationChainID [8]byte
+	RecipientAddress   common.Address
+	Amount             *big.Int
+	DepositNonce       uint64
+	Status             uint8
+	ResourceID         [32]byte
+	DataHash           [32]byte
+	Raw                types.Log // Blockchain specific contextual infos
 }
 
-type RelayerUnregisterEvent struct {
-	Relayer common.Address
-	Raw     types.Log
-}
-
-type RelayerBlockedEvent struct {
-	Relayer common.Address
-	Raw     types.Log
-}
-
-type PenaltyForRelayerEvent struct {
-	Reason  string
-	Relayer common.Address
-	Penalty *big.Int
-	Raw     types.Log
-}
-
-// ParseRelayerRegisterEvent ...
-func ParseRelayerRegisterEvent(abi *abi.ABI, log *types.Log) (ContractEvent, error) {
-	var ev RelayerRegisterEvent
-	if err := abi.UnpackIntoInterface(&ev, RelayerRegisterEventName, log.Data); err != nil {
-		fmt.Println("AA")
+func ParseLAProposalEvent(abi *abi.ABI, log *types.Log) (ContractEvent, error) {
+	var ev ProposalEvent
+	if err := abi.UnpackIntoInterface(&ev, ProposalEventName, log.Data); err != nil {
 		return nil, err
 	}
-	fmt.Printf("RelayerRegister\n")
-	fmt.Printf("relayer address: %s\n", ev.Relayer)
+
+	fmt.Printf("ProposalEvent\n")
+	fmt.Printf("origin chain ID: 0x%s\n", common.Bytes2Hex(ev.OriginChainID[:]))
+	fmt.Printf("destination chain ID: 0x%s\n", common.Bytes2Hex(ev.DestinationChainID[:]))
+	fmt.Printf("deposit nonce: %d\n", ev.DepositNonce)
+	fmt.Printf("status: %d\n", ev.Status)
+	fmt.Printf("resource ID: 0x%s\n", common.Bytes2Hex(ev.ResourceID[:]))
+	fmt.Printf("recipient: 0x%s\n", common.Bytes2Hex(ev.RecipientAddress[:]))
+	fmt.Printf("DataHash: 0x%s\n\n", common.Bytes2Hex(ev.DataHash[:]))
+	fmt.Printf("amount: ", ev.Amount.String())
 
 	return ev, nil
 }
 
-func ParseRelayerUnregisterEvent(abi *abi.ABI, log *types.Log) (ContractEvent, error) {
-	var ev RelayerUnregisterEvent
-	if err := abi.UnpackIntoInterface(&ev, RelayerUnregisterEventName, log.Data); err != nil {
-		fmt.Println("AA", err)
+func ParseETHProposalEvent(abi *abi.ABI, log *types.Log) (ContractEvent, error) {
+	var ev ProposalEvent
+	if err := abi.UnpackIntoInterface(&ev, ProposalEventName, log.Data); err != nil {
 		return nil, err
 	}
-	fmt.Printf("RelayerUnregister\n")
-	fmt.Printf("relayer address: %s\n", ev.Relayer.Hex())
+	ev.OriginChainID = utils.BytesToBytes8(log.Topics[1].Bytes())
+	ev.DestinationChainID = utils.BytesToBytes8(log.Topics[2].Bytes())
+	ev.RecipientAddress = common.BytesToAddress(log.Topics[3].Bytes())
 
-	return ev, nil
-}
-
-func ParseRelayerBlockedEvent(abi *abi.ABI, log *types.Log) (ContractEvent, error) {
-	var ev RelayerBlockedEvent
-	if err := abi.UnpackIntoInterface(&ev, RelayerBlockedEventName, log.Data); err != nil {
-		fmt.Println("AA", err)
-		return nil, err
-	}
-	fmt.Printf("RelayerBlocked\n")
-	fmt.Printf("relayer address: %s\n", ev.Relayer.Hex())
-
-	return ev, nil
-}
-
-func ParsePenaltyForRelayerEvent(abi *abi.ABI, log *types.Log) (ContractEvent, error) {
-	var ev PenaltyForRelayerEvent
-	if err := abi.UnpackIntoInterface(&ev, PenaltyForRelayerEventName, log.Data); err != nil {
-		fmt.Println("AA", err)
-		return nil, err
-	}
-	ev.Relayer = common.BytesToAddress(log.Topics[1][:])
-	fmt.Printf("PenaltyForRelayer\n")
-	fmt.Printf("relayer address: %s with penalty %s\n", ev.Relayer.Hex(), ev.Penalty.String())
+	fmt.Printf("ProposalEvent\n")
+	fmt.Printf("origin chain ID: 0x%s\n", common.Bytes2Hex(ev.OriginChainID[:]))
+	fmt.Printf("destination chain ID: 0x%s\n", common.Bytes2Hex(ev.DestinationChainID[:]))
+	fmt.Printf("deposit nonce: %d\n", ev.DepositNonce)
+	fmt.Printf("status: %d\n", ev.Status)
+	fmt.Printf("resource ID: 0x%s\n", common.Bytes2Hex(ev.ResourceID[:]))
+	fmt.Printf("DataHash: 0x%s\n\n", common.Bytes2Hex(ev.DataHash[:]))
+	fmt.Printf("amount: ", ev.Amount.String())
 
 	return ev, nil
 }
@@ -116,55 +84,42 @@ func ParsePenaltyForRelayerEvent(abi *abi.ABI, log *types.Log) (ContractEvent, e
 // !!! TODO !!!
 
 // ToTxLog ...
-func (ev RelayerRegisterEvent) ToTxLog(chain string) *storage.TxLog {
-	return &storage.TxLog{
-		Chain:  chain,
-		TxType: storage.TxTypeRegister,
-		Data:   ev.Relayer.Hex(),
+func (ev ProposalEvent) ToTxLog(chain string) *storage.TxLog {
+	// if status == 2 -> already claimed -> mint
+	// if status == 3-> already minted(executed)
+	txlog := &storage.TxLog{
+		Chain:              chain,
+		TxType:             storage.TxTypeClaim,
+		ReceiverAddr:       ev.RecipientAddress.String(),
+		OutAmount:          ev.Amount.String(),
+		SwapID:             utils.CalcutateSwapID(string(ev.DataHash[:]), string(ev.DepositNonce)),
+		DestinationChainID: common.Bytes2Hex(ev.DestinationChainID[:]),
+		OriginСhainID:      common.Bytes2Hex(ev.OriginChainID[:]),
+		DepositNonce:       ev.DepositNonce,
+		SwapStatus:         ev.Status,
+		ResourceID:         common.Bytes2Hex(ev.ResourceID[:]),
 	}
-}
 
-func (ev RelayerUnregisterEvent) ToTxLog(chain string) *storage.TxLog {
-	return &storage.TxLog{
-		Chain:  chain,
-		TxType: storage.TxTypeUnregister,
-		Data:   ev.Relayer.Hex(),
+	if ev.Status == uint8(2) {
+		txlog.TxType = storage.TxTypePassed
+	} else if ev.Status == uint8(3) {
+		txlog.TxType = storage.TxTypeSpend
 	}
-}
 
-func (ev RelayerBlockedEvent) ToTxLog(chain string) *storage.TxLog {
-	return &storage.TxLog{
-		Chain:  chain,
-		TxType: storage.TxTypeFelony,
-		Data:   ev.Relayer.Hex(),
-	}
-}
-
-func (ev PenaltyForRelayerEvent) ToTxLog(chain string) *storage.TxLog {
-	return &storage.TxLog{
-		Chain:   storage.EthChain,
-		TxType:  storage.TxTypePenalty,
-		Data:    ev.Relayer.Hex(),
-		Penalty: ev.Penalty.String(),
-	}
+	return txlog
 }
 
 // ParseEvent ...
-func ParseEvent(log *types.Log) (ContractEvent, error) {
-	if bytes.Equal(log.Topics[0][:], RelayerRegisterEventHash[:]) {
-		abi, _ := abi.JSON(strings.NewReader(hubLA.HubLAABI))
-		return ParseRelayerRegisterEvent(&abi, log)
-	} else if bytes.Equal(log.Topics[0][:], RelayerUnregisterEventHash[:]) {
-		abi, _ := abi.JSON(strings.NewReader(hubLA.HubLAABI))
-		return ParseRelayerUnregisterEvent(&abi, log)
-	} else if bytes.Equal(log.Topics[0][:], RelayerBlockedEventHash[:]) {
-		abi, _ := abi.JSON(strings.NewReader(hubLA.HubLAABI))
-		return ParseRelayerBlockedEvent(&abi, log)
-	} else if bytes.Equal(log.Topics[0][:], PenaltyForRelayerEventHash[:]) {
-		abi, _ := abi.JSON(strings.NewReader(hubEth.HubEthABI))
-		return ParsePenaltyForRelayerEvent(&abi, log)
+func (w *Erc20Worker) parseEvent(log *types.Log) (ContractEvent, error) {
+	if bytes.Equal(log.Topics[0][:], ProposalEventHash[:]) {
+		if w.GetChainName() == storage.LaChain {
+			abi, _ := abi.JSON(strings.NewReader(laBr.LabrABI))
+			return ParseLAProposalEvent(&abi, log)
+		} else {
+			abi, _ := abi.JSON(strings.NewReader(ethBr.EthBrABI))
+			return ParseETHProposalEvent(&abi, log)
+		}
 	}
-
 	return nil, nil
 }
 

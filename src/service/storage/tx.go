@@ -8,8 +8,7 @@ import (
 
 // GetConfirmedTxsLog ...
 func (d *DataBase) GetConfirmedTxsLog(chain string, event *Event, tx *gorm.DB) (txLogs []*TxLog, err error) {
-	query := tx.Where("chain = ? and status = ? and event_id = ?", chain, TxStatusConfirmed, event.ID)
-	if err := query.Order("id desc").Find(&txLogs).Error; err != nil {
+	if err := tx.Where("chain = ? and status = ? and event_id = ?", chain, TxStatusConfirmed, event.ID).Find(&txLogs).Error; err != nil {
 		return txLogs, err
 	}
 
@@ -72,32 +71,24 @@ func (d *DataBase) ConfirmWorkerTx(chainID string, txLogs []*TxLog, txHashes []s
 // ConfirmTx ...
 func (d *DataBase) ConfirmTx(tx *gorm.DB, txLog *TxLog) error {
 	switch txLog.TxType {
-	case TxTypeRegister:
+	case TxTypeClaim:
 		if err := d.UpdateEventStatusWhenConfirmTx(tx, txLog, []EventStatus{
-			EventStatusRegisterConfirmed, EventStatusRegisterSent, EventStatusRegisterFailed},
-			nil, EventStatusRegisterConfirmed); err != nil {
+			EventStatusClaimConfirmed},
+			nil, EventStatusClaimConfirmed); err != nil {
 			return err
 		}
-	case TxTypeUnregister:
+	case TxTypePassed:
 		if err := d.UpdateEventStatusWhenConfirmTx(tx, txLog, []EventStatus{
-			EventStatusUnregisterConfirmed, EventStatusUnregisterSent, EventStatusUnregisterFailed},
-			nil, EventStatusUnregisterConfirmed); err != nil {
+			EventStatusClaimConfirmed, EventStatusPassedInit},
+			nil, EventStatusPassedConfirmed); err != nil {
 			return err
 		}
-	case TxTypeFelony:
+	case TxTypeSpend:
 		if err := d.UpdateEventStatusWhenConfirmTx(tx, txLog, []EventStatus{
-			EventStatusFelonyConfirmed, EventStatusFelonySent, EventStatusFelonyFailed},
-			nil, EventStatusFelonyConfirmed); err != nil {
+			EventStatusPassedSent},
+			nil, EventStatusSpendConfirmed); err != nil {
 			return err
 		}
-	case TxTypePenalty:
-		if err := d.UpdateEventStatusWhenConfirmTx(tx, txLog, []EventStatus{
-			EventStatusPenaltyConfirmed, EventStatusPenaltySent, EventStatusPenaltyFailed},
-			nil, EventStatusPenaltyConfirmed); err != nil {
-			return err
-		}
-
-		//	case TxTypeUnregister:
 	}
 
 	return nil

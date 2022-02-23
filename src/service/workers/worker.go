@@ -3,7 +3,6 @@ package workers
 import (
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
 	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/models"
 	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/storage"
 )
@@ -11,7 +10,9 @@ import (
 // IWorker ...
 type IWorker interface {
 	// GetChain returns unique name of the chain(like LA, ETH and etc)
-	GetChain() string
+	GetChainID() string
+	GetChainName() string
+	GetDestinationID() string
 	// GetWokrerAddress returns worker address
 	GetWorkerAddress() string
 	// GetStartHeight returns blockchain start height for watcher
@@ -24,6 +25,7 @@ type IWorker interface {
 	GetBlockAndTxs(height int64) (*models.BlockAndTxLogs, error)
 	// GetFetchInterval returns fetch interval of the chain like average blocking time, it is used in observer
 	GetFetchInterval() time.Duration
+	// GetGasPrice() (uint64, error)
 	// GetWorkerAddress returns relayer account address
 	// GetWorkerAddress() string
 	// // GetColdWalletAddress returns the address of the relayer's cold wallet
@@ -47,18 +49,8 @@ type IWorker interface {
 	// HasSwap returns does swap exist
 	// HasSwap(swapID common.Hash) (bool, error)
 	// HTLT sends htlt tx
-
-	// Register
-	Register(relayerAddress common.Address) (string, error)
-
-	// Unregister
-	Unregister(relayerAddress common.Address) (string, error)
-
-	//Felony
-	Felony(relayerAddress common.Address, chainID string) (string, error)
-
-	// Penalty
-	Penalty(relayerAddress common.Address, amount string) (string, error)
+	ExecuteProposalEth(depositNonce uint64, originChainID [8]byte, destinationChainID [8]byte, resourceID [32]byte, receiptAddr string, amount string) (string, error)
+	ExecuteProposalLa(depositNonce uint64, originChainID [8]byte, destinationChainID [8]byte, resourceID [32]byte, receiptAddr string, amount string) (string, error)
 
 	//HTLT(erc20TokenAddr, lrc20TokenAddr, recipientAddr, otherChainRecipientAddr string, timestamp int64,
 	//	heightSpan int64, outAmount *big.Int) (string, error)

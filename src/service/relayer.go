@@ -5,6 +5,7 @@ import (
 	"time"
 
 	watcher "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/blockchains-watcher"
+	fetcher "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/gas-price-fetcher"
 	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/storage"
 	workers "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers"
 	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/eth-compatible"
@@ -20,13 +21,15 @@ type BridgeSRV struct {
 	sync.RWMutex
 	logger   *logrus.Logger
 	Watcher  *watcher.WatcherSRV
+	Fetcher  *fetcher.FetcherSrv
 	laWorker workers.IWorker
 	Workers  map[string]workers.IWorker
 	storage  *storage.DataBase
 }
 
 // CreateNewBridgeSRV ...
-func CreateNewBridgeSRV(logger *logrus.Logger, gormDB *gorm.DB, laConfig, ethConfig *models.WorkerConfig) *BridgeSRV {
+func CreateNewBridgeSRV(logger *logrus.Logger, gormDB *gorm.DB, laConfig, posCfg, bscCfg, ethCfg *models.WorkerConfig,
+	posFetCfg, bscFetCfg, ethFetCfg *models.FetcherConfig, resourceIDs []*storage.ResourceId) *BridgeSRV {
 	// init database
 	db, err := storage.InitStorage(gormDB)
 	if err != nil {
@@ -37,11 +40,13 @@ func CreateNewBridgeSRV(logger *logrus.Logger, gormDB *gorm.DB, laConfig, ethCon
 	inst := BridgeSRV{
 		logger:   logger,
 		storage:  db,
-		laWorker: eth.NewErc20Worker(logger, laConfig),
+		laWorker: eth.NewErc20Worker(logger, laConfig, db),
 		Workers:  make(map[string]workers.IWorker),
 	}
 	// create erc20 worker
-	inst.Workers["ERC20"] = eth.NewErc20Worker(logger, ethConfig)
+	inst.Workers[storage.PosChain] = eth.NewErc20Worker(logger, posCfg, db)
+	inst.Workers[storage.BscChain] = eth.NewErc20Worker(logger, bscCfg, db)
+	inst.Workers[storage.EthChain] = eth.NewErc20Worker(logger, ethCfg, db)
 	// create la worker
 	inst.Workers[storage.LaChain] = inst.laWorker
 
@@ -51,7 +56,9 @@ func CreateNewBridgeSRV(logger *logrus.Logger, gormDB *gorm.DB, laConfig, ethCon
 		return nil
 	}
 	inst.Watcher = watcher.CreateNewWatcherSRV(logger, db, inst.Workers)
+	inst.Fetcher = fetcher.CreateFetcherSrv(logger, db, posFetCfg, bscFetCfg, ethFetCfg)
 
+	db.SaveResourceIDs(resourceIDs)
 	return &inst
 }
 
@@ -61,16 +68,12 @@ func CreateNewBridgeSRV(logger *logrus.Logger, gormDB *gorm.DB, laConfig, ethCon
 func (r *BridgeSRV) Run() {
 	// start watcher
 	r.Watcher.Run()
+	//start fetcher
+	r.Fetcher.Run()
 	// run Worker workers
 	for _, worker := range r.Workers {
 		go r.ConfirmWorkerTx(worker)
-		go r.emitFelony(worker)
-		if worker.GetChain() != storage.LaChain {
-			go r.emitRegistered(worker)
-			go r.emitUnregistered(worker)
-		} else if worker.GetChain() != storage.EthChain {
-			go r.emitPenalty(worker)
-		}
+		go r.emitProposal(worker)
 		go r.CheckTxSentRoutine(worker)
 	}
 }
@@ -78,7 +81,7 @@ func (r *BridgeSRV) Run() {
 // ConfirmWorkerTx ...
 func (r *BridgeSRV) ConfirmWorkerTx(worker workers.IWorker) {
 	for {
-		txLogs, err := r.storage.FindTxLogs(worker.GetChain(), worker.GetConfirmNum())
+		txLogs, err := r.storage.FindTxLogs(worker.GetChainName(), worker.GetConfirmNum())
 		if err != nil {
 			r.logger.Errorf("ConfirmWorkerTx(), err = %s", err)
 			time.Sleep(10 * time.Second)
@@ -89,54 +92,32 @@ func (r *BridgeSRV) ConfirmWorkerTx(worker workers.IWorker) {
 		newEvents := make([]*storage.Event, 0)
 
 		for _, txLog := range txLogs {
-			if txLog.TxType == storage.TxTypeRegister {
-				r.logger.Infoln("register worker")
+			// reject swap request if receiver addr and worker chain addr both are r addr
+			if worker.IsSameAddress(txLog.ReceiverAddr, worker.GetWorkerAddress()) &&
+				!r.laWorker.IsSameAddress(txLog.WorkerChainAddr, r.laWorker.GetWorkerAddress()) {
+				r.logger.Warnln("THE SAME")
+			}
+			if txLog.TxType == storage.TxTypePassed {
+				r.logger.Infoln("New Event")
 				newEvent := &storage.Event{
-					RelayerAddress: txLog.Data,
-					ChainID:        txLog.Chain,
-					Height:         txLog.Height,
-					Status:         storage.EventStatusRegisterInit,
-					CreateTime:     time.Now().Unix(),
-				}
-				newEvents = append(newEvents, newEvent)
-			} else if txLog.TxType == storage.TxTypeUnregister {
-				r.logger.Infoln("unregister worker")
-				newEvent := &storage.Event{
-					RelayerAddress: txLog.Data,
-					ChainID:        txLog.Chain,
-					Height:         txLog.Height,
-					Status:         storage.EventStatusUnregisterInit,
-					CreateTime:     time.Now().Unix(),
-				}
-				newEvents = append(newEvents, newEvent)
-			} else if txLog.TxType == storage.TxTypeFelony {
-				r.logger.Infoln("Felony worker")
-				newEvent := &storage.Event{
-					RelayerAddress: txLog.Data,
-					ChainID:        txLog.Chain,
-					Height:         txLog.Height,
-					Status:         storage.EventStatusFelonyInit,
-					CreateTime:     time.Now().Unix(),
-				}
-				newEvents = append(newEvents, newEvent)
-			} else if txLog.TxType == storage.TxTypePenalty {
-				r.logger.Infoln("Penalty worker")
-				newEvent := &storage.Event{
-					RelayerAddress: txLog.Data,
-					ChainID:        txLog.Chain,
-					Height:         txLog.Height,
-					Status:         storage.EventStatusPenaltyInit,
-					CreateTime:     time.Now().Unix(),
-					Penalty:        txLog.Penalty,
+					ReceiverAddr:       txLog.ReceiverAddr,
+					DepositNonce:       txLog.DepositNonce,
+					ResourceID:         txLog.ResourceID,
+					ChainID:            txLog.Chain,
+					DestinationChainID: txLog.DestinationChainID,
+					OriginChainID:      txLog.OriginСhainID,
+					OutAmount:          txLog.OutAmount,
+					Height:             txLog.Height,
+					Status:             storage.EventStatusPassedConfirmed,
+					CreateTime:         time.Now().Unix(),
 				}
 				newEvents = append(newEvents, newEvent)
 			}
-
 			txHashes = append(txHashes, txLog.TxHash)
 		}
 
 		//
-		if err := r.storage.ConfirmWorkerTx(worker.GetChain(), txLogs, txHashes, newEvents); err != nil {
+		if err := r.storage.ConfirmWorkerTx(worker.GetChainName(), txLogs, txHashes, newEvents); err != nil {
 			r.logger.Errorf("compensate new swap tx error, err=%s", err)
 		}
 
@@ -154,7 +135,7 @@ func (r *BridgeSRV) CheckTxSentRoutine(worker workers.IWorker) {
 
 // CheckTxSent ...
 func (r *BridgeSRV) CheckTxSent(worker workers.IWorker) {
-	txsSent, err := r.storage.GetTxsSentByStatus(worker.GetChain())
+	txsSent, err := r.storage.GetTxsSentByStatus(worker.GetChainName())
 	if err != nil {
 		r.logger.WithFields(logrus.Fields{"function": "CheckTxSent() | GetTxsSentByStatus()"}).Errorln(err)
 		return
