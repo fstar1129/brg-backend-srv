@@ -1,0 +1,18 @@
+name: Deploy Testnet
+on: [workflow_dispatch]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: rlespinasse/github-slug-action@v4
+    - name: Rancher Deploy
+      uses: sekassel-research/actions-rancher-update@1.1.4
+      with:
+        rancher_url: ${{ secrets.TEST_RANCHER_URL_API }}
+        rancher_access: ${{ secrets.TEST_RANCHER_ACCESS_KEY}}
+        rancher_key: ${{ secrets.TEST_RANCHER_SECRET_KEY }}
+        project_id: 1a514
+        stack_name: lachain-testnet-backend-bridges-bridge-backend
+        service_name: bridge-backend
+        docker_image: ghcr.io/${{ env.GITHUB_REPOSITORY_OWNER_PART_SLUG }}/${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }}:${{ env.GITHUB_REF_SLUG_URL }}

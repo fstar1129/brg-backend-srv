@@ -5,6 +5,7 @@ import (
 	"time"
 
 	watcher "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/blockchains-watcher"
+	fetcher "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/gas-price-fetcher"
 	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/storage"
 	workers "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers"
 	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/eth-compatible"
@@ -20,13 +21,15 @@ type BridgeSRV struct {
 	sync.RWMutex
 	logger   *logrus.Logger
 	Watcher  *watcher.WatcherSRV
+	Fetcher  *fetcher.FetcherSrv
 	laWorker workers.IWorker
 	Workers  map[string]workers.IWorker
 	storage  *storage.DataBase
 }
 
 // CreateNewBridgeSRV ...
-func CreateNewBridgeSRV(logger *logrus.Logger, gormDB *gorm.DB, laConfig, posCfg, bscCfg *models.WorkerConfig) *BridgeSRV {
+func CreateNewBridgeSRV(logger *logrus.Logger, gormDB *gorm.DB, laConfig, posCfg, bscCfg, ethCfg *models.WorkerConfig,
+	posFetCfg, bscFetCfg, ethFetCfg *models.FetcherConfig, resourceIDs []*storage.ResourceId) *BridgeSRV {
 	// init database
 	db, err := storage.InitStorage(gormDB)
 	if err != nil {
@@ -37,12 +40,13 @@ func CreateNewBridgeSRV(logger *logrus.Logger, gormDB *gorm.DB, laConfig, posCfg
 	inst := BridgeSRV{
 		logger:   logger,
 		storage:  db,
-		laWorker: eth.NewErc20Worker(logger, laConfig),
+		laWorker: eth.NewErc20Worker(logger, laConfig, db),
 		Workers:  make(map[string]workers.IWorker),
 	}
 	// create erc20 worker
-	inst.Workers[storage.PosChain] = eth.NewErc20Worker(logger, posCfg)
-	inst.Workers[storage.BscChain] = eth.NewErc20Worker(logger, bscCfg)
+	inst.Workers[storage.PosChain] = eth.NewErc20Worker(logger, posCfg, db)
+	inst.Workers[storage.BscChain] = eth.NewErc20Worker(logger, bscCfg, db)
+	inst.Workers[storage.EthChain] = eth.NewErc20Worker(logger, ethCfg, db)
 	// create la worker
 	inst.Workers[storage.LaChain] = inst.laWorker
 
@@ -52,7 +56,9 @@ func CreateNewBridgeSRV(logger *logrus.Logger, gormDB *gorm.DB, laConfig, posCfg
 		return nil
 	}
 	inst.Watcher = watcher.CreateNewWatcherSRV(logger, db, inst.Workers)
+	inst.Fetcher = fetcher.CreateFetcherSrv(logger, db, posFetCfg, bscFetCfg, ethFetCfg)
 
+	db.SaveResourceIDs(resourceIDs)
 	return &inst
 }
 
@@ -62,6 +68,8 @@ func CreateNewBridgeSRV(logger *logrus.Logger, gormDB *gorm.DB, laConfig, posCfg
 func (r *BridgeSRV) Run() {
 	// start watcher
 	r.Watcher.Run()
+	//start fetcher
+	r.Fetcher.Run()
 	// run Worker workers
 	for _, worker := range r.Workers {
 		go r.ConfirmWorkerTx(worker)
@@ -100,7 +108,7 @@ func (r *BridgeSRV) ConfirmWorkerTx(worker workers.IWorker) {
 					OriginChainID:      txLog.OriginСhainID,
 					OutAmount:          txLog.OutAmount,
 					Height:             txLog.Height,
-					Status:             storage.EventStatusPassedInit,
+					Status:             storage.EventStatusPassedConfirmed,
 					CreateTime:         time.Now().Unix(),
 				}
 				newEvents = append(newEvents, newEvent)

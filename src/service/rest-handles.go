@@ -55,3 +55,8 @@ func (r *BridgeSRV) GetRelayerAccountBalance() {
 func (r *BridgeSRV) GetWorkers() {
 	//	r.Workers
 }
+
+func (r *BridgeSRV) GetGasPrice(name string) string {
+	priceLog := r.storage.GetGasPrice(name)
+	return priceLog.Price
+}

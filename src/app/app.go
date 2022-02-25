@@ -7,6 +7,7 @@ import (
 
 	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/models"
 	rlr "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service"
+	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/storage"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -24,13 +25,14 @@ type App struct {
 
 // NewApp is initializes the app
 func NewApp(logger *logrus.Logger, addr string, db *gorm.DB,
-	laCfg, posCfg *models.WorkerConfig, bscCfg *models.WorkerConfig) *App {
+	laCfg, posCfg *models.WorkerConfig, bscCfg *models.WorkerConfig, ethCfg *models.WorkerConfig, posFetCfg, bscFetCfg, ethFetCfg *models.FetcherConfig,
+	resourceIDs []*storage.ResourceId) *App {
 	// create new app
 	inst := &App{
 		logger:  logger,
 		router:  mux.NewRouter(),
 		server:  &http.Server{Addr: addr},
-		relayer: rlr.CreateNewBridgeSRV(logger, db, laCfg, posCfg, bscCfg),
+		relayer: rlr.CreateNewBridgeSRV(logger, db, laCfg, posCfg, bscCfg, ethCfg, posFetCfg, bscFetCfg, ethFetCfg, resourceIDs),
 	}
 	// set router
 	inst.router = mux.NewRouter()
@@ -55,7 +57,7 @@ func (a *App) Get(path string, f func(w http.ResponseWriter, r *http.Request)) {
 func (a *App) setRouters() {
 	a.Get("/", a.Endpoints)
 	a.Get("/status", a.StatusHandler)
-	// a.Get("/failed_swaps/{page}", a.FailedSwapsHandler)
+	a.Get("/gas-price/{chain}", a.GasPriceHandler)
 	// a.Get("/resend_tx/{id}", a.ResendTxHandler)
 	// a.Get("/set_mode/{mode}", a.SetModeHandler)
 }

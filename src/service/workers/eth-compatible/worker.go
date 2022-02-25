@@ -6,6 +6,7 @@ import (
 	"crypto/ecdsa"
 	"fmt"
 	"math/big"
+	"strconv"
 	"time"
 
 	ethBr "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/eth-compatible/abi/bridge/eth"
@@ -15,6 +16,7 @@ import (
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
@@ -31,14 +33,16 @@ type Erc20Worker struct {
 	chainName          string
 	chainID            int64
 	destinationChainID string
+	storage            *storage.DataBase
 	logger             *logrus.Entry // logger
 	config             *models.WorkerConfig
 	client             *ethclient.Client
 	contractAddr       common.Address
+	proxyContractAddr  common.Address
 }
 
 // NewErc20Worker ...
-func NewErc20Worker(logger *logrus.Logger, cfg *models.WorkerConfig) *Erc20Worker {
+func NewErc20Worker(logger *logrus.Logger, cfg *models.WorkerConfig, db *storage.DataBase) *Erc20Worker {
 	client, err := ethclient.Dial(cfg.Provider)
 	if err != nil {
 		panic("new eth client error")
@@ -74,6 +78,8 @@ func NewErc20Worker(logger *logrus.Logger, cfg *models.WorkerConfig) *Erc20Worke
 		config:             cfg,
 		client:             client,
 		contractAddr:       cfg.ContractAddr,
+		proxyContractAddr:  cfg.ProxyContractAddr,
+		storage:            db,
 	}
 }
 
@@ -111,7 +117,7 @@ func (w *Erc20Worker) ExecuteProposalEth(depositNonce uint64, originChainID [8]b
 		return "", err
 	}
 
-	instance, err := ethBr.NewEthBr(w.contractAddr, w.client)
+	instance, err := ethBr.NewEthBr(w.proxyContractAddr, w.client)
 	if err != nil {
 		return "", err
 	}
@@ -130,11 +136,10 @@ func (w *Erc20Worker) ExecuteProposalLa(depositNonce uint64, originChainID [8]by
 		return "", err
 	}
 
-	instance, err := laBr.NewLaBr(w.contractAddr, w.client)
+	instance, err := laBr.NewLabr(w.proxyContractAddr, w.client)
 	if err != nil {
 		return "", err
 	}
-
 	value, _ := new(big.Int).SetString(amount, 10)
 	tx, err := instance.ExecuteProposal(auth, originChainID, destinationChainID, depositNonce, resourceID, common.HexToAddress(receiptAddr), value)
 	if err != nil {
@@ -174,7 +179,7 @@ func (w *Erc20Worker) GetBlockAndTxs(height int64) (*models.BlockAndTxLogs, erro
 	var head *Header
 	rpcClient := jsonrpc.NewClient(w.provider)
 
-	resp, err := rpcClient.Call("eth_getBlockByNumber", fmt.Sprintf("0x%x", height), false)
+	resp, err := rpcClient.Call("eth_getBlockByNumber", "latest", false)
 	if err != nil {
 		w.logger.Errorln("while call eth_getBlockByNumber, err = ", err)
 		return nil, err
@@ -189,14 +194,18 @@ func (w *Erc20Worker) GetBlockAndTxs(height int64) (*models.BlockAndTxLogs, erro
 		return nil, fmt.Errorf("not found")
 	}
 
-	logs, err := w.getLogs(head.Hash)
+	if height >= int64(head.Number) {
+		return nil, fmt.Errorf("not found")
+	}
+
+	logs, err := w.getLogs(height, int64(head.Number))
 	if err != nil {
-		w.logger.Errorf("while getEvents(blockhash = %s), err = %v", head.Hash, err)
+		w.logger.Errorf("while getEvents(from = %d, to = %d), err = %v", height, int64(head.Number), err)
 		return nil, err
 	}
 
 	return &models.BlockAndTxLogs{
-		Height:          height,
+		Height:          int64(head.Number),
 		BlockHash:       head.Hash.String(),
 		ParentBlockHash: head.ParentHash.Hex(),
 		BlockTime:       int64(head.Time),
@@ -210,14 +219,21 @@ func (w *Erc20Worker) GetFetchInterval() time.Duration {
 }
 
 // getLogs ...
-func (w *Erc20Worker) getLogs(blockHash common.Hash) ([]*storage.TxLog, error) {
+func (w *Erc20Worker) getLogs(curHeight, nextHeight int64) ([]*storage.TxLog, error) {
 	//	topics := [][]common.Hash{{DepositEventHash, ProposalEventHash, ProposalVoteHash}}
+	if curHeight == 0 || nextHeight-curHeight > 3500 {
+		curHeight = nextHeight - 1
+	}
 	logs, err := w.client.FilterLogs(context.Background(), ethereum.FilterQuery{
-		BlockHash: &blockHash,
+		// BlockHash: &blockHash,
+		FromBlock: big.NewInt(curHeight + 1),
+		ToBlock:   big.NewInt(nextHeight),
 		// Topics:    topics,
 		Addresses: []common.Address{w.contractAddr},
+		Topics:    [][]common.Hash{},
 	})
 	if err != nil {
+		w.logger.WithFields(logrus.Fields{"function": "GetLogs()"}).Errorf("get event log error, err=%s", err)
 		return nil, err
 	}
 
@@ -281,19 +297,17 @@ func (w *Erc20Worker) GetSentTxStatus(hash string) storage.TxStatus {
 }
 
 func (w *Erc20Worker) GetTxCountLatest() (uint64, error) {
-	var result uint64
+	var result hexutil.Uint64
 	rpcClient := jsonrpc.NewClient(w.provider)
 
 	resp, err := rpcClient.Call("eth_getTransactionCount", w.config.WorkerAddr.Hex(), "latest")
 	if err != nil {
 		return 0, err
 	}
-
 	if err := resp.GetObject(&result); err != nil {
 		return 0, err
 	}
-
-	return result, nil
+	return uint64(result), nil
 }
 
 // GetTransactor ...
@@ -304,32 +318,36 @@ func (w *Erc20Worker) getTransactor() (auth *bind.TransactOpts, err error) {
 	}
 
 	var nonce uint64
-	if w.chainName == storage.LaChain {
+	if w.chainName == storage.LaChain || w.chainName == storage.PosChain {
 		nonce, err = w.GetTxCountLatest()
 		if err != nil {
 			return nil, err
 		}
-
-		auth, err = bind.NewKeyedTransactorWithChainID(privateKey, big.NewInt(int64(26)))
-		if err != nil {
-			return nil, err
-		}
-
 	} else {
 		nonce, err = w.client.PendingNonceAt(context.Background(), w.config.WorkerAddr)
 		if err != nil {
 			return nil, err
 		}
-		auth, err = bind.NewKeyedTransactorWithChainID(privateKey, big.NewInt(w.chainID))
-		if err != nil {
-			return nil, err
-		}
 	}
 
+	auth, err = bind.NewKeyedTransactorWithChainID(privateKey, big.NewInt(w.chainID))
+	if err != nil {
+		return nil, err
+	}
+
+	var gasPrice float64
+	if w.chainName == storage.LaChain {
+		gasPrice = 1
+	} else {
+		gasPriceGWei, _ := strconv.ParseFloat(w.storage.GetGasPrice(w.chainName).Price, 64)
+		if gasPriceGWei > 0 {
+			gasPrice = gasPriceGWei * 1000000000
+		}
+	}
+	auth.GasPrice = big.NewInt((int64(gasPrice)))
 	auth.Nonce = big.NewInt(int64(nonce))
 	auth.Value = big.NewInt(0)                // in wei
 	auth.GasLimit = uint64(w.config.GasLimit) // in units
-	auth.GasPrice = w.config.GasPrice
 
 	return auth, nil
 }
@@ -343,6 +361,22 @@ func (w *Erc20Worker) EthBalance(address common.Address) (*big.Int, error) {
 func (w *Erc20Worker) GetWorkerAddress() string {
 	return w.config.WorkerAddr.String()
 }
+
+//GetGasPrice
+// func (w *Erc20Worker) GetGasPrice() (uint64, error) {
+// 	var result hexutil.Uint64
+// 	rpcClient := jsonrpc.NewClient(w.provider)
+// 	resp, err := rpcClient.Call("eth_gasPrice")
+// 	if err != nil {
+// 		return 0, err
+// 	}
+// 	if err := resp.GetObject(&result); err != nil {
+// 		println("err in obj")
+// 		return 0, err
+// 	}
+// 	return uint64(result), nil
+// 	time.Sleep(time.Second * 30)
+// }
 
 // GetColdWalletAddress ...
 func (w *Erc20Worker) GetColdWalletAddress() string {

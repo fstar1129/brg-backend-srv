@@ -14,17 +14,17 @@ import (
 // emitRegistreted ...
 func (r *BridgeSRV) emitProposal(worker workers.IWorker) {
 	for {
-		events := r.storage.GetEventsByTypeAndStatuses([]storage.EventStatus{storage.EventStatusPassedInit, storage.EventStatusPassedSent})
+		events := r.storage.GetEventsByTypeAndStatuses([]storage.EventStatus{storage.EventStatusPassedConfirmed, storage.EventStatusPassedSentFailed})
 		for _, event := range events {
-			if event.Status == storage.EventStatusPassedInit &&
-				worker.GetDestinationID() == event.DestinationChainID {
+			if event.Status == storage.EventStatusPassedConfirmed &&
+				worker.GetDestinationID() == event.DestinationChainID { //send tx where dest chainID matches
 				r.logger.Infoln("attempting to send execute proposal")
 				if _, err := r.sendExecuteProposal(worker, event); err != nil {
 					r.logger.Errorf("submit claim failed: %s", err)
 				}
 			} else {
 				r.handleTxSent(event.ChainID, event, storage.TxTypePassed,
-					storage.EventStatusPassedConfirmed, storage.EventStatusPassedFailed)
+					storage.EventStatusPassedConfirmed, storage.EventStatusPassedConfirmed)
 			}
 		}
 
@@ -41,7 +41,7 @@ func (r *BridgeSRV) sendExecuteProposal(worker workers.IWorker, event *storage.E
 	}
 
 	r.logger.Infof("Execute parameters:  depositNonce(%d) | sender(%s) | outAmount(%s) | resourceID(%s) | chainID(%s)\n",
-		event.DepositNonce, event.SenderAddr, event.OutAmount, event.ResourceID, worker.GetChainName())
+		event.DepositNonce, event.ReceiverAddr, event.OutAmount, event.ResourceID, worker.GetChainName())
 	if worker.GetChainName() == storage.LaChain {
 		txHash, err = worker.ExecuteProposalLa(event.DepositNonce, utils.StringToBytes8(event.OriginChainID), utils.StringToBytes8(event.DestinationChainID), utils.StringToBytes32(event.ResourceID),
 			event.ReceiverAddr, event.OutAmount)
@@ -52,6 +52,7 @@ func (r *BridgeSRV) sendExecuteProposal(worker workers.IWorker, event *storage.E
 	if err != nil {
 		txSent.ErrMsg = err.Error()
 		txSent.Status = storage.TxSentStatusFailed
+		txSent.TxHash = txHash
 		r.storage.UpdateEventStatus(event, storage.EventStatusPassedSentFailed)
 		r.storage.CreateTxSent(txSent)
 		return "", fmt.Errorf("could not send claim tx: %w", err)
@@ -60,7 +61,10 @@ func (r *BridgeSRV) sendExecuteProposal(worker workers.IWorker, event *storage.E
 	r.storage.UpdateEventStatus(event, storage.EventStatusPassedSent)
 	r.logger.Infof("send execute proposal tx success | chain=%s, tx_hash=%s", worker.GetChainName(), txSent.TxHash)
 	// create new tx(claimed)
-	r.storage.CreateTxSent(txSent)
+	err = r.storage.CreateTxSent(txSent)
+	if err != nil {
+		println("db txsent err", err)
+	}
 
 	return txSent.TxHash, nil
 

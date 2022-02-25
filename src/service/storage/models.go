@@ -13,7 +13,6 @@ type BlockLog struct {
 
 // TxLog ...
 type TxLog struct {
-	ID                 int64
 	Chain              string `gorm:"type:TEXT"`
 	EventID            string
 	TxType             TxType      `gorm:"type:tx_types"`
@@ -30,7 +29,7 @@ type TxLog struct {
 	ConfirmedNum       int64  `gorm:"type:BIGINT"`
 	CreateTime         int64  `gorm:"type:BIGINT"`
 	UpdateTime         int64  `gorm:"type:BIGINT"`
-	SwapID             string `gorm:"type:TEXT"`
+	SwapID             string `gorm:"primaryKey"`
 	OriginСhainID      string `gorm:"type:TEXT"`
 	DepositNonce       uint64 `gorm:"type:BIGINT"`
 	SwapStatus         uint8
@@ -52,7 +51,6 @@ type Registration struct {
 type Event struct {
 	ID                 int64
 	EventID            string
-	Type               EventStatus
 	ChainID            string
 	DestinationChainID string
 	OriginChainID      string
@@ -83,4 +81,16 @@ type TxSent struct {
 	Status     TxStatus `json:"status" gorm:"type:tx_statuses"`
 	CreateTime int64    `json:"create_time" gorm:"type:BIGINT"`
 	UpdateTime int64    `json:"update_time" gorm:"type:BIGINT"`
+}
+
+// GasPrice
+type GasPrice struct {
+	ChainName  string `gorm:"primaryKey"`
+	Price      string `gorm:"type:TEXT"`
+	UpdateTime int64  `json:"update_time" gorm:"type:BIGINT"`
+}
+
+type ResourceId struct {
+	Name string `gorm:"primaryKey"`
+	ID   string `gorm:"type:TEXT"`
 }

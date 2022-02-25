@@ -74,7 +74,8 @@ type WorkerConfig struct {
 	AWSSecretName                  string         `json:"aws_secret_name"`
 	PrivateKey                     string         `json:"private_key"`
 	Provider                       string         `json:"provider"`
-	ContractAddr                   common.Address `json:"swap_contract_addr"`
+	ContractAddr                   common.Address `json:"contract_addr"`
+	ProxyContractAddr              common.Address `json:"proxy_contract"`
 	TokenContractAddr              common.Address `json:"token_contract_addr"`
 	WorkerAddr                     common.Address `json:"worker_addr"`
 	ColdWalletAddr                 common.Address `json:"cold_wallet_addr"`
@@ -98,4 +99,10 @@ type TssConfig struct {
 // RelayerConfig ...
 type RelayerConfig struct {
 	Address common.Address
+}
+
+// FetcherConfig
+type FetcherConfig struct {
+	ChainName string
+	URL       string
 }
