@@ -176,39 +176,65 @@ func (w *Erc20Worker) ExecuteProposalLa(depositNonce uint64, originChainID [8]by
 
 // GetBlockAndTxs ...
 func (w *Erc20Worker) GetBlockAndTxs(height int64) (*models.BlockAndTxLogs, error) {
-	var head *Header
-	rpcClient := jsonrpc.NewClient(w.provider)
+	// var head *Header
+	// rpcClient := jsonrpc.NewClient(w.provider)
 
-	resp, err := rpcClient.Call("eth_getBlockByNumber", "latest", false)
+	// resp, err := rpcClient.Call("eth_getBlockByNumber", "latest", false)
+	// if err != nil {
+	// 	w.logger.Errorln("while call eth_getBlockByNumber, err = ", err)
+	// 	return nil, err
+	// }
+
+	// if err := resp.GetObject(&head); err != nil {
+	// 	w.logger.Errorln("while GetObject, err = ", err)
+	// 	return nil, err
+	// }
+
+	// if head == nil {
+	// 	return nil, fmt.Errorf("not found")
+	// }
+
+	// if height >= int64(head.Number) {
+	// 	return nil, fmt.Errorf("not found")
+	// }
+
+	// logs, err := w.getLogs(height, int64(head.Number))
+	// if err != nil {
+	// 	w.logger.Errorf("while getEvents(from = %d, to = %d), err = %v", height, int64(head.Number), err)
+	// 	return nil, err
+	// }
+
+	// return &models.BlockAndTxLogs{
+	// 	Height:          int64(head.Number),
+	// 	BlockHash:       head.Hash.String(),
+	// 	ParentBlockHash: head.ParentHash.Hex(),
+	// 	BlockTime:       int64(head.Time),
+	// 	TxLogs:          logs,
+	// }, nil
+
+	client, err := ethclient.Dial(w.provider)
 	if err != nil {
-		w.logger.Errorln("while call eth_getBlockByNumber, err = ", err)
-		return nil, err
+		panic("new eth client error")
 	}
 
-	if err := resp.GetObject(&head); err != nil {
-		w.logger.Errorln("while GetObject, err = ", err)
-		return nil, err
+	clientResp, err1 := client.HeaderByNumber(context.Background(), nil)
+	if err1 != nil {
+		w.logger.Errorln("while call HeaderByNumber, err = ", err)
 	}
-
-	if head == nil {
-		return nil, fmt.Errorf("not found")
-	}
-
-	if height >= int64(head.Number) {
-		return nil, fmt.Errorf("not found")
-	}
-
-	logs, err := w.getLogs(height, int64(head.Number))
+	
+	logs, err := w.getLogs(height, clientResp.Number.Int64())
 	if err != nil {
-		w.logger.Errorf("while getEvents(from = %d, to = %d), err = %v", height, int64(head.Number), err)
+		w.logger.Errorf("while getEvents(block number from %d to %d), err = %v", height, clientResp.Number, err)
 		return nil, err
 	}
+
+	client.Close()
 
 	return &models.BlockAndTxLogs{
-		Height:          int64(head.Number),
-		BlockHash:       head.Hash.String(),
-		ParentBlockHash: head.ParentHash.Hex(),
-		BlockTime:       int64(head.Time),
+		Height:          clientResp.Number.Int64(),
+		BlockHash:       clientResp.Hash().String(),
+		ParentBlockHash: clientResp.ParentHash.Hex(),
+		BlockTime:       int64(clientResp.Time),
 		TxLogs:          logs,
 	}, nil
 }
@@ -232,7 +258,11 @@ func (w *Erc20Worker) getLogs(curHeight, nextHeight int64) ([]*storage.TxLog, er
 		Addresses: []common.Address{w.contractAddr},
 		Topics:    [][]common.Hash{},
 	})
+
+	w.logger.Info(logs)
+
 	if err != nil {
+		w.logger.Info("ERR")
 		w.logger.WithFields(logrus.Fields{"function": "GetLogs()"}).Errorf("get event log error, err=%s", err)
 		return nil, err
 	}
