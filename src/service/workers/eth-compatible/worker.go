@@ -214,14 +214,17 @@ func (w *Erc20Worker) GetBlockAndTxs(height int64) (*models.BlockAndTxLogs, erro
 
 	client, err := ethclient.Dial(w.provider)
 	if err != nil {
-		panic("new eth client error")
+		w.logger.Errorln("Error while dialing the client = ", err)
+		return nil, err
 	}
 
-	clientResp, err1 := client.HeaderByNumber(context.Background(), nil)
-	if err1 != nil {
-		w.logger.Errorln("while call HeaderByNumber, err = ", err)
+	clientResp, err := client.HeaderByNumber(context.Background(), nil)
+	if err != nil {
+		w.logger.Errorln("Error while fetching the block header = ", err)
+		return nil, err
+
 	}
-	
+
 	logs, err := w.getLogs(height, clientResp.Number.Int64())
 	if err != nil {
 		w.logger.Errorf("while getEvents(block number from %d to %d), err = %v", height, clientResp.Number, err)
