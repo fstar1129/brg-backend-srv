@@ -122,7 +122,7 @@ func (w *Erc20Worker) ExecuteProposalEth(depositNonce uint64, originChainID [8]b
 		return "", err
 	}
 	value, _ := new(big.Int).SetString(amount, 10)
-	tx, err := instance.ExecuteProposal(auth, originChainID, destinationChainID, depositNonce, resourceID, common.HexToAddress(receiptAddr), value)
+	tx, err := instance.ExecuteProposal(auth, originChainID, destinationChainID, depositNonce, resourceID, common.HexToAddress(receiptAddr), value, nil)
 	if err != nil {
 		return "", err
 	}
@@ -141,7 +141,7 @@ func (w *Erc20Worker) ExecuteProposalLa(depositNonce uint64, originChainID [8]by
 		return "", err
 	}
 	value, _ := new(big.Int).SetString(amount, 10)
-	tx, err := instance.ExecuteProposal(auth, originChainID, destinationChainID, depositNonce, resourceID, common.HexToAddress(receiptAddr), value)
+	tx, err := instance.ExecuteProposal(auth, originChainID, destinationChainID, depositNonce, resourceID, common.HexToAddress(receiptAddr), value, nil)
 	if err != nil {
 		return "", err
 	}

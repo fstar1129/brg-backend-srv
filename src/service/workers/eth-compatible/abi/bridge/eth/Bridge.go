@@ -28,9 +28,14 @@ var (
 	_ = event.NewSubscription
 )
 
+// EthBrMetaData contains all meta data concerning the EthBr contract.
+var EthBrMetaData = &bind.MetaData{
+	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bytes8\",\"name\":\"originChainID\",\"type\":\"bytes8\"},{\"indexed\":true,\"internalType\":\"bytes8\",\"name\":\"destinationChainID\",\"type\":\"bytes8\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"resourceID\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"uint64\",\"name\":\"depositNonce\",\"type\":\"uint64\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"depositor\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"recipientAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"dataHash\",\"type\":\"bytes32\"}],\"name\":\"Deposit\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bytes8\",\"name\":\"originChainID\",\"type\":\"bytes8\"},{\"indexed\":false,\"internalType\":\"bytes8\",\"name\":\"destinationChainID\",\"type\":\"bytes8\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"depositNonce\",\"type\":\"uint64\"},{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"resourceID\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"recipientAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"ExtraFeeSupplied\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"Paused\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes8\",\"name\":\"originChainID\",\"type\":\"bytes8\"},{\"indexed\":true,\"internalType\":\"bytes8\",\"name\":\"destinationChainID\",\"type\":\"bytes8\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"recipientAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"depositNonce\",\"type\":\"uint64\"},{\"indexed\":false,\"internalType\":\"enumBridge.ProposalStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"resourceID\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"dataHash\",\"type\":\"bytes32\"}],\"name\":\"ProposalEvent\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"Unpaused\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"_backendSrvAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"_chainID\",\"outputs\":[{\"internalType\":\"bytes8\",\"name\":\"\",\"type\":\"bytes8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes8\",\"name\":\"\",\"type\":\"bytes8\"}],\"name\":\"_depositCounts\",\"outputs\":[{\"internalType\":\"uint64\",\"name\":\"\",\"type\":\"uint64\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"\",\"type\":\"uint64\"},{\"internalType\":\"bytes8\",\"name\":\"\",\"type\":\"bytes8\"}],\"name\":\"_depositRecords\",\"outputs\":[{\"internalType\":\"bytes\",\"name\":\"\",\"type\":\"bytes\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"_executedProposals\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"_fee\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"_isInitialised\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"_nativeResourceID\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"_resourceIDToHandlerAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"handlers\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"ownableInit\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"paused\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"a\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"b\",\"type\":\"uint256\"}],\"name\":\"sub\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_handler\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"value\",\"type\":\"bool\"}],\"name\":\"setHandler\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes8\",\"name\":\"chainID\",\"type\":\"bytes8\"},{\"internalType\":\"uint256\",\"name\":\"fee\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"initBackendSrvAddress\",\"type\":\"address\"}],\"name\":\"initialize\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newBackendSrv\",\"type\":\"address\"}],\"name\":\"adminSetBackendSrv\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"adminPauseTransfers\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"adminUnpauseTransfers\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"handlerAddress\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"resourceID\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"}],\"name\":\"adminSetResource\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"resourceID\",\"type\":\"bytes32\"}],\"name\":\"adminSetNativeResourceID\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"handlerAddress\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"}],\"name\":\"adminSetBurnable\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"newFee\",\"type\":\"uint256\"}],\"name\":\"adminChangeFee\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"handlerAddress\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amountOrTokenID\",\"type\":\"uint256\"}],\"name\":\"adminWithdraw\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"resourceIDOwner\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"resourceIDSpender\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"amountOrTokenID\",\"type\":\"uint256\"}],\"name\":\"adminApprove\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes8\",\"name\":\"destinationChainID\",\"type\":\"bytes8\"},{\"internalType\":\"bytes32\",\"name\":\"resourceID\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"recipientAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amountToLA\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"params\",\"type\":\"bytes\"}],\"name\":\"deposit\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes8\",\"name\":\"destinationChainID\",\"type\":\"bytes8\"},{\"internalType\":\"bytes32\",\"name\":\"resourceID\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"recipientAddress\",\"type\":\"address\"}],\"name\":\"internalDeposit\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes8\",\"name\":\"originChainID\",\"type\":\"bytes8\"},{\"internalType\":\"bytes8\",\"name\":\"destinationChainID\",\"type\":\"bytes8\"},{\"internalType\":\"uint64\",\"name\":\"depositNonce\",\"type\":\"uint64\"},{\"internalType\":\"bytes32\",\"name\":\"resourceID\",\"type\":\"bytes32\"},{\"internalType\":\"addresspayable\",\"name\":\"recipientAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"params\",\"type\":\"bytes\"}],\"name\":\"executeProposal\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"addresspayable\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"adminCollectFees\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"depositFunds\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"}]",
+}
+
 // EthBrABI is the input ABI used to generate the binding from.
 // Deprecated: Use EthBrMetaData.ABI instead.
-var EthBrABI = "[{\"inputs\":[{\"internalType\":\"bytes8\",\"name\":\"chainID\",\"type\":\"bytes8\"},{\"internalType\":\"uint256\",\"name\":\"fee\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"initBackendSrvAddress\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bytes8\",\"name\":\"originChainID\",\"type\":\"bytes8\"},{\"indexed\":true,\"internalType\":\"bytes8\",\"name\":\"destinationChainID\",\"type\":\"bytes8\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"resourceID\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"uint64\",\"name\":\"depositNonce\",\"type\":\"uint64\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"depositor\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"recipientAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"dataHash\",\"type\":\"bytes32\"}],\"name\":\"Deposit\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"Paused\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes8\",\"name\":\"originChainID\",\"type\":\"bytes8\"},{\"indexed\":true,\"internalType\":\"bytes8\",\"name\":\"destinationChainID\",\"type\":\"bytes8\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"recipientAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"depositNonce\",\"type\":\"uint64\"},{\"indexed\":false,\"internalType\":\"enumBridge.ProposalStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"resourceID\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"dataHash\",\"type\":\"bytes32\"}],\"name\":\"ProposalEvent\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"previousAdminRole\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"newAdminRole\",\"type\":\"bytes32\"}],\"name\":\"RoleAdminChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"RoleGranted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"RoleRevoked\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"Unpaused\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"DEFAULT_ADMIN_ROLE\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"_chainID\",\"outputs\":[{\"internalType\":\"bytes8\",\"name\":\"\",\"type\":\"bytes8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes8\",\"name\":\"\",\"type\":\"bytes8\"}],\"name\":\"_depositCounts\",\"outputs\":[{\"internalType\":\"uint64\",\"name\":\"\",\"type\":\"uint64\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"\",\"type\":\"uint64\"},{\"internalType\":\"bytes8\",\"name\":\"\",\"type\":\"bytes8\"}],\"name\":\"_depositRecords\",\"outputs\":[{\"internalType\":\"bytes\",\"name\":\"\",\"type\":\"bytes\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"_executedProposals\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"_fee\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"_resourceIDToHandlerAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"newFee\",\"type\":\"uint256\"}],\"name\":\"adminChangeFee\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"adminPauseTransfers\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newBackendSrv\",\"type\":\"address\"}],\"name\":\"adminSetBackendSrv\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"handlerAddress\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"}],\"name\":\"adminSetBurnable\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"handlerAddress\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"resourceID\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"}],\"name\":\"adminSetResource\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"adminUnpauseTransfers\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"handlerAddress\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amountOrTokenID\",\"type\":\"uint256\"}],\"name\":\"adminWithdraw\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes8\",\"name\":\"destinationChainID\",\"type\":\"bytes8\"},{\"internalType\":\"bytes32\",\"name\":\"resourceID\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"recipientAddress\",\"type\":\"address\"}],\"name\":\"deposit\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes8\",\"name\":\"originChainID\",\"type\":\"bytes8\"},{\"internalType\":\"bytes8\",\"name\":\"destinationChainID\",\"type\":\"bytes8\"},{\"internalType\":\"uint64\",\"name\":\"depositNonce\",\"type\":\"uint64\"},{\"internalType\":\"bytes32\",\"name\":\"resourceID\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"recipientAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"executeProposal\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"}],\"name\":\"getRoleAdmin\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"name\":\"getRoleMember\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"}],\"name\":\"getRoleMemberCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"grantRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"hasRole\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"paused\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newAdmin\",\"type\":\"address\"}],\"name\":\"renounceAdmin\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"renounceRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"revokeRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"a\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"b\",\"type\":\"uint256\"}],\"name\":\"sub\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"}]"
+var EthBrABI = EthBrMetaData.ABI
 
 // EthBr is an auto generated Go binding around an Ethereum contract.
 type EthBr struct {
@@ -174,35 +179,35 @@ func (_EthBr *EthBrTransactorRaw) Transact(opts *bind.TransactOpts, method strin
 	return _EthBr.Contract.contract.Transact(opts, method, params...)
 }
 
-// DEFAULTADMINROLE is a free data retrieval call binding the contract method 0xa217fddf.
+// BackendSrvAddress is a free data retrieval call binding the contract method 0x7f5d6a5e.
 //
-// Solidity: function DEFAULT_ADMIN_ROLE() view returns(bytes32)
-func (_EthBr *EthBrCaller) DEFAULTADMINROLE(opts *bind.CallOpts) ([32]byte, error) {
+// Solidity: function _backendSrvAddress() view returns(address)
+func (_EthBr *EthBrCaller) BackendSrvAddress(opts *bind.CallOpts) (common.Address, error) {
 	var out []interface{}
-	err := _EthBr.contract.Call(opts, &out, "DEFAULT_ADMIN_ROLE")
+	err := _EthBr.contract.Call(opts, &out, "_backendSrvAddress")
 
 	if err != nil {
-		return *new([32]byte), err
+		return *new(common.Address), err
 	}
 
-	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
 
 	return out0, err
 
 }
 
-// DEFAULTADMINROLE is a free data retrieval call binding the contract method 0xa217fddf.
+// BackendSrvAddress is a free data retrieval call binding the contract method 0x7f5d6a5e.
 //
-// Solidity: function DEFAULT_ADMIN_ROLE() view returns(bytes32)
-func (_EthBr *EthBrSession) DEFAULTADMINROLE() ([32]byte, error) {
-	return _EthBr.Contract.DEFAULTADMINROLE(&_EthBr.CallOpts)
+// Solidity: function _backendSrvAddress() view returns(address)
+func (_EthBr *EthBrSession) BackendSrvAddress() (common.Address, error) {
+	return _EthBr.Contract.BackendSrvAddress(&_EthBr.CallOpts)
 }
 
-// DEFAULTADMINROLE is a free data retrieval call binding the contract method 0xa217fddf.
+// BackendSrvAddress is a free data retrieval call binding the contract method 0x7f5d6a5e.
 //
-// Solidity: function DEFAULT_ADMIN_ROLE() view returns(bytes32)
-func (_EthBr *EthBrCallerSession) DEFAULTADMINROLE() ([32]byte, error) {
-	return _EthBr.Contract.DEFAULTADMINROLE(&_EthBr.CallOpts)
+// Solidity: function _backendSrvAddress() view returns(address)
+func (_EthBr *EthBrCallerSession) BackendSrvAddress() (common.Address, error) {
+	return _EthBr.Contract.BackendSrvAddress(&_EthBr.CallOpts)
 }
 
 // ChainID is a free data retrieval call binding the contract method 0xbeab7131.
@@ -360,6 +365,68 @@ func (_EthBr *EthBrCallerSession) Fee() (*big.Int, error) {
 	return _EthBr.Contract.Fee(&_EthBr.CallOpts)
 }
 
+// IsInitialised is a free data retrieval call binding the contract method 0xdd2e8ec3.
+//
+// Solidity: function _isInitialised() view returns(bool)
+func (_EthBr *EthBrCaller) IsInitialised(opts *bind.CallOpts) (bool, error) {
+	var out []interface{}
+	err := _EthBr.contract.Call(opts, &out, "_isInitialised")
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
+}
+
+// IsInitialised is a free data retrieval call binding the contract method 0xdd2e8ec3.
+//
+// Solidity: function _isInitialised() view returns(bool)
+func (_EthBr *EthBrSession) IsInitialised() (bool, error) {
+	return _EthBr.Contract.IsInitialised(&_EthBr.CallOpts)
+}
+
+// IsInitialised is a free data retrieval call binding the contract method 0xdd2e8ec3.
+//
+// Solidity: function _isInitialised() view returns(bool)
+func (_EthBr *EthBrCallerSession) IsInitialised() (bool, error) {
+	return _EthBr.Contract.IsInitialised(&_EthBr.CallOpts)
+}
+
+// NativeResourceID is a free data retrieval call binding the contract method 0xa21b952e.
+//
+// Solidity: function _nativeResourceID() view returns(bytes32)
+func (_EthBr *EthBrCaller) NativeResourceID(opts *bind.CallOpts) ([32]byte, error) {
+	var out []interface{}
+	err := _EthBr.contract.Call(opts, &out, "_nativeResourceID")
+
+	if err != nil {
+		return *new([32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+
+	return out0, err
+
+}
+
+// NativeResourceID is a free data retrieval call binding the contract method 0xa21b952e.
+//
+// Solidity: function _nativeResourceID() view returns(bytes32)
+func (_EthBr *EthBrSession) NativeResourceID() ([32]byte, error) {
+	return _EthBr.Contract.NativeResourceID(&_EthBr.CallOpts)
+}
+
+// NativeResourceID is a free data retrieval call binding the contract method 0xa21b952e.
+//
+// Solidity: function _nativeResourceID() view returns(bytes32)
+func (_EthBr *EthBrCallerSession) NativeResourceID() ([32]byte, error) {
+	return _EthBr.Contract.NativeResourceID(&_EthBr.CallOpts)
+}
+
 // ResourceIDToHandlerAddress is a free data retrieval call binding the contract method 0x84db809f.
 //
 // Solidity: function _resourceIDToHandlerAddress(bytes32 ) view returns(address)
@@ -391,105 +458,12 @@ func (_EthBr *EthBrCallerSession) ResourceIDToHandlerAddress(arg0 [32]byte) (com
 	return _EthBr.Contract.ResourceIDToHandlerAddress(&_EthBr.CallOpts, arg0)
 }
 
-// GetRoleAdmin is a free data retrieval call binding the contract method 0x248a9ca3.
+// Handlers is a free data retrieval call binding the contract method 0x1a21c0bc.
 //
-// Solidity: function getRoleAdmin(bytes32 role) view returns(bytes32)
-func (_EthBr *EthBrCaller) GetRoleAdmin(opts *bind.CallOpts, role [32]byte) ([32]byte, error) {
+// Solidity: function handlers(address ) view returns(bool)
+func (_EthBr *EthBrCaller) Handlers(opts *bind.CallOpts, arg0 common.Address) (bool, error) {
 	var out []interface{}
-	err := _EthBr.contract.Call(opts, &out, "getRoleAdmin", role)
-
-	if err != nil {
-		return *new([32]byte), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
-
-	return out0, err
-
-}
-
-// GetRoleAdmin is a free data retrieval call binding the contract method 0x248a9ca3.
-//
-// Solidity: function getRoleAdmin(bytes32 role) view returns(bytes32)
-func (_EthBr *EthBrSession) GetRoleAdmin(role [32]byte) ([32]byte, error) {
-	return _EthBr.Contract.GetRoleAdmin(&_EthBr.CallOpts, role)
-}
-
-// GetRoleAdmin is a free data retrieval call binding the contract method 0x248a9ca3.
-//
-// Solidity: function getRoleAdmin(bytes32 role) view returns(bytes32)
-func (_EthBr *EthBrCallerSession) GetRoleAdmin(role [32]byte) ([32]byte, error) {
-	return _EthBr.Contract.GetRoleAdmin(&_EthBr.CallOpts, role)
-}
-
-// GetRoleMember is a free data retrieval call binding the contract method 0x9010d07c.
-//
-// Solidity: function getRoleMember(bytes32 role, uint256 index) view returns(address)
-func (_EthBr *EthBrCaller) GetRoleMember(opts *bind.CallOpts, role [32]byte, index *big.Int) (common.Address, error) {
-	var out []interface{}
-	err := _EthBr.contract.Call(opts, &out, "getRoleMember", role, index)
-
-	if err != nil {
-		return *new(common.Address), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
-
-	return out0, err
-
-}
-
-// GetRoleMember is a free data retrieval call binding the contract method 0x9010d07c.
-//
-// Solidity: function getRoleMember(bytes32 role, uint256 index) view returns(address)
-func (_EthBr *EthBrSession) GetRoleMember(role [32]byte, index *big.Int) (common.Address, error) {
-	return _EthBr.Contract.GetRoleMember(&_EthBr.CallOpts, role, index)
-}
-
-// GetRoleMember is a free data retrieval call binding the contract method 0x9010d07c.
-//
-// Solidity: function getRoleMember(bytes32 role, uint256 index) view returns(address)
-func (_EthBr *EthBrCallerSession) GetRoleMember(role [32]byte, index *big.Int) (common.Address, error) {
-	return _EthBr.Contract.GetRoleMember(&_EthBr.CallOpts, role, index)
-}
-
-// GetRoleMemberCount is a free data retrieval call binding the contract method 0xca15c873.
-//
-// Solidity: function getRoleMemberCount(bytes32 role) view returns(uint256)
-func (_EthBr *EthBrCaller) GetRoleMemberCount(opts *bind.CallOpts, role [32]byte) (*big.Int, error) {
-	var out []interface{}
-	err := _EthBr.contract.Call(opts, &out, "getRoleMemberCount", role)
-
-	if err != nil {
-		return *new(*big.Int), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
-
-	return out0, err
-
-}
-
-// GetRoleMemberCount is a free data retrieval call binding the contract method 0xca15c873.
-//
-// Solidity: function getRoleMemberCount(bytes32 role) view returns(uint256)
-func (_EthBr *EthBrSession) GetRoleMemberCount(role [32]byte) (*big.Int, error) {
-	return _EthBr.Contract.GetRoleMemberCount(&_EthBr.CallOpts, role)
-}
-
-// GetRoleMemberCount is a free data retrieval call binding the contract method 0xca15c873.
-//
-// Solidity: function getRoleMemberCount(bytes32 role) view returns(uint256)
-func (_EthBr *EthBrCallerSession) GetRoleMemberCount(role [32]byte) (*big.Int, error) {
-	return _EthBr.Contract.GetRoleMemberCount(&_EthBr.CallOpts, role)
-}
-
-// HasRole is a free data retrieval call binding the contract method 0x91d14854.
-//
-// Solidity: function hasRole(bytes32 role, address account) view returns(bool)
-func (_EthBr *EthBrCaller) HasRole(opts *bind.CallOpts, role [32]byte, account common.Address) (bool, error) {
-	var out []interface{}
-	err := _EthBr.contract.Call(opts, &out, "hasRole", role, account)
+	err := _EthBr.contract.Call(opts, &out, "handlers", arg0)
 
 	if err != nil {
 		return *new(bool), err
@@ -501,18 +475,49 @@ func (_EthBr *EthBrCaller) HasRole(opts *bind.CallOpts, role [32]byte, account c
 
 }
 
-// HasRole is a free data retrieval call binding the contract method 0x91d14854.
+// Handlers is a free data retrieval call binding the contract method 0x1a21c0bc.
 //
-// Solidity: function hasRole(bytes32 role, address account) view returns(bool)
-func (_EthBr *EthBrSession) HasRole(role [32]byte, account common.Address) (bool, error) {
-	return _EthBr.Contract.HasRole(&_EthBr.CallOpts, role, account)
+// Solidity: function handlers(address ) view returns(bool)
+func (_EthBr *EthBrSession) Handlers(arg0 common.Address) (bool, error) {
+	return _EthBr.Contract.Handlers(&_EthBr.CallOpts, arg0)
 }
 
-// HasRole is a free data retrieval call binding the contract method 0x91d14854.
+// Handlers is a free data retrieval call binding the contract method 0x1a21c0bc.
 //
-// Solidity: function hasRole(bytes32 role, address account) view returns(bool)
-func (_EthBr *EthBrCallerSession) HasRole(role [32]byte, account common.Address) (bool, error) {
-	return _EthBr.Contract.HasRole(&_EthBr.CallOpts, role, account)
+// Solidity: function handlers(address ) view returns(bool)
+func (_EthBr *EthBrCallerSession) Handlers(arg0 common.Address) (bool, error) {
+	return _EthBr.Contract.Handlers(&_EthBr.CallOpts, arg0)
+}
+
+// Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
+//
+// Solidity: function owner() view returns(address)
+func (_EthBr *EthBrCaller) Owner(opts *bind.CallOpts) (common.Address, error) {
+	var out []interface{}
+	err := _EthBr.contract.Call(opts, &out, "owner")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
+}
+
+// Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
+//
+// Solidity: function owner() view returns(address)
+func (_EthBr *EthBrSession) Owner() (common.Address, error) {
+	return _EthBr.Contract.Owner(&_EthBr.CallOpts)
+}
+
+// Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
+//
+// Solidity: function owner() view returns(address)
+func (_EthBr *EthBrCallerSession) Owner() (common.Address, error) {
+	return _EthBr.Contract.Owner(&_EthBr.CallOpts)
 }
 
 // Paused is a free data retrieval call binding the contract method 0x5c975abb.
@@ -577,6 +582,27 @@ func (_EthBr *EthBrCallerSession) Sub(a *big.Int, b *big.Int) (*big.Int, error) 
 	return _EthBr.Contract.Sub(&_EthBr.CallOpts, a, b)
 }
 
+// AdminApprove is a paid mutator transaction binding the contract method 0x8e0747be.
+//
+// Solidity: function adminApprove(bytes32 resourceIDOwner, bytes32 resourceIDSpender, uint256 amountOrTokenID) returns()
+func (_EthBr *EthBrTransactor) AdminApprove(opts *bind.TransactOpts, resourceIDOwner [32]byte, resourceIDSpender [32]byte, amountOrTokenID *big.Int) (*types.Transaction, error) {
+	return _EthBr.contract.Transact(opts, "adminApprove", resourceIDOwner, resourceIDSpender, amountOrTokenID)
+}
+
+// AdminApprove is a paid mutator transaction binding the contract method 0x8e0747be.
+//
+// Solidity: function adminApprove(bytes32 resourceIDOwner, bytes32 resourceIDSpender, uint256 amountOrTokenID) returns()
+func (_EthBr *EthBrSession) AdminApprove(resourceIDOwner [32]byte, resourceIDSpender [32]byte, amountOrTokenID *big.Int) (*types.Transaction, error) {
+	return _EthBr.Contract.AdminApprove(&_EthBr.TransactOpts, resourceIDOwner, resourceIDSpender, amountOrTokenID)
+}
+
+// AdminApprove is a paid mutator transaction binding the contract method 0x8e0747be.
+//
+// Solidity: function adminApprove(bytes32 resourceIDOwner, bytes32 resourceIDSpender, uint256 amountOrTokenID) returns()
+func (_EthBr *EthBrTransactorSession) AdminApprove(resourceIDOwner [32]byte, resourceIDSpender [32]byte, amountOrTokenID *big.Int) (*types.Transaction, error) {
+	return _EthBr.Contract.AdminApprove(&_EthBr.TransactOpts, resourceIDOwner, resourceIDSpender, amountOrTokenID)
+}
+
 // AdminChangeFee is a paid mutator transaction binding the contract method 0x91c404ac.
 //
 // Solidity: function adminChangeFee(uint256 newFee) returns()
@@ -596,6 +622,27 @@ func (_EthBr *EthBrSession) AdminChangeFee(newFee *big.Int) (*types.Transaction,
 // Solidity: function adminChangeFee(uint256 newFee) returns()
 func (_EthBr *EthBrTransactorSession) AdminChangeFee(newFee *big.Int) (*types.Transaction, error) {
 	return _EthBr.Contract.AdminChangeFee(&_EthBr.TransactOpts, newFee)
+}
+
+// AdminCollectFees is a paid mutator transaction binding the contract method 0x7a7eed77.
+//
+// Solidity: function adminCollectFees(address recipient, uint256 amount) returns()
+func (_EthBr *EthBrTransactor) AdminCollectFees(opts *bind.TransactOpts, recipient common.Address, amount *big.Int) (*types.Transaction, error) {
+	return _EthBr.contract.Transact(opts, "adminCollectFees", recipient, amount)
+}
+
+// AdminCollectFees is a paid mutator transaction binding the contract method 0x7a7eed77.
+//
+// Solidity: function adminCollectFees(address recipient, uint256 amount) returns()
+func (_EthBr *EthBrSession) AdminCollectFees(recipient common.Address, amount *big.Int) (*types.Transaction, error) {
+	return _EthBr.Contract.AdminCollectFees(&_EthBr.TransactOpts, recipient, amount)
+}
+
+// AdminCollectFees is a paid mutator transaction binding the contract method 0x7a7eed77.
+//
+// Solidity: function adminCollectFees(address recipient, uint256 amount) returns()
+func (_EthBr *EthBrTransactorSession) AdminCollectFees(recipient common.Address, amount *big.Int) (*types.Transaction, error) {
+	return _EthBr.Contract.AdminCollectFees(&_EthBr.TransactOpts, recipient, amount)
 }
 
 // AdminPauseTransfers is a paid mutator transaction binding the contract method 0x80ae1c28.
@@ -661,6 +708,27 @@ func (_EthBr *EthBrTransactorSession) AdminSetBurnable(handlerAddress common.Add
 	return _EthBr.Contract.AdminSetBurnable(&_EthBr.TransactOpts, handlerAddress, tokenAddress)
 }
 
+// AdminSetNativeResourceID is a paid mutator transaction binding the contract method 0xa2b5b654.
+//
+// Solidity: function adminSetNativeResourceID(bytes32 resourceID) returns()
+func (_EthBr *EthBrTransactor) AdminSetNativeResourceID(opts *bind.TransactOpts, resourceID [32]byte) (*types.Transaction, error) {
+	return _EthBr.contract.Transact(opts, "adminSetNativeResourceID", resourceID)
+}
+
+// AdminSetNativeResourceID is a paid mutator transaction binding the contract method 0xa2b5b654.
+//
+// Solidity: function adminSetNativeResourceID(bytes32 resourceID) returns()
+func (_EthBr *EthBrSession) AdminSetNativeResourceID(resourceID [32]byte) (*types.Transaction, error) {
+	return _EthBr.Contract.AdminSetNativeResourceID(&_EthBr.TransactOpts, resourceID)
+}
+
+// AdminSetNativeResourceID is a paid mutator transaction binding the contract method 0xa2b5b654.
+//
+// Solidity: function adminSetNativeResourceID(bytes32 resourceID) returns()
+func (_EthBr *EthBrTransactorSession) AdminSetNativeResourceID(resourceID [32]byte) (*types.Transaction, error) {
+	return _EthBr.Contract.AdminSetNativeResourceID(&_EthBr.TransactOpts, resourceID)
+}
+
 // AdminSetResource is a paid mutator transaction binding the contract method 0xcb10f215.
 //
 // Solidity: function adminSetResource(address handlerAddress, bytes32 resourceID, address tokenAddress) returns()
@@ -724,130 +792,193 @@ func (_EthBr *EthBrTransactorSession) AdminWithdraw(handlerAddress common.Addres
 	return _EthBr.Contract.AdminWithdraw(&_EthBr.TransactOpts, handlerAddress, tokenAddress, recipient, amountOrTokenID)
 }
 
-// Deposit is a paid mutator transaction binding the contract method 0x92b7064c.
+// Deposit is a paid mutator transaction binding the contract method 0xe4e21fce.
 //
-// Solidity: function deposit(bytes8 destinationChainID, bytes32 resourceID, uint256 amount, address recipientAddress) payable returns()
-func (_EthBr *EthBrTransactor) Deposit(opts *bind.TransactOpts, destinationChainID [8]byte, resourceID [32]byte, amount *big.Int, recipientAddress common.Address) (*types.Transaction, error) {
-	return _EthBr.contract.Transact(opts, "deposit", destinationChainID, resourceID, amount, recipientAddress)
+// Solidity: function deposit(bytes8 destinationChainID, bytes32 resourceID, uint256 amount, address recipientAddress, uint256 amountToLA, bytes params) payable returns()
+func (_EthBr *EthBrTransactor) Deposit(opts *bind.TransactOpts, destinationChainID [8]byte, resourceID [32]byte, amount *big.Int, recipientAddress common.Address, amountToLA *big.Int, params []byte) (*types.Transaction, error) {
+	return _EthBr.contract.Transact(opts, "deposit", destinationChainID, resourceID, amount, recipientAddress, amountToLA, params)
 }
 
-// Deposit is a paid mutator transaction binding the contract method 0x92b7064c.
+// Deposit is a paid mutator transaction binding the contract method 0xe4e21fce.
 //
-// Solidity: function deposit(bytes8 destinationChainID, bytes32 resourceID, uint256 amount, address recipientAddress) payable returns()
-func (_EthBr *EthBrSession) Deposit(destinationChainID [8]byte, resourceID [32]byte, amount *big.Int, recipientAddress common.Address) (*types.Transaction, error) {
-	return _EthBr.Contract.Deposit(&_EthBr.TransactOpts, destinationChainID, resourceID, amount, recipientAddress)
+// Solidity: function deposit(bytes8 destinationChainID, bytes32 resourceID, uint256 amount, address recipientAddress, uint256 amountToLA, bytes params) payable returns()
+func (_EthBr *EthBrSession) Deposit(destinationChainID [8]byte, resourceID [32]byte, amount *big.Int, recipientAddress common.Address, amountToLA *big.Int, params []byte) (*types.Transaction, error) {
+	return _EthBr.Contract.Deposit(&_EthBr.TransactOpts, destinationChainID, resourceID, amount, recipientAddress, amountToLA, params)
 }
 
-// Deposit is a paid mutator transaction binding the contract method 0x92b7064c.
+// Deposit is a paid mutator transaction binding the contract method 0xe4e21fce.
 //
-// Solidity: function deposit(bytes8 destinationChainID, bytes32 resourceID, uint256 amount, address recipientAddress) payable returns()
-func (_EthBr *EthBrTransactorSession) Deposit(destinationChainID [8]byte, resourceID [32]byte, amount *big.Int, recipientAddress common.Address) (*types.Transaction, error) {
-	return _EthBr.Contract.Deposit(&_EthBr.TransactOpts, destinationChainID, resourceID, amount, recipientAddress)
+// Solidity: function deposit(bytes8 destinationChainID, bytes32 resourceID, uint256 amount, address recipientAddress, uint256 amountToLA, bytes params) payable returns()
+func (_EthBr *EthBrTransactorSession) Deposit(destinationChainID [8]byte, resourceID [32]byte, amount *big.Int, recipientAddress common.Address, amountToLA *big.Int, params []byte) (*types.Transaction, error) {
+	return _EthBr.Contract.Deposit(&_EthBr.TransactOpts, destinationChainID, resourceID, amount, recipientAddress, amountToLA, params)
 }
 
-// ExecuteProposal is a paid mutator transaction binding the contract method 0x0da380e5.
+// DepositFunds is a paid mutator transaction binding the contract method 0xe2c41dbc.
 //
-// Solidity: function executeProposal(bytes8 originChainID, bytes8 destinationChainID, uint64 depositNonce, bytes32 resourceID, address recipientAddress, uint256 amount) returns()
-func (_EthBr *EthBrTransactor) ExecuteProposal(opts *bind.TransactOpts, originChainID [8]byte, destinationChainID [8]byte, depositNonce uint64, resourceID [32]byte, recipientAddress common.Address, amount *big.Int) (*types.Transaction, error) {
-	return _EthBr.contract.Transact(opts, "executeProposal", originChainID, destinationChainID, depositNonce, resourceID, recipientAddress, amount)
+// Solidity: function depositFunds() payable returns()
+func (_EthBr *EthBrTransactor) DepositFunds(opts *bind.TransactOpts) (*types.Transaction, error) {
+	return _EthBr.contract.Transact(opts, "depositFunds")
 }
 
-// ExecuteProposal is a paid mutator transaction binding the contract method 0x0da380e5.
+// DepositFunds is a paid mutator transaction binding the contract method 0xe2c41dbc.
 //
-// Solidity: function executeProposal(bytes8 originChainID, bytes8 destinationChainID, uint64 depositNonce, bytes32 resourceID, address recipientAddress, uint256 amount) returns()
-func (_EthBr *EthBrSession) ExecuteProposal(originChainID [8]byte, destinationChainID [8]byte, depositNonce uint64, resourceID [32]byte, recipientAddress common.Address, amount *big.Int) (*types.Transaction, error) {
-	return _EthBr.Contract.ExecuteProposal(&_EthBr.TransactOpts, originChainID, destinationChainID, depositNonce, resourceID, recipientAddress, amount)
+// Solidity: function depositFunds() payable returns()
+func (_EthBr *EthBrSession) DepositFunds() (*types.Transaction, error) {
+	return _EthBr.Contract.DepositFunds(&_EthBr.TransactOpts)
 }
 
-// ExecuteProposal is a paid mutator transaction binding the contract method 0x0da380e5.
+// DepositFunds is a paid mutator transaction binding the contract method 0xe2c41dbc.
 //
-// Solidity: function executeProposal(bytes8 originChainID, bytes8 destinationChainID, uint64 depositNonce, bytes32 resourceID, address recipientAddress, uint256 amount) returns()
-func (_EthBr *EthBrTransactorSession) ExecuteProposal(originChainID [8]byte, destinationChainID [8]byte, depositNonce uint64, resourceID [32]byte, recipientAddress common.Address, amount *big.Int) (*types.Transaction, error) {
-	return _EthBr.Contract.ExecuteProposal(&_EthBr.TransactOpts, originChainID, destinationChainID, depositNonce, resourceID, recipientAddress, amount)
+// Solidity: function depositFunds() payable returns()
+func (_EthBr *EthBrTransactorSession) DepositFunds() (*types.Transaction, error) {
+	return _EthBr.Contract.DepositFunds(&_EthBr.TransactOpts)
 }
 
-// GrantRole is a paid mutator transaction binding the contract method 0x2f2ff15d.
+// ExecuteProposal is a paid mutator transaction binding the contract method 0x8d225943.
 //
-// Solidity: function grantRole(bytes32 role, address account) returns()
-func (_EthBr *EthBrTransactor) GrantRole(opts *bind.TransactOpts, role [32]byte, account common.Address) (*types.Transaction, error) {
-	return _EthBr.contract.Transact(opts, "grantRole", role, account)
+// Solidity: function executeProposal(bytes8 originChainID, bytes8 destinationChainID, uint64 depositNonce, bytes32 resourceID, address recipientAddress, uint256 amount, bytes params) returns()
+func (_EthBr *EthBrTransactor) ExecuteProposal(opts *bind.TransactOpts, originChainID [8]byte, destinationChainID [8]byte, depositNonce uint64, resourceID [32]byte, recipientAddress common.Address, amount *big.Int, params []byte) (*types.Transaction, error) {
+	return _EthBr.contract.Transact(opts, "executeProposal", originChainID, destinationChainID, depositNonce, resourceID, recipientAddress, amount, params)
 }
 
-// GrantRole is a paid mutator transaction binding the contract method 0x2f2ff15d.
+// ExecuteProposal is a paid mutator transaction binding the contract method 0x8d225943.
 //
-// Solidity: function grantRole(bytes32 role, address account) returns()
-func (_EthBr *EthBrSession) GrantRole(role [32]byte, account common.Address) (*types.Transaction, error) {
-	return _EthBr.Contract.GrantRole(&_EthBr.TransactOpts, role, account)
+// Solidity: function executeProposal(bytes8 originChainID, bytes8 destinationChainID, uint64 depositNonce, bytes32 resourceID, address recipientAddress, uint256 amount, bytes params) returns()
+func (_EthBr *EthBrSession) ExecuteProposal(originChainID [8]byte, destinationChainID [8]byte, depositNonce uint64, resourceID [32]byte, recipientAddress common.Address, amount *big.Int, params []byte) (*types.Transaction, error) {
+	return _EthBr.Contract.ExecuteProposal(&_EthBr.TransactOpts, originChainID, destinationChainID, depositNonce, resourceID, recipientAddress, amount, params)
 }
 
-// GrantRole is a paid mutator transaction binding the contract method 0x2f2ff15d.
+// ExecuteProposal is a paid mutator transaction binding the contract method 0x8d225943.
 //
-// Solidity: function grantRole(bytes32 role, address account) returns()
-func (_EthBr *EthBrTransactorSession) GrantRole(role [32]byte, account common.Address) (*types.Transaction, error) {
-	return _EthBr.Contract.GrantRole(&_EthBr.TransactOpts, role, account)
+// Solidity: function executeProposal(bytes8 originChainID, bytes8 destinationChainID, uint64 depositNonce, bytes32 resourceID, address recipientAddress, uint256 amount, bytes params) returns()
+func (_EthBr *EthBrTransactorSession) ExecuteProposal(originChainID [8]byte, destinationChainID [8]byte, depositNonce uint64, resourceID [32]byte, recipientAddress common.Address, amount *big.Int, params []byte) (*types.Transaction, error) {
+	return _EthBr.Contract.ExecuteProposal(&_EthBr.TransactOpts, originChainID, destinationChainID, depositNonce, resourceID, recipientAddress, amount, params)
 }
 
-// RenounceAdmin is a paid mutator transaction binding the contract method 0x5e1fab0f.
+// Initialize is a paid mutator transaction binding the contract method 0x92c6ecf2.
 //
-// Solidity: function renounceAdmin(address newAdmin) returns()
-func (_EthBr *EthBrTransactor) RenounceAdmin(opts *bind.TransactOpts, newAdmin common.Address) (*types.Transaction, error) {
-	return _EthBr.contract.Transact(opts, "renounceAdmin", newAdmin)
+// Solidity: function initialize(bytes8 chainID, uint256 fee, address initBackendSrvAddress) returns()
+func (_EthBr *EthBrTransactor) Initialize(opts *bind.TransactOpts, chainID [8]byte, fee *big.Int, initBackendSrvAddress common.Address) (*types.Transaction, error) {
+	return _EthBr.contract.Transact(opts, "initialize", chainID, fee, initBackendSrvAddress)
 }
 
-// RenounceAdmin is a paid mutator transaction binding the contract method 0x5e1fab0f.
+// Initialize is a paid mutator transaction binding the contract method 0x92c6ecf2.
 //
-// Solidity: function renounceAdmin(address newAdmin) returns()
-func (_EthBr *EthBrSession) RenounceAdmin(newAdmin common.Address) (*types.Transaction, error) {
-	return _EthBr.Contract.RenounceAdmin(&_EthBr.TransactOpts, newAdmin)
+// Solidity: function initialize(bytes8 chainID, uint256 fee, address initBackendSrvAddress) returns()
+func (_EthBr *EthBrSession) Initialize(chainID [8]byte, fee *big.Int, initBackendSrvAddress common.Address) (*types.Transaction, error) {
+	return _EthBr.Contract.Initialize(&_EthBr.TransactOpts, chainID, fee, initBackendSrvAddress)
 }
 
-// RenounceAdmin is a paid mutator transaction binding the contract method 0x5e1fab0f.
+// Initialize is a paid mutator transaction binding the contract method 0x92c6ecf2.
 //
-// Solidity: function renounceAdmin(address newAdmin) returns()
-func (_EthBr *EthBrTransactorSession) RenounceAdmin(newAdmin common.Address) (*types.Transaction, error) {
-	return _EthBr.Contract.RenounceAdmin(&_EthBr.TransactOpts, newAdmin)
+// Solidity: function initialize(bytes8 chainID, uint256 fee, address initBackendSrvAddress) returns()
+func (_EthBr *EthBrTransactorSession) Initialize(chainID [8]byte, fee *big.Int, initBackendSrvAddress common.Address) (*types.Transaction, error) {
+	return _EthBr.Contract.Initialize(&_EthBr.TransactOpts, chainID, fee, initBackendSrvAddress)
 }
 
-// RenounceRole is a paid mutator transaction binding the contract method 0x36568abe.
+// InternalDeposit is a paid mutator transaction binding the contract method 0x8ece6f27.
 //
-// Solidity: function renounceRole(bytes32 role, address account) returns()
-func (_EthBr *EthBrTransactor) RenounceRole(opts *bind.TransactOpts, role [32]byte, account common.Address) (*types.Transaction, error) {
-	return _EthBr.contract.Transact(opts, "renounceRole", role, account)
+// Solidity: function internalDeposit(bytes8 destinationChainID, bytes32 resourceID, uint256 amount, address recipientAddress) returns()
+func (_EthBr *EthBrTransactor) InternalDeposit(opts *bind.TransactOpts, destinationChainID [8]byte, resourceID [32]byte, amount *big.Int, recipientAddress common.Address) (*types.Transaction, error) {
+	return _EthBr.contract.Transact(opts, "internalDeposit", destinationChainID, resourceID, amount, recipientAddress)
 }
 
-// RenounceRole is a paid mutator transaction binding the contract method 0x36568abe.
+// InternalDeposit is a paid mutator transaction binding the contract method 0x8ece6f27.
 //
-// Solidity: function renounceRole(bytes32 role, address account) returns()
-func (_EthBr *EthBrSession) RenounceRole(role [32]byte, account common.Address) (*types.Transaction, error) {
-	return _EthBr.Contract.RenounceRole(&_EthBr.TransactOpts, role, account)
+// Solidity: function internalDeposit(bytes8 destinationChainID, bytes32 resourceID, uint256 amount, address recipientAddress) returns()
+func (_EthBr *EthBrSession) InternalDeposit(destinationChainID [8]byte, resourceID [32]byte, amount *big.Int, recipientAddress common.Address) (*types.Transaction, error) {
+	return _EthBr.Contract.InternalDeposit(&_EthBr.TransactOpts, destinationChainID, resourceID, amount, recipientAddress)
 }
 
-// RenounceRole is a paid mutator transaction binding the contract method 0x36568abe.
+// InternalDeposit is a paid mutator transaction binding the contract method 0x8ece6f27.
 //
-// Solidity: function renounceRole(bytes32 role, address account) returns()
-func (_EthBr *EthBrTransactorSession) RenounceRole(role [32]byte, account common.Address) (*types.Transaction, error) {
-	return _EthBr.Contract.RenounceRole(&_EthBr.TransactOpts, role, account)
+// Solidity: function internalDeposit(bytes8 destinationChainID, bytes32 resourceID, uint256 amount, address recipientAddress) returns()
+func (_EthBr *EthBrTransactorSession) InternalDeposit(destinationChainID [8]byte, resourceID [32]byte, amount *big.Int, recipientAddress common.Address) (*types.Transaction, error) {
+	return _EthBr.Contract.InternalDeposit(&_EthBr.TransactOpts, destinationChainID, resourceID, amount, recipientAddress)
 }
 
-// RevokeRole is a paid mutator transaction binding the contract method 0xd547741f.
+// OwnableInit is a paid mutator transaction binding the contract method 0xea439b2b.
 //
-// Solidity: function revokeRole(bytes32 role, address account) returns()
-func (_EthBr *EthBrTransactor) RevokeRole(opts *bind.TransactOpts, role [32]byte, account common.Address) (*types.Transaction, error) {
-	return _EthBr.contract.Transact(opts, "revokeRole", role, account)
+// Solidity: function ownableInit(address owner) returns()
+func (_EthBr *EthBrTransactor) OwnableInit(opts *bind.TransactOpts, owner common.Address) (*types.Transaction, error) {
+	return _EthBr.contract.Transact(opts, "ownableInit", owner)
 }
 
-// RevokeRole is a paid mutator transaction binding the contract method 0xd547741f.
+// OwnableInit is a paid mutator transaction binding the contract method 0xea439b2b.
 //
-// Solidity: function revokeRole(bytes32 role, address account) returns()
-func (_EthBr *EthBrSession) RevokeRole(role [32]byte, account common.Address) (*types.Transaction, error) {
-	return _EthBr.Contract.RevokeRole(&_EthBr.TransactOpts, role, account)
+// Solidity: function ownableInit(address owner) returns()
+func (_EthBr *EthBrSession) OwnableInit(owner common.Address) (*types.Transaction, error) {
+	return _EthBr.Contract.OwnableInit(&_EthBr.TransactOpts, owner)
 }
 
-// RevokeRole is a paid mutator transaction binding the contract method 0xd547741f.
+// OwnableInit is a paid mutator transaction binding the contract method 0xea439b2b.
 //
-// Solidity: function revokeRole(bytes32 role, address account) returns()
-func (_EthBr *EthBrTransactorSession) RevokeRole(role [32]byte, account common.Address) (*types.Transaction, error) {
-	return _EthBr.Contract.RevokeRole(&_EthBr.TransactOpts, role, account)
+// Solidity: function ownableInit(address owner) returns()
+func (_EthBr *EthBrTransactorSession) OwnableInit(owner common.Address) (*types.Transaction, error) {
+	return _EthBr.Contract.OwnableInit(&_EthBr.TransactOpts, owner)
+}
+
+// RenounceOwnership is a paid mutator transaction binding the contract method 0x715018a6.
+//
+// Solidity: function renounceOwnership() returns()
+func (_EthBr *EthBrTransactor) RenounceOwnership(opts *bind.TransactOpts) (*types.Transaction, error) {
+	return _EthBr.contract.Transact(opts, "renounceOwnership")
+}
+
+// RenounceOwnership is a paid mutator transaction binding the contract method 0x715018a6.
+//
+// Solidity: function renounceOwnership() returns()
+func (_EthBr *EthBrSession) RenounceOwnership() (*types.Transaction, error) {
+	return _EthBr.Contract.RenounceOwnership(&_EthBr.TransactOpts)
+}
+
+// RenounceOwnership is a paid mutator transaction binding the contract method 0x715018a6.
+//
+// Solidity: function renounceOwnership() returns()
+func (_EthBr *EthBrTransactorSession) RenounceOwnership() (*types.Transaction, error) {
+	return _EthBr.Contract.RenounceOwnership(&_EthBr.TransactOpts)
+}
+
+// SetHandler is a paid mutator transaction binding the contract method 0x9cb7de4b.
+//
+// Solidity: function setHandler(address _handler, bool value) returns()
+func (_EthBr *EthBrTransactor) SetHandler(opts *bind.TransactOpts, _handler common.Address, value bool) (*types.Transaction, error) {
+	return _EthBr.contract.Transact(opts, "setHandler", _handler, value)
+}
+
+// SetHandler is a paid mutator transaction binding the contract method 0x9cb7de4b.
+//
+// Solidity: function setHandler(address _handler, bool value) returns()
+func (_EthBr *EthBrSession) SetHandler(_handler common.Address, value bool) (*types.Transaction, error) {
+	return _EthBr.Contract.SetHandler(&_EthBr.TransactOpts, _handler, value)
+}
+
+// SetHandler is a paid mutator transaction binding the contract method 0x9cb7de4b.
+//
+// Solidity: function setHandler(address _handler, bool value) returns()
+func (_EthBr *EthBrTransactorSession) SetHandler(_handler common.Address, value bool) (*types.Transaction, error) {
+	return _EthBr.Contract.SetHandler(&_EthBr.TransactOpts, _handler, value)
+}
+
+// TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
+//
+// Solidity: function transferOwnership(address newOwner) returns()
+func (_EthBr *EthBrTransactor) TransferOwnership(opts *bind.TransactOpts, newOwner common.Address) (*types.Transaction, error) {
+	return _EthBr.contract.Transact(opts, "transferOwnership", newOwner)
+}
+
+// TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
+//
+// Solidity: function transferOwnership(address newOwner) returns()
+func (_EthBr *EthBrSession) TransferOwnership(newOwner common.Address) (*types.Transaction, error) {
+	return _EthBr.Contract.TransferOwnership(&_EthBr.TransactOpts, newOwner)
+}
+
+// TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
+//
+// Solidity: function transferOwnership(address newOwner) returns()
+func (_EthBr *EthBrTransactorSession) TransferOwnership(newOwner common.Address) (*types.Transaction, error) {
+	return _EthBr.Contract.TransferOwnership(&_EthBr.TransactOpts, newOwner)
 }
 
 // EthBrDepositIterator is returned from FilterDeposit and is used to iterate over the raw logs and unpacked data for Deposit events raised by the EthBr contract.
@@ -1012,6 +1143,298 @@ func (_EthBr *EthBrFilterer) WatchDeposit(opts *bind.WatchOpts, sink chan<- *Eth
 func (_EthBr *EthBrFilterer) ParseDeposit(log types.Log) (*EthBrDeposit, error) {
 	event := new(EthBrDeposit)
 	if err := _EthBr.contract.UnpackLog(event, "Deposit", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// EthBrExtraFeeSuppliedIterator is returned from FilterExtraFeeSupplied and is used to iterate over the raw logs and unpacked data for ExtraFeeSupplied events raised by the EthBr contract.
+type EthBrExtraFeeSuppliedIterator struct {
+	Event *EthBrExtraFeeSupplied // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *EthBrExtraFeeSuppliedIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(EthBrExtraFeeSupplied)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(EthBrExtraFeeSupplied)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *EthBrExtraFeeSuppliedIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *EthBrExtraFeeSuppliedIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// EthBrExtraFeeSupplied represents a ExtraFeeSupplied event raised by the EthBr contract.
+type EthBrExtraFeeSupplied struct {
+	OriginChainID      [8]byte
+	DestinationChainID [8]byte
+	DepositNonce       uint64
+	ResourceID         [32]byte
+	RecipientAddress   common.Address
+	Amount             *big.Int
+	Raw                types.Log // Blockchain specific contextual infos
+}
+
+// FilterExtraFeeSupplied is a free log retrieval operation binding the contract event 0x525223e7c9e63747e47dd4558940766054da3d0378f4006848d2a201545f55a4.
+//
+// Solidity: event ExtraFeeSupplied(bytes8 originChainID, bytes8 destinationChainID, uint64 depositNonce, bytes32 resourceID, address recipientAddress, uint256 amount)
+func (_EthBr *EthBrFilterer) FilterExtraFeeSupplied(opts *bind.FilterOpts) (*EthBrExtraFeeSuppliedIterator, error) {
+
+	logs, sub, err := _EthBr.contract.FilterLogs(opts, "ExtraFeeSupplied")
+	if err != nil {
+		return nil, err
+	}
+	return &EthBrExtraFeeSuppliedIterator{contract: _EthBr.contract, event: "ExtraFeeSupplied", logs: logs, sub: sub}, nil
+}
+
+// WatchExtraFeeSupplied is a free log subscription operation binding the contract event 0x525223e7c9e63747e47dd4558940766054da3d0378f4006848d2a201545f55a4.
+//
+// Solidity: event ExtraFeeSupplied(bytes8 originChainID, bytes8 destinationChainID, uint64 depositNonce, bytes32 resourceID, address recipientAddress, uint256 amount)
+func (_EthBr *EthBrFilterer) WatchExtraFeeSupplied(opts *bind.WatchOpts, sink chan<- *EthBrExtraFeeSupplied) (event.Subscription, error) {
+
+	logs, sub, err := _EthBr.contract.WatchLogs(opts, "ExtraFeeSupplied")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(EthBrExtraFeeSupplied)
+				if err := _EthBr.contract.UnpackLog(event, "ExtraFeeSupplied", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseExtraFeeSupplied is a log parse operation binding the contract event 0x525223e7c9e63747e47dd4558940766054da3d0378f4006848d2a201545f55a4.
+//
+// Solidity: event ExtraFeeSupplied(bytes8 originChainID, bytes8 destinationChainID, uint64 depositNonce, bytes32 resourceID, address recipientAddress, uint256 amount)
+func (_EthBr *EthBrFilterer) ParseExtraFeeSupplied(log types.Log) (*EthBrExtraFeeSupplied, error) {
+	event := new(EthBrExtraFeeSupplied)
+	if err := _EthBr.contract.UnpackLog(event, "ExtraFeeSupplied", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// EthBrOwnershipTransferredIterator is returned from FilterOwnershipTransferred and is used to iterate over the raw logs and unpacked data for OwnershipTransferred events raised by the EthBr contract.
+type EthBrOwnershipTransferredIterator struct {
+	Event *EthBrOwnershipTransferred // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *EthBrOwnershipTransferredIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(EthBrOwnershipTransferred)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(EthBrOwnershipTransferred)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *EthBrOwnershipTransferredIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *EthBrOwnershipTransferredIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// EthBrOwnershipTransferred represents a OwnershipTransferred event raised by the EthBr contract.
+type EthBrOwnershipTransferred struct {
+	PreviousOwner common.Address
+	NewOwner      common.Address
+	Raw           types.Log // Blockchain specific contextual infos
+}
+
+// FilterOwnershipTransferred is a free log retrieval operation binding the contract event 0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0.
+//
+// Solidity: event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)
+func (_EthBr *EthBrFilterer) FilterOwnershipTransferred(opts *bind.FilterOpts, previousOwner []common.Address, newOwner []common.Address) (*EthBrOwnershipTransferredIterator, error) {
+
+	var previousOwnerRule []interface{}
+	for _, previousOwnerItem := range previousOwner {
+		previousOwnerRule = append(previousOwnerRule, previousOwnerItem)
+	}
+	var newOwnerRule []interface{}
+	for _, newOwnerItem := range newOwner {
+		newOwnerRule = append(newOwnerRule, newOwnerItem)
+	}
+
+	logs, sub, err := _EthBr.contract.FilterLogs(opts, "OwnershipTransferred", previousOwnerRule, newOwnerRule)
+	if err != nil {
+		return nil, err
+	}
+	return &EthBrOwnershipTransferredIterator{contract: _EthBr.contract, event: "OwnershipTransferred", logs: logs, sub: sub}, nil
+}
+
+// WatchOwnershipTransferred is a free log subscription operation binding the contract event 0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0.
+//
+// Solidity: event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)
+func (_EthBr *EthBrFilterer) WatchOwnershipTransferred(opts *bind.WatchOpts, sink chan<- *EthBrOwnershipTransferred, previousOwner []common.Address, newOwner []common.Address) (event.Subscription, error) {
+
+	var previousOwnerRule []interface{}
+	for _, previousOwnerItem := range previousOwner {
+		previousOwnerRule = append(previousOwnerRule, previousOwnerItem)
+	}
+	var newOwnerRule []interface{}
+	for _, newOwnerItem := range newOwner {
+		newOwnerRule = append(newOwnerRule, newOwnerItem)
+	}
+
+	logs, sub, err := _EthBr.contract.WatchLogs(opts, "OwnershipTransferred", previousOwnerRule, newOwnerRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(EthBrOwnershipTransferred)
+				if err := _EthBr.contract.UnpackLog(event, "OwnershipTransferred", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseOwnershipTransferred is a log parse operation binding the contract event 0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0.
+//
+// Solidity: event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)
+func (_EthBr *EthBrFilterer) ParseOwnershipTransferred(log types.Log) (*EthBrOwnershipTransferred, error) {
+	event := new(EthBrOwnershipTransferred)
+	if err := _EthBr.contract.UnpackLog(event, "OwnershipTransferred", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
@@ -1313,492 +1736,6 @@ func (_EthBr *EthBrFilterer) WatchProposalEvent(opts *bind.WatchOpts, sink chan<
 func (_EthBr *EthBrFilterer) ParseProposalEvent(log types.Log) (*EthBrProposalEvent, error) {
 	event := new(EthBrProposalEvent)
 	if err := _EthBr.contract.UnpackLog(event, "ProposalEvent", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// EthBrRoleAdminChangedIterator is returned from FilterRoleAdminChanged and is used to iterate over the raw logs and unpacked data for RoleAdminChanged events raised by the EthBr contract.
-type EthBrRoleAdminChangedIterator struct {
-	Event *EthBrRoleAdminChanged // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *EthBrRoleAdminChangedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(EthBrRoleAdminChanged)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(EthBrRoleAdminChanged)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *EthBrRoleAdminChangedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *EthBrRoleAdminChangedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// EthBrRoleAdminChanged represents a RoleAdminChanged event raised by the EthBr contract.
-type EthBrRoleAdminChanged struct {
-	Role              [32]byte
-	PreviousAdminRole [32]byte
-	NewAdminRole      [32]byte
-	Raw               types.Log // Blockchain specific contextual infos
-}
-
-// FilterRoleAdminChanged is a free log retrieval operation binding the contract event 0xbd79b86ffe0ab8e8776151514217cd7cacd52c909f66475c3af44e129f0b00ff.
-//
-// Solidity: event RoleAdminChanged(bytes32 indexed role, bytes32 indexed previousAdminRole, bytes32 indexed newAdminRole)
-func (_EthBr *EthBrFilterer) FilterRoleAdminChanged(opts *bind.FilterOpts, role [][32]byte, previousAdminRole [][32]byte, newAdminRole [][32]byte) (*EthBrRoleAdminChangedIterator, error) {
-
-	var roleRule []interface{}
-	for _, roleItem := range role {
-		roleRule = append(roleRule, roleItem)
-	}
-	var previousAdminRoleRule []interface{}
-	for _, previousAdminRoleItem := range previousAdminRole {
-		previousAdminRoleRule = append(previousAdminRoleRule, previousAdminRoleItem)
-	}
-	var newAdminRoleRule []interface{}
-	for _, newAdminRoleItem := range newAdminRole {
-		newAdminRoleRule = append(newAdminRoleRule, newAdminRoleItem)
-	}
-
-	logs, sub, err := _EthBr.contract.FilterLogs(opts, "RoleAdminChanged", roleRule, previousAdminRoleRule, newAdminRoleRule)
-	if err != nil {
-		return nil, err
-	}
-	return &EthBrRoleAdminChangedIterator{contract: _EthBr.contract, event: "RoleAdminChanged", logs: logs, sub: sub}, nil
-}
-
-// WatchRoleAdminChanged is a free log subscription operation binding the contract event 0xbd79b86ffe0ab8e8776151514217cd7cacd52c909f66475c3af44e129f0b00ff.
-//
-// Solidity: event RoleAdminChanged(bytes32 indexed role, bytes32 indexed previousAdminRole, bytes32 indexed newAdminRole)
-func (_EthBr *EthBrFilterer) WatchRoleAdminChanged(opts *bind.WatchOpts, sink chan<- *EthBrRoleAdminChanged, role [][32]byte, previousAdminRole [][32]byte, newAdminRole [][32]byte) (event.Subscription, error) {
-
-	var roleRule []interface{}
-	for _, roleItem := range role {
-		roleRule = append(roleRule, roleItem)
-	}
-	var previousAdminRoleRule []interface{}
-	for _, previousAdminRoleItem := range previousAdminRole {
-		previousAdminRoleRule = append(previousAdminRoleRule, previousAdminRoleItem)
-	}
-	var newAdminRoleRule []interface{}
-	for _, newAdminRoleItem := range newAdminRole {
-		newAdminRoleRule = append(newAdminRoleRule, newAdminRoleItem)
-	}
-
-	logs, sub, err := _EthBr.contract.WatchLogs(opts, "RoleAdminChanged", roleRule, previousAdminRoleRule, newAdminRoleRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(EthBrRoleAdminChanged)
-				if err := _EthBr.contract.UnpackLog(event, "RoleAdminChanged", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseRoleAdminChanged is a log parse operation binding the contract event 0xbd79b86ffe0ab8e8776151514217cd7cacd52c909f66475c3af44e129f0b00ff.
-//
-// Solidity: event RoleAdminChanged(bytes32 indexed role, bytes32 indexed previousAdminRole, bytes32 indexed newAdminRole)
-func (_EthBr *EthBrFilterer) ParseRoleAdminChanged(log types.Log) (*EthBrRoleAdminChanged, error) {
-	event := new(EthBrRoleAdminChanged)
-	if err := _EthBr.contract.UnpackLog(event, "RoleAdminChanged", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// EthBrRoleGrantedIterator is returned from FilterRoleGranted and is used to iterate over the raw logs and unpacked data for RoleGranted events raised by the EthBr contract.
-type EthBrRoleGrantedIterator struct {
-	Event *EthBrRoleGranted // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *EthBrRoleGrantedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(EthBrRoleGranted)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(EthBrRoleGranted)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *EthBrRoleGrantedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *EthBrRoleGrantedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// EthBrRoleGranted represents a RoleGranted event raised by the EthBr contract.
-type EthBrRoleGranted struct {
-	Role    [32]byte
-	Account common.Address
-	Sender  common.Address
-	Raw     types.Log // Blockchain specific contextual infos
-}
-
-// FilterRoleGranted is a free log retrieval operation binding the contract event 0x2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d.
-//
-// Solidity: event RoleGranted(bytes32 indexed role, address indexed account, address indexed sender)
-func (_EthBr *EthBrFilterer) FilterRoleGranted(opts *bind.FilterOpts, role [][32]byte, account []common.Address, sender []common.Address) (*EthBrRoleGrantedIterator, error) {
-
-	var roleRule []interface{}
-	for _, roleItem := range role {
-		roleRule = append(roleRule, roleItem)
-	}
-	var accountRule []interface{}
-	for _, accountItem := range account {
-		accountRule = append(accountRule, accountItem)
-	}
-	var senderRule []interface{}
-	for _, senderItem := range sender {
-		senderRule = append(senderRule, senderItem)
-	}
-
-	logs, sub, err := _EthBr.contract.FilterLogs(opts, "RoleGranted", roleRule, accountRule, senderRule)
-	if err != nil {
-		return nil, err
-	}
-	return &EthBrRoleGrantedIterator{contract: _EthBr.contract, event: "RoleGranted", logs: logs, sub: sub}, nil
-}
-
-// WatchRoleGranted is a free log subscription operation binding the contract event 0x2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d.
-//
-// Solidity: event RoleGranted(bytes32 indexed role, address indexed account, address indexed sender)
-func (_EthBr *EthBrFilterer) WatchRoleGranted(opts *bind.WatchOpts, sink chan<- *EthBrRoleGranted, role [][32]byte, account []common.Address, sender []common.Address) (event.Subscription, error) {
-
-	var roleRule []interface{}
-	for _, roleItem := range role {
-		roleRule = append(roleRule, roleItem)
-	}
-	var accountRule []interface{}
-	for _, accountItem := range account {
-		accountRule = append(accountRule, accountItem)
-	}
-	var senderRule []interface{}
-	for _, senderItem := range sender {
-		senderRule = append(senderRule, senderItem)
-	}
-
-	logs, sub, err := _EthBr.contract.WatchLogs(opts, "RoleGranted", roleRule, accountRule, senderRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(EthBrRoleGranted)
-				if err := _EthBr.contract.UnpackLog(event, "RoleGranted", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseRoleGranted is a log parse operation binding the contract event 0x2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d.
-//
-// Solidity: event RoleGranted(bytes32 indexed role, address indexed account, address indexed sender)
-func (_EthBr *EthBrFilterer) ParseRoleGranted(log types.Log) (*EthBrRoleGranted, error) {
-	event := new(EthBrRoleGranted)
-	if err := _EthBr.contract.UnpackLog(event, "RoleGranted", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// EthBrRoleRevokedIterator is returned from FilterRoleRevoked and is used to iterate over the raw logs and unpacked data for RoleRevoked events raised by the EthBr contract.
-type EthBrRoleRevokedIterator struct {
-	Event *EthBrRoleRevoked // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *EthBrRoleRevokedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(EthBrRoleRevoked)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(EthBrRoleRevoked)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *EthBrRoleRevokedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *EthBrRoleRevokedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// EthBrRoleRevoked represents a RoleRevoked event raised by the EthBr contract.
-type EthBrRoleRevoked struct {
-	Role    [32]byte
-	Account common.Address
-	Sender  common.Address
-	Raw     types.Log // Blockchain specific contextual infos
-}
-
-// FilterRoleRevoked is a free log retrieval operation binding the contract event 0xf6391f5c32d9c69d2a47ea670b442974b53935d1edc7fd64eb21e047a839171b.
-//
-// Solidity: event RoleRevoked(bytes32 indexed role, address indexed account, address indexed sender)
-func (_EthBr *EthBrFilterer) FilterRoleRevoked(opts *bind.FilterOpts, role [][32]byte, account []common.Address, sender []common.Address) (*EthBrRoleRevokedIterator, error) {
-
-	var roleRule []interface{}
-	for _, roleItem := range role {
-		roleRule = append(roleRule, roleItem)
-	}
-	var accountRule []interface{}
-	for _, accountItem := range account {
-		accountRule = append(accountRule, accountItem)
-	}
-	var senderRule []interface{}
-	for _, senderItem := range sender {
-		senderRule = append(senderRule, senderItem)
-	}
-
-	logs, sub, err := _EthBr.contract.FilterLogs(opts, "RoleRevoked", roleRule, accountRule, senderRule)
-	if err != nil {
-		return nil, err
-	}
-	return &EthBrRoleRevokedIterator{contract: _EthBr.contract, event: "RoleRevoked", logs: logs, sub: sub}, nil
-}
-
-// WatchRoleRevoked is a free log subscription operation binding the contract event 0xf6391f5c32d9c69d2a47ea670b442974b53935d1edc7fd64eb21e047a839171b.
-//
-// Solidity: event RoleRevoked(bytes32 indexed role, address indexed account, address indexed sender)
-func (_EthBr *EthBrFilterer) WatchRoleRevoked(opts *bind.WatchOpts, sink chan<- *EthBrRoleRevoked, role [][32]byte, account []common.Address, sender []common.Address) (event.Subscription, error) {
-
-	var roleRule []interface{}
-	for _, roleItem := range role {
-		roleRule = append(roleRule, roleItem)
-	}
-	var accountRule []interface{}
-	for _, accountItem := range account {
-		accountRule = append(accountRule, accountItem)
-	}
-	var senderRule []interface{}
-	for _, senderItem := range sender {
-		senderRule = append(senderRule, senderItem)
-	}
-
-	logs, sub, err := _EthBr.contract.WatchLogs(opts, "RoleRevoked", roleRule, accountRule, senderRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(EthBrRoleRevoked)
-				if err := _EthBr.contract.UnpackLog(event, "RoleRevoked", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseRoleRevoked is a log parse operation binding the contract event 0xf6391f5c32d9c69d2a47ea670b442974b53935d1edc7fd64eb21e047a839171b.
-//
-// Solidity: event RoleRevoked(bytes32 indexed role, address indexed account, address indexed sender)
-func (_EthBr *EthBrFilterer) ParseRoleRevoked(log types.Log) (*EthBrRoleRevoked, error) {
-	event := new(EthBrRoleRevoked)
-	if err := _EthBr.contract.UnpackLog(event, "RoleRevoked", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
