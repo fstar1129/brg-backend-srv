@@ -1,5 +1,5 @@
 # STEP 1 build executable binary
-FROM golang:1.14-alpine AS builder
+FROM golang:1.17-alpine AS builder
 # The latest alpine images don't have some tools like (`git` and `bash`).
 # Adding git, bash and openssh to the image
 RUN apk update && apk upgrade && \
