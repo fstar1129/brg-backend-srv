@@ -14,21 +14,23 @@ import (
 
 //FetcherSrv
 type FetcherSrv struct {
-	logger    *logrus.Entry
-	storage   *storage.DataBase
-	posFetCfg *models.FetcherConfig
-	bscFetCfg *models.FetcherConfig
-	ethFetCfg *models.FetcherConfig
+	logger     *logrus.Entry
+	storage    *storage.DataBase
+	posFetCfg  *models.FetcherConfig
+	bscFetCfg  *models.FetcherConfig
+	ethFetCfg  *models.FetcherConfig
+	avaxFetCfg *models.FetcherConfig
 }
 
 //CreateFetcherSrv
-func CreateFetcherSrv(logger *logrus.Logger, db *storage.DataBase, posFetCfg, bscFetCfg, ethFetCfg *models.FetcherConfig) *FetcherSrv {
+func CreateFetcherSrv(logger *logrus.Logger, db *storage.DataBase, posFetCfg, bscFetCfg, ethFetCfg, avaxFetCfg *models.FetcherConfig) *FetcherSrv {
 	return &FetcherSrv{
-		logger:    logger.WithField("layer", "fetcher"),
-		storage:   db,
-		posFetCfg: posFetCfg,
-		bscFetCfg: bscFetCfg,
-		ethFetCfg: ethFetCfg,
+		logger:     logger.WithField("layer", "fetcher"),
+		storage:    db,
+		posFetCfg:  posFetCfg,
+		bscFetCfg:  bscFetCfg,
+		ethFetCfg:  ethFetCfg,
+		avaxFetCfg: avaxFetCfg,
 	}
 }
 
@@ -48,10 +50,12 @@ func (f *FetcherSrv) getAllGasPrice() {
 	bscGasPrice := f.getBscGasPrice()
 	ethGasPrice := f.getEthGasPrice()
 	posGasPrice := f.getPosGasPrice()
+	avaxGasPrice := f.getAvaxGasPrice()
 	gasPrices := make([]*storage.GasPrice, 3)
 	gasPrices[0] = bscGasPrice
 	gasPrices[1] = ethGasPrice
 	gasPrices[2] = posGasPrice
+	gasPrices[3] = avaxGasPrice
 	f.storage.SaveGasPriceInfo(gasPrices)
 	f.logger.Infoln("New gas prices fetched")
 }
@@ -96,6 +100,20 @@ func (f *FetcherSrv) getPosGasPrice() *storage.GasPrice {
 	}
 	var gasPrice = (*resp)["standard"].(float64)
 	return &storage.GasPrice{ChainName: "POS", Price: fmt.Sprintf("%f", gasPrice), UpdateTime: time.Now().Unix()}
+}
+
+func (f *FetcherSrv) getAvaxGasPrice() *storage.GasPrice {
+	httpClient := &http.Client{
+		Timeout: time.Second * 10,
+	}
+
+	resp, err := f.makeReq(f.avaxFetCfg.URL, httpClient)
+	if err != nil {
+		logrus.Warnf("fetch ETH gas price error = %s", err)
+		return &storage.GasPrice{}
+	}
+	var gasPrice = (*resp)["standard"].(float64)
+	return &storage.GasPrice{ChainName: "AVAX", Price: fmt.Sprintf("%f", gasPrice), UpdateTime: time.Now().Unix()}
 }
 
 // MakeReq HTTP request helper

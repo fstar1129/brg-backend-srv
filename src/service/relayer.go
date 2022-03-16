@@ -28,8 +28,8 @@ type BridgeSRV struct {
 }
 
 // CreateNewBridgeSRV ...
-func CreateNewBridgeSRV(logger *logrus.Logger, gormDB *gorm.DB, laConfig, posCfg, bscCfg, ethCfg *models.WorkerConfig,
-	posFetCfg, bscFetCfg, ethFetCfg *models.FetcherConfig, resourceIDs []*storage.ResourceId) *BridgeSRV {
+func CreateNewBridgeSRV(logger *logrus.Logger, gormDB *gorm.DB, laConfig, posCfg, bscCfg, ethCfg, avaxCfg *models.WorkerConfig,
+	posFetCfg, bscFetCfg, ethFetCfg, avaxFetCfg *models.FetcherConfig, resourceIDs []*storage.ResourceId) *BridgeSRV {
 	// init database
 	db, err := storage.InitStorage(gormDB)
 	if err != nil {
@@ -47,6 +47,7 @@ func CreateNewBridgeSRV(logger *logrus.Logger, gormDB *gorm.DB, laConfig, posCfg
 	inst.Workers[storage.PosChain] = eth.NewErc20Worker(logger, posCfg, db)
 	inst.Workers[storage.BscChain] = eth.NewErc20Worker(logger, bscCfg, db)
 	inst.Workers[storage.EthChain] = eth.NewErc20Worker(logger, ethCfg, db)
+	inst.Workers[storage.EthChain] = eth.NewErc20Worker(logger, avaxCfg, db)
 	// create la worker
 	inst.Workers[storage.LaChain] = inst.laWorker
 
@@ -56,7 +57,7 @@ func CreateNewBridgeSRV(logger *logrus.Logger, gormDB *gorm.DB, laConfig, posCfg
 		return nil
 	}
 	inst.Watcher = watcher.CreateNewWatcherSRV(logger, db, inst.Workers)
-	inst.Fetcher = fetcher.CreateFetcherSrv(logger, db, posFetCfg, bscFetCfg, ethFetCfg)
+	inst.Fetcher = fetcher.CreateFetcherSrv(logger, db, posFetCfg, bscFetCfg, ethFetCfg, avaxFetCfg)
 
 	db.SaveResourceIDs(resourceIDs)
 	return &inst
