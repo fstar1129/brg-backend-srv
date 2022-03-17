@@ -263,7 +263,11 @@ func (w *Erc20Worker) getLogs(curHeight, nextHeight int64) ([]*storage.TxLog, er
 		Addresses: []common.Address{w.contractAddr},
 		Topics:    [][]common.Hash{},
 	})
+
+	w.logger.Info(logs)
+
 	if err != nil {
+		w.logger.Info("ERR")
 		w.logger.WithFields(logrus.Fields{"function": "GetLogs()"}).Errorf("get event log error, err=%s", err)
 		return nil, err
 	}
