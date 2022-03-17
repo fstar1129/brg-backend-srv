@@ -113,7 +113,7 @@ func (ev ProposalEvent) ToTxLog(chain string) *storage.TxLog {
 func (w *Erc20Worker) parseEvent(log *types.Log) (ContractEvent, error) {
 	if bytes.Equal(log.Topics[0][:], ProposalEventHash[:]) {
 		if w.GetChainName() == storage.LaChain {
-			abi, _ := abi.JSON(strings.NewReader(laBr.LabrABI))
+			abi, _ := abi.JSON(strings.NewReader(laBr.LaBrABI))
 			return ParseLAProposalEvent(&abi, log)
 		} else {
 			abi, _ := abi.JSON(strings.NewReader(ethBr.EthBrABI))
