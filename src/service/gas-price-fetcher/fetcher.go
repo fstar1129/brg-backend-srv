@@ -95,7 +95,7 @@ func (f *FetcherSrv) getPosGasPrice() *storage.GasPrice {
 
 	resp, err := f.makeReq(f.posFetCfg.URL, httpClient)
 	if err != nil {
-		logrus.Warnf("fetch ETH gas price error = %s", err)
+		logrus.Warnf("fetch POS gas price error = %s", err)
 		return &storage.GasPrice{}
 	}
 	var gasPrice = (*resp)["standard"].(float64)
@@ -109,7 +109,7 @@ func (f *FetcherSrv) getAvaxGasPrice() *storage.GasPrice {
 
 	resp, err := f.makeReq(f.avaxFetCfg.URL, httpClient)
 	if err != nil {
-		logrus.Warnf("fetch ETH gas price error = %s", err)
+		logrus.Warnf("fetch AVAX gas price error = %s", err)
 		return &storage.GasPrice{}
 	}
 	var gasPrice = (*resp)["standard"].(float64)
