@@ -51,7 +51,7 @@ func (f *FetcherSrv) getAllGasPrice() {
 	ethGasPrice := f.getEthGasPrice()
 	posGasPrice := f.getPosGasPrice()
 	avaxGasPrice := f.getAvaxGasPrice()
-	gasPrices := make([]*storage.GasPrice, 3)
+	gasPrices := make([]*storage.GasPrice, 4)
 	gasPrices[0] = bscGasPrice
 	gasPrices[1] = ethGasPrice
 	gasPrices[2] = posGasPrice
