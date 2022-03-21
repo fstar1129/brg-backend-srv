@@ -33,7 +33,7 @@ type viperConfig struct {
 func (v *viperConfig) Init() {
 	viper.AutomaticEnv()
 	viper.AddConfigPath(os.Getenv("FILE_PATH"))
-	// viper.AddConfigPath("../config-files")
+	// viper.AddConfigPath("../config-files/")
 	replacer := strings.NewReplacer(`.`, `_`)
 	viper.SetEnvKeyReplacer(replacer)
 	viper.SetConfigType(`json`)
