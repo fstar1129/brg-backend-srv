@@ -10,6 +10,8 @@ var (
 	EthChain string = "ETH"
 	// BtcChain - Bitcoin chain
 	BtcChain string = "BTC"
+	// AvaxChain - Avalanche chain
+	AvaxChain string = "AVAX"
 )
 
 // BlockType ...

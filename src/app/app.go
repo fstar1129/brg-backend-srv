@@ -25,14 +25,14 @@ type App struct {
 
 // NewApp is initializes the app
 func NewApp(logger *logrus.Logger, addr string, db *gorm.DB,
-	laCfg, posCfg *models.WorkerConfig, bscCfg *models.WorkerConfig, ethCfg *models.WorkerConfig, posFetCfg, bscFetCfg, ethFetCfg *models.FetcherConfig,
+	laCfg, posCfg, bscCfg, ethCfg, avaxCfg *models.WorkerConfig, posFetCfg, bscFetCfg, ethFetCfg, avaxFetCfg *models.FetcherConfig,
 	resourceIDs []*storage.ResourceId) *App {
 	// create new app
 	inst := &App{
 		logger:  logger,
 		router:  mux.NewRouter(),
 		server:  &http.Server{Addr: addr},
-		relayer: rlr.CreateNewBridgeSRV(logger, db, laCfg, posCfg, bscCfg, ethCfg, posFetCfg, bscFetCfg, ethFetCfg, resourceIDs),
+		relayer: rlr.CreateNewBridgeSRV(logger, db, laCfg, posCfg, bscCfg, ethCfg, avaxCfg, posFetCfg, bscFetCfg, ethFetCfg, avaxFetCfg, resourceIDs),
 	}
 	// set router
 	inst.router = mux.NewRouter()
