@@ -94,7 +94,7 @@ func (f *FetcherSrv) getPosGasPrice() *storage.GasPrice {
 		logrus.Warnf("fetch ETH gas price error = %s", err)
 		return &storage.GasPrice{}
 	}
-	var gasPrice = (*resp)["standard"].(float64)
+	var gasPrice = (*resp)["fast"].(float64)
 	return &storage.GasPrice{ChainName: "POS", Price: fmt.Sprintf("%f", gasPrice), UpdateTime: time.Now().Unix()}
 }
 
