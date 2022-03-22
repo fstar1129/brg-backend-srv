@@ -17,8 +17,8 @@ func (v *viperConfig) ReadServiceConfig() string {
 }
 
 //reads ethereum chain apis to fetch gas price
-func (v *viperConfig) ReadFetcherConfig() (pos, bsc, eth *models.FetcherConfig) {
-	return v.readFetcherConfig(storage.PosChain), v.readFetcherConfig(storage.BscChain), v.readFetcherConfig(storage.EthChain)
+func (v *viperConfig) ReadFetcherConfig() (pos, bsc, eth, avax *models.FetcherConfig) {
+	return v.readFetcherConfig(storage.PosChain), v.readFetcherConfig(storage.BscChain), v.readFetcherConfig(storage.EthChain), v.readFetcherConfig(storage.AvaxChain)
 }
 
 func (v *viperConfig) readFetcherConfig(name string) *models.FetcherConfig {
@@ -34,8 +34,8 @@ func (v *viperConfig) ReadLachainConfig() *models.WorkerConfig {
 }
 
 // ReadEthWorkerConfig reads ethereum chain worker params from config.json
-func (v *viperConfig) ReadWorkersConfig() (pos *models.WorkerConfig, bsc *models.WorkerConfig, eth *models.WorkerConfig) {
-	return v.readWorkerConfig(storage.PosChain), v.readWorkerConfig(storage.BscChain), v.readWorkerConfig(storage.EthChain)
+func (v *viperConfig) ReadWorkersConfig() (pos *models.WorkerConfig, bsc *models.WorkerConfig, eth *models.WorkerConfig, avax *models.WorkerConfig) {
+	return v.readWorkerConfig(storage.PosChain), v.readWorkerConfig(storage.BscChain), v.readWorkerConfig(storage.EthChain), v.readWorkerConfig(storage.AvaxChain)
 }
 
 // readETHWorkerConfig reads ethereum chain worker params from config.json
@@ -50,7 +50,6 @@ func (v *viperConfig) readWorkerConfig(name string) *models.WorkerConfig {
 		PrivateKey:         v.GetString(fmt.Sprintf("workers.%s.private_key", name)),
 		Provider:           v.GetString(fmt.Sprintf("workers.%s.provider", name)),
 		ContractAddr:       common.HexToAddress(v.GetString(fmt.Sprintf("workers.%s.contract_addr", name))),
-		ProxyContractAddr:  common.HexToAddress(v.GetString(fmt.Sprintf("workers.%s.proxy_contract", name))),
 		TokenContractAddr:  common.HexToAddress(v.GetString(fmt.Sprintf("workers.%s.token_addr", name))),
 		GasLimit:           v.GetInt64(fmt.Sprintf("workers.%s.gas_limit", name)),
 		GasPrice:           big.NewInt(v.GetInt64(fmt.Sprintf("workers.%s.gas_price", name))),
@@ -76,7 +75,7 @@ func (v *viperConfig) ReadDBConfig() *models.StorageConfig {
 }
 
 func (v *viperConfig) ReadResourceIDs() []*storage.ResourceId {
-	tokens := [5]string{"tether", "matic-network", "latoken", "binancecoin", "ethereum"}
+	tokens := [6]string{"tether", "matic-network", "latoken", "binancecoin", "ethereum", "avalanche"}
 	resouceIDs := make([]*storage.ResourceId, len(tokens))
 	for index, name := range tokens {
 		resouceIDs[index] = &storage.ResourceId{

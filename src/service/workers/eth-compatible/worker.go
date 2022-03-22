@@ -38,7 +38,6 @@ type Erc20Worker struct {
 	config             *models.WorkerConfig
 	client             *ethclient.Client
 	contractAddr       common.Address
-	proxyContractAddr  common.Address
 }
 
 // NewErc20Worker ...
@@ -78,7 +77,6 @@ func NewErc20Worker(logger *logrus.Logger, cfg *models.WorkerConfig, db *storage
 		config:             cfg,
 		client:             client,
 		contractAddr:       cfg.ContractAddr,
-		proxyContractAddr:  cfg.ProxyContractAddr,
 		storage:            db,
 	}
 }
@@ -117,12 +115,12 @@ func (w *Erc20Worker) ExecuteProposalEth(depositNonce uint64, originChainID [8]b
 		return "", err
 	}
 
-	instance, err := ethBr.NewEthBr(w.proxyContractAddr, w.client)
+	instance, err := ethBr.NewEthBr(w.contractAddr, w.client)
 	if err != nil {
 		return "", err
 	}
 	value, _ := new(big.Int).SetString(amount, 10)
-	tx, err := instance.ExecuteProposal(auth, originChainID, destinationChainID, depositNonce, resourceID, common.HexToAddress(receiptAddr), value)
+	tx, err := instance.ExecuteProposal(auth, originChainID, destinationChainID, depositNonce, resourceID, common.HexToAddress(receiptAddr), value, nil)
 	if err != nil {
 		return "", err
 	}
@@ -136,12 +134,12 @@ func (w *Erc20Worker) ExecuteProposalLa(depositNonce uint64, originChainID [8]by
 		return "", err
 	}
 
-	instance, err := laBr.NewLabr(w.proxyContractAddr, w.client)
+	instance, err := laBr.NewLaBr(w.contractAddr, w.client)
 	if err != nil {
 		return "", err
 	}
 	value, _ := new(big.Int).SetString(amount, 10)
-	tx, err := instance.ExecuteProposal(auth, originChainID, destinationChainID, depositNonce, resourceID, common.HexToAddress(receiptAddr), value)
+	tx, err := instance.ExecuteProposal(auth, originChainID, destinationChainID, depositNonce, resourceID, common.HexToAddress(receiptAddr), value, nil)
 	if err != nil {
 		return "", err
 	}
@@ -225,6 +223,10 @@ func (w *Erc20Worker) GetBlockAndTxs(height int64) (*models.BlockAndTxLogs, erro
 
 	}
 
+	if height >= clientResp.Number.Int64() {
+		return nil, fmt.Errorf("not found")
+	}
+
 	logs, err := w.getLogs(height, clientResp.Number.Int64())
 	if err != nil {
 		w.logger.Errorf("while getEvents(block number from %d to %d), err = %v", height, clientResp.Number, err)
@@ -250,7 +252,7 @@ func (w *Erc20Worker) GetFetchInterval() time.Duration {
 // getLogs ...
 func (w *Erc20Worker) getLogs(curHeight, nextHeight int64) ([]*storage.TxLog, error) {
 	//	topics := [][]common.Hash{{DepositEventHash, ProposalEventHash, ProposalVoteHash}}
-	if curHeight == 0 || nextHeight-curHeight > 3500 {
+	if curHeight == 0 || nextHeight-curHeight >= 3500 {
 		curHeight = nextHeight - 1
 	}
 	logs, err := w.client.FilterLogs(context.Background(), ethereum.FilterQuery{
