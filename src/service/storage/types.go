@@ -12,6 +12,8 @@ var (
 	BtcChain string = "BTC"
 	// AvaxChain - Avalanche chain
 	AvaxChain string = "AVAX"
+	// FtmChain - Fantom chain
+	FtmChain string = "FTM"
 )
 
 // BlockType ...

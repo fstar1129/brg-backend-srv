@@ -83,7 +83,7 @@ func (v *viperConfig) ReadDBConfig() *models.StorageConfig {
 }
 
 func (v *viperConfig) ReadResourceIDs() []*storage.ResourceId {
-	tokens := [6]string{"tether", "matic-network", "latoken", "binancecoin", "ethereum", "avalanche"}
+	tokens := [7]string{"tether", "matic-network", "latoken", "binancecoin", "ethereum", "avalanche", "fantom"}
 	resouceIDs := make([]*storage.ResourceId, len(tokens))
 	for index, name := range tokens {
 		resouceIDs[index] = &storage.ResourceId{
@@ -95,5 +95,5 @@ func (v *viperConfig) ReadResourceIDs() []*storage.ResourceId {
 }
 
 func (v *viperConfig) ReadChains() []string {
-	return []string{storage.PosChain, storage.BscChain, storage.EthChain, storage.AvaxChain}
+	return []string{storage.PosChain, storage.BscChain, storage.EthChain, storage.AvaxChain, storage.FtmChain}
 }

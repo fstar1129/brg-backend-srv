@@ -53,6 +53,8 @@ func (f *FetcherSrv) getAllGasPrice() {
 			gasPrices = append(gasPrices, f.getPosGasPrice())
 		case storage.AvaxChain:
 			gasPrices = append(gasPrices, f.getAvaxGasPrice())
+		case storage.FtmChain:
+			gasPrices = append(gasPrices, f.getFtmGasPrice())
 		default:
 			logrus.Warnf("Gas price getter not implemented for ", chain)
 		}
@@ -116,6 +118,20 @@ func (f *FetcherSrv) getAvaxGasPrice() *storage.GasPrice {
 	}
 	var gasPrice = (*resp)["standard"].(float64)
 	return &storage.GasPrice{ChainName: "AVAX", Price: fmt.Sprintf("%f", gasPrice), UpdateTime: time.Now().Unix()}
+}
+
+func (f *FetcherSrv) getFtmGasPrice() *storage.GasPrice {
+	httpClient := &http.Client{
+		Timeout: time.Second * 10,
+	}
+
+	resp, err := f.makeReq(f.chainFetCfgs[storage.FtmChain].URL, httpClient)
+	if err != nil {
+		logrus.Warnf("fetch FTM gas price error = %s", err)
+		return &storage.GasPrice{}
+	}
+	var gasPrice = (*resp)["standard"].(float64)
+	return &storage.GasPrice{ChainName: "FTM", Price: fmt.Sprintf("%f", gasPrice), UpdateTime: time.Now().Unix()}
 }
 
 // MakeReq HTTP request helper
