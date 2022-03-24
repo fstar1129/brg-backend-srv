@@ -25,14 +25,14 @@ type App struct {
 
 // NewApp is initializes the app
 func NewApp(logger *logrus.Logger, addr string, db *gorm.DB,
-	laCfg, posCfg, bscCfg, ethCfg, avaxCfg *models.WorkerConfig, posFetCfg, bscFetCfg, ethFetCfg, avaxFetCfg *models.FetcherConfig,
+	laCfg *models.WorkerConfig, chainCfgs map[string]*models.WorkerConfig, chainFetCfgs map[string]*models.FetcherConfig,
 	resourceIDs []*storage.ResourceId) *App {
 	// create new app
 	inst := &App{
 		logger:  logger,
 		router:  mux.NewRouter(),
 		server:  &http.Server{Addr: addr},
-		relayer: rlr.CreateNewBridgeSRV(logger, db, laCfg, posCfg, bscCfg, ethCfg, avaxCfg, posFetCfg, bscFetCfg, ethFetCfg, avaxFetCfg, resourceIDs),
+		relayer: rlr.CreateNewBridgeSRV(logger, db, laCfg, chainCfgs, chainFetCfgs, resourceIDs),
 	}
 	// set router
 	inst.router = mux.NewRouter()
@@ -40,9 +40,8 @@ func NewApp(logger *logrus.Logger, addr string, db *gorm.DB,
 
 	headers := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
 	methods := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"})
-	origins := handlers.AllowedOrigins([]string{"*"})
 
-	inst.server.Handler = handlers.CORS(headers, methods, origins)(inst.router)
+	inst.server.Handler = handlers.CORS(headers, methods)(inst.router)
 
 	inst.relayer.Run()
 

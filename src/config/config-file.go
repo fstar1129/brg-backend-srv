@@ -17,8 +17,14 @@ func (v *viperConfig) ReadServiceConfig() string {
 }
 
 //reads ethereum chain apis to fetch gas price
-func (v *viperConfig) ReadFetcherConfig() (pos, bsc, eth, avax *models.FetcherConfig) {
-	return v.readFetcherConfig(storage.PosChain), v.readFetcherConfig(storage.BscChain), v.readFetcherConfig(storage.EthChain), v.readFetcherConfig(storage.AvaxChain)
+func (v *viperConfig) ReadFetcherConfig(chains []string) map[string]*models.FetcherConfig {
+	chainFetCgfs := make(map[string]*models.FetcherConfig)
+
+	for _, chain := range chains {
+		chainFetCgfs[chain] = v.readFetcherConfig(chain)
+	}
+
+	return chainFetCgfs
 }
 
 func (v *viperConfig) readFetcherConfig(name string) *models.FetcherConfig {
@@ -33,9 +39,14 @@ func (v *viperConfig) ReadLachainConfig() *models.WorkerConfig {
 	return v.readWorkerConfig(storage.LaChain)
 }
 
-// ReadEthWorkerConfig reads ethereum chain worker params from config.json
-func (v *viperConfig) ReadWorkersConfig() (pos *models.WorkerConfig, bsc *models.WorkerConfig, eth *models.WorkerConfig, avax *models.WorkerConfig) {
-	return v.readWorkerConfig(storage.PosChain), v.readWorkerConfig(storage.BscChain), v.readWorkerConfig(storage.EthChain), v.readWorkerConfig(storage.AvaxChain)
+func (v *viperConfig) ReadWorkersConfig(chains []string) map[string]*models.WorkerConfig {
+	chainCfgs := make(map[string]*models.WorkerConfig)
+
+	for _, chain := range chains {
+		chainCfgs[chain] = v.readWorkerConfig(chain)
+	}
+
+	return chainCfgs
 }
 
 // readETHWorkerConfig reads ethereum chain worker params from config.json
@@ -75,7 +86,7 @@ func (v *viperConfig) ReadDBConfig() *models.StorageConfig {
 }
 
 func (v *viperConfig) ReadResourceIDs() []*storage.ResourceId {
-	tokens := [6]string{"tether", "matic-network", "latoken", "binancecoin", "ethereum", "avalanche"}
+	tokens := [7]string{"tether", "matic-network", "latoken", "binancecoin", "ethereum", "avalanche", "fantom"}
 	resouceIDs := make([]*storage.ResourceId, len(tokens))
 	for index, name := range tokens {
 		resouceIDs[index] = &storage.ResourceId{
@@ -84,4 +95,8 @@ func (v *viperConfig) ReadResourceIDs() []*storage.ResourceId {
 		}
 	}
 	return resouceIDs
+}
+
+func (v *viperConfig) ReadChains() []string {
+	return []string{storage.PosChain, storage.BscChain, storage.EthChain, storage.AvaxChain, storage.FtmChain}
 }

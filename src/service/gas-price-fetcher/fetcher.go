@@ -14,23 +14,17 @@ import (
 
 //FetcherSrv
 type FetcherSrv struct {
-	logger     *logrus.Entry
-	storage    *storage.DataBase
-	posFetCfg  *models.FetcherConfig
-	bscFetCfg  *models.FetcherConfig
-	ethFetCfg  *models.FetcherConfig
-	avaxFetCfg *models.FetcherConfig
+	logger       *logrus.Entry
+	storage      *storage.DataBase
+	chainFetCfgs map[string]*models.FetcherConfig
 }
 
 //CreateFetcherSrv
-func CreateFetcherSrv(logger *logrus.Logger, db *storage.DataBase, posFetCfg, bscFetCfg, ethFetCfg, avaxFetCfg *models.FetcherConfig) *FetcherSrv {
+func CreateFetcherSrv(logger *logrus.Logger, db *storage.DataBase, chainFetCfgs map[string]*models.FetcherConfig) *FetcherSrv {
 	return &FetcherSrv{
-		logger:     logger.WithField("layer", "fetcher"),
-		storage:    db,
-		posFetCfg:  posFetCfg,
-		bscFetCfg:  bscFetCfg,
-		ethFetCfg:  ethFetCfg,
-		avaxFetCfg: avaxFetCfg,
+		logger:       logger.WithField("layer", "fetcher"),
+		storage:      db,
+		chainFetCfgs: chainFetCfgs,
 	}
 }
 
@@ -47,15 +41,25 @@ func (f *FetcherSrv) collector() {
 }
 
 func (f *FetcherSrv) getAllGasPrice() {
-	bscGasPrice := f.getBscGasPrice()
-	ethGasPrice := f.getEthGasPrice()
-	posGasPrice := f.getPosGasPrice()
-	avaxGasPrice := f.getAvaxGasPrice()
-	gasPrices := make([]*storage.GasPrice, 4)
-	gasPrices[0] = bscGasPrice
-	gasPrices[1] = ethGasPrice
-	gasPrices[2] = posGasPrice
-	gasPrices[3] = avaxGasPrice
+	gasPrices := make([]*storage.GasPrice, 0, len(f.chainFetCfgs))
+
+	for chain := range f.chainFetCfgs {
+		switch chain {
+		case storage.BscChain:
+			gasPrices = append(gasPrices, f.getBscGasPrice())
+		case storage.EthChain:
+			gasPrices = append(gasPrices, f.getEthGasPrice())
+		case storage.PosChain:
+			gasPrices = append(gasPrices, f.getPosGasPrice())
+		case storage.AvaxChain:
+			gasPrices = append(gasPrices, f.getAvaxGasPrice())
+		case storage.FtmChain:
+			gasPrices = append(gasPrices, f.getFtmGasPrice())
+		default:
+			logrus.Warnf("Gas price getter not implemented for ", chain)
+		}
+	}
+
 	f.storage.SaveGasPriceInfo(gasPrices)
 	f.logger.Infoln("New gas prices fetched")
 }
@@ -65,7 +69,7 @@ func (f *FetcherSrv) getBscGasPrice() *storage.GasPrice {
 	// 	Timeout: time.Second * 10,
 	// }
 
-	// resp, err := f.makeReq(f.bscFetCfg.URL, httpClient)
+	// resp, err := f.makeReq(f.chainFetCfgs[storage.BscChain].URL, httpClient)
 	// if err != nil {
 	// 	logrus.Warnf("fetch BSC gas price error = %s", err)
 	// 	return &storage.GasPrice{}
@@ -79,7 +83,7 @@ func (f *FetcherSrv) getEthGasPrice() *storage.GasPrice {
 		Timeout: time.Second * 10,
 	}
 
-	resp, err := f.makeReq(f.ethFetCfg.URL, httpClient)
+	resp, err := f.makeReq(f.chainFetCfgs[storage.EthChain].URL, httpClient)
 	if err != nil {
 		logrus.Warnf("fetch ETH gas price error = %s", err)
 		return &storage.GasPrice{}
@@ -93,7 +97,7 @@ func (f *FetcherSrv) getPosGasPrice() *storage.GasPrice {
 		Timeout: time.Second * 10,
 	}
 
-	resp, err := f.makeReq(f.posFetCfg.URL, httpClient)
+	resp, err := f.makeReq(f.chainFetCfgs[storage.PosChain].URL, httpClient)
 	if err != nil {
 		logrus.Warnf("fetch POS gas price error = %s", err)
 		return &storage.GasPrice{}
@@ -107,13 +111,27 @@ func (f *FetcherSrv) getAvaxGasPrice() *storage.GasPrice {
 		Timeout: time.Second * 10,
 	}
 
-	resp, err := f.makeReq(f.avaxFetCfg.URL, httpClient)
+	resp, err := f.makeReq(f.chainFetCfgs[storage.AvaxChain].URL, httpClient)
 	if err != nil {
 		logrus.Warnf("fetch AVAX gas price error = %s", err)
 		return &storage.GasPrice{}
 	}
 	var gasPrice = (*resp)["standard"].(float64)
 	return &storage.GasPrice{ChainName: "AVAX", Price: fmt.Sprintf("%f", gasPrice), UpdateTime: time.Now().Unix()}
+}
+
+func (f *FetcherSrv) getFtmGasPrice() *storage.GasPrice {
+	httpClient := &http.Client{
+		Timeout: time.Second * 10,
+	}
+
+	resp, err := f.makeReq(f.chainFetCfgs[storage.FtmChain].URL, httpClient)
+	if err != nil {
+		logrus.Warnf("fetch FTM gas price error = %s", err)
+		return &storage.GasPrice{}
+	}
+	var gasPrice = (*resp)["standard"].(float64)
+	return &storage.GasPrice{ChainName: "FTM", Price: fmt.Sprintf("%f", gasPrice), UpdateTime: time.Now().Unix()}
 }
 
 // MakeReq HTTP request helper
