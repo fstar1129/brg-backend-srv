@@ -5,8 +5,8 @@ import (
 	"os"
 	"strings"
 
-	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/models"
-	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/storage"
+	"github.com/latoken/bridge-backend-service/src/models"
+	"github.com/latoken/bridge-backend-service/src/service/storage"
 
 	"github.com/spf13/viper"
 )

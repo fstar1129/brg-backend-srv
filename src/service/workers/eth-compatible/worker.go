@@ -9,9 +9,9 @@ import (
 	"strconv"
 	"time"
 
-	ethBr "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/eth-compatible/abi/bridge/eth"
-	laBr "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/eth-compatible/abi/bridge/la"
-	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/utils"
+	ethBr "github.com/latoken/bridge-backend-service/src/service/workers/eth-compatible/abi/bridge/eth"
+	laBr "github.com/latoken/bridge-backend-service/src/service/workers/eth-compatible/abi/bridge/la"
+	"github.com/latoken/bridge-backend-service/src/service/workers/utils"
 
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
@@ -23,8 +23,8 @@ import (
 	"github.com/sirupsen/logrus"
 	jsonrpc "github.com/ybbus/jsonrpc/v2"
 
-	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/models"
-	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/storage"
+	"github.com/latoken/bridge-backend-service/src/models"
+	"github.com/latoken/bridge-backend-service/src/service/storage"
 )
 
 // Erc20Worker ...

@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/common"
+	"github.com/latoken/bridge-backend-service/src/common"
 )
 
 const numPerPage = 100

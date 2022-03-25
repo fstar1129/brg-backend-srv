@@ -5,8 +5,8 @@ import (
 	"strings"
 	"time"
 
-	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/storage"
-	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers"
+	"github.com/latoken/bridge-backend-service/src/service/storage"
+	"github.com/latoken/bridge-backend-service/src/service/workers"
 
 	"github.com/sirupsen/logrus"
 )

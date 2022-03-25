@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"time"
 
-	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/models"
-	rlr "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service"
-	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/storage"
+	"github.com/latoken/bridge-backend-service/src/models"
+	rlr "github.com/latoken/bridge-backend-service/src/service"
+	"github.com/latoken/bridge-backend-service/src/service/storage"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"

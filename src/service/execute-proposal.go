@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/storage"
-	workers "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers"
-	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/utils"
+	"github.com/latoken/bridge-backend-service/src/service/storage"
+	workers "github.com/latoken/bridge-backend-service/src/service/workers"
+	"github.com/latoken/bridge-backend-service/src/service/workers/utils"
 )
 
 // !!! TODO !!!

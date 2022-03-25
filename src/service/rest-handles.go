@@ -1,7 +1,7 @@
 package rlr
 
 import (
-	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/models"
+	"github.com/latoken/bridge-backend-service/src/models"
 )
 
 // Status ...

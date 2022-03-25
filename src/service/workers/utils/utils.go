@@ -6,7 +6,7 @@ import (
 	"math/big"
 	"strconv"
 
-	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/models"
+	"github.com/latoken/bridge-backend-service/src/models"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"

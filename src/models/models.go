@@ -4,7 +4,7 @@ import (
 	"math/big"
 	"time"
 
-	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/storage"
+	"github.com/latoken/bridge-backend-service/src/service/storage"
 
 	"github.com/ethereum/go-ethereum/common"
 )

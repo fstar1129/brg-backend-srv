@@ -7,8 +7,8 @@ import (
 	"os/signal"
 	"time"
 
-	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/app"
-	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/config"
+	"github.com/latoken/bridge-backend-service/src/app"
+	"github.com/latoken/bridge-backend-service/src/config"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"

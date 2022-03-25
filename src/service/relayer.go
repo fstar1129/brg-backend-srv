@@ -4,16 +4,16 @@ import (
 	"sync"
 	"time"
 
-	watcher "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/blockchains-watcher"
-	fetcher "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/gas-price-fetcher"
-	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/storage"
-	workers "gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers"
-	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/service/workers/eth-compatible"
+	watcher "github.com/latoken/bridge-backend-service/src/service/blockchains-watcher"
+	fetcher "github.com/latoken/bridge-backend-service/src/service/gas-price-fetcher"
+	"github.com/latoken/bridge-backend-service/src/service/storage"
+	workers "github.com/latoken/bridge-backend-service/src/service/workers"
+	"github.com/latoken/bridge-backend-service/src/service/workers/eth-compatible"
 
 	"github.com/jinzhu/gorm"
 	"github.com/sirupsen/logrus"
 
-	"gitlab.nekotal.tech/lachain/crosschain/bridge-backend-service/src/models"
+	"github.com/latoken/bridge-backend-service/src/models"
 )
 
 // BridgeSRV ...
