@@ -25,7 +25,7 @@ type App struct {
 
 // NewApp is initializes the app
 func NewApp(logger *logrus.Logger, addr string, db *gorm.DB,
-	laCfg *models.WorkerConfig, chainCfgs map[string]*models.WorkerConfig, chainFetCfgs map[string]*models.FetcherConfig,
+	laCfg *models.WorkerConfig, chainCfgs []*models.WorkerConfig, chainFetCfgs []*models.FetcherConfig,
 	resourceIDs []*storage.ResourceId) *App {
 	// create new app
 	inst := &App{

@@ -351,7 +351,7 @@ func (w *Erc20Worker) getTransactor() (auth *bind.TransactOpts, err error) {
 	}
 
 	var nonce uint64
-	if w.chainName == storage.LaChain || w.chainName == storage.PosChain {
+	if w.chainName == "LA" || w.chainName == "POS" {
 		nonce, err = w.GetTxCountLatest()
 		if err != nil {
 			return nil, err
@@ -369,13 +369,11 @@ func (w *Erc20Worker) getTransactor() (auth *bind.TransactOpts, err error) {
 	}
 
 	var gasPrice float64
-	if w.chainName == storage.LaChain {
-		gasPrice = 1
+	gasPriceGWei, _ := strconv.ParseFloat(w.storage.GetGasPrice(w.chainName).Price, 64)
+	if gasPriceGWei > 0 {
+		gasPrice = gasPriceGWei * 1000000000
 	} else {
-		gasPriceGWei, _ := strconv.ParseFloat(w.storage.GetGasPrice(w.chainName).Price, 64)
-		if gasPriceGWei > 0 {
-			gasPrice = gasPriceGWei * 1000000000
-		}
+		gasPrice = w.GetGasPrice()
 	}
 	auth.GasPrice = big.NewInt((int64(gasPrice)))
 	auth.Nonce = big.NewInt(int64(nonce))
@@ -424,4 +422,9 @@ func (w *Erc20Worker) IsSameAddress(addrA string, addrB string) bool {
 // SendAmount ...
 func (w *Erc20Worker) SendAmount(address string, amount *big.Int) (string, error) {
 	return "", fmt.Errorf("not implemented") // TODO
+}
+
+func (w *Erc20Worker) GetGasPrice() float64 {
+	gasPrice, _ := new(big.Float).SetInt64(w.config.GasPrice.Int64()).Float64()
+	return gasPrice
 }

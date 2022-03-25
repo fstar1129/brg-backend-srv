@@ -14,9 +14,9 @@ import (
 // Config ...
 type Config interface {
 	ReadServiceConfig() string
-	ReadWorkersConfig([]string) map[string]*models.WorkerConfig
+	ReadWorkersConfig() []*models.WorkerConfig
 	ReadLachainConfig() *models.WorkerConfig
-	ReadFetcherConfig([]string) map[string]*models.FetcherConfig
+	ReadFetcherConfig() []*models.FetcherConfig
 	ReadDBConfig() *models.StorageConfig
 	ReadResourceIDs() []*storage.ResourceId
 	ReadChains() []string
@@ -25,6 +25,7 @@ type Config interface {
 	GetInt64(key string) int64
 	GetBool(key string) bool
 	GetFloat64(key string) float64
+	GetStringSlice(key string) []string
 	Init()
 }
 
@@ -65,6 +66,10 @@ func (v *viperConfig) GetFloat64(key string) float64 {
 
 func (v *viperConfig) GetStringMap(key string) map[string]string {
 	return viper.GetStringMapString(key)
+}
+
+func (v *viperConfig) GetStringSlice(key string) []string {
+	return viper.GetStringSlice(key)
 }
 
 // NewViperConfig creates new viper for reading config.json

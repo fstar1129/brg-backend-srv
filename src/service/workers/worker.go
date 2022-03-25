@@ -25,7 +25,7 @@ type IWorker interface {
 	GetBlockAndTxs(height int64) (*models.BlockAndTxLogs, error)
 	// GetFetchInterval returns fetch interval of the chain like average blocking time, it is used in observer
 	GetFetchInterval() time.Duration
-	// GetGasPrice() (uint64, error)
+	GetGasPrice() float64
 	// GetWorkerAddress returns relayer account address
 	// GetWorkerAddress() string
 	// // GetColdWalletAddress returns the address of the relayer's cold wallet
