@@ -63,31 +63,23 @@ type StorageConfig struct {
 
 // WorkerConfig ...
 type WorkerConfig struct {
-	NetworkType                    string         `json:"type"`
-	ChainID                        int64          `json:"chain_id"`
-	ChainName                      string         `json:"chain_id"`
-	User                           string         `json:"user"`
-	Password                       string         `json:"password"`
-	SwapType                       string         `json:"swap_type"`
-	KeyType                        string         `json:"key_type"`
-	AWSRegion                      string         `json:"aws_region"`
-	AWSSecretName                  string         `json:"aws_secret_name"`
-	PrivateKey                     string         `json:"private_key"`
-	Provider                       string         `json:"provider"`
-	ContractAddr                   common.Address `json:"contract_addr"`
-	TokenContractAddr              common.Address `json:"token_contract_addr"`
-	WorkerAddr                     common.Address `json:"worker_addr"`
-	ColdWalletAddr                 common.Address `json:"cold_wallet_addr"`
-	TokenBalanceAlertThreshold     *big.Int       `json:"token_balance_alert_threshold"`
-	EthBalanceAlertThreshold       *big.Int       `json:"eth_balance_alert_threshold"`
-	AllowanceBalanceAlertThreshold *big.Int       `json:"allowance_balance_alert_threshold"`
-	FetchInterval                  int64          `json:"fetch_interval"`
-	GasLimit                       int64          `json:"gas_limit"`
-	GasPrice                       *big.Int       `json:"gas_price"`
-	ChainDecimal                   int            `json:"chain_decimal"`
-	ConfirmNum                     int64          `json:"confirm_num"`
-	StartBlockHeight               int64          `json:"start_block_height"`
-	DestinationChainID             string         `json:"dest_id"`
+	NetworkType        string         `json:"type"`
+	ChainID            int64          `json:"chain_id"`
+	ChainName          string         `json:"chain_id"`
+	PrivateKey         string         `json:"private_key"`
+	Provider           string         `json:"provider"`
+	ContractAddr       common.Address `json:"contract_addr"`
+	AaveLPAddress      common.Address `json:"aave_lp_addr"`
+	USDTContractAddr   common.Address `json:"USDT_token_addr"`
+	WorkerAddr         common.Address `json:"worker_addr"`
+	ColdWalletAddr     common.Address `json:"cold_wallet_addr"`
+	FetchInterval      int64          `json:"fetch_interval"`
+	GasLimit           int64          `json:"gas_limit"`
+	GasPrice           *big.Int       `json:"gas_price"`
+	ChainDecimal       int            `json:"chain_decimal"`
+	ConfirmNum         int64          `json:"confirm_num"`
+	StartBlockHeight   int64          `json:"start_block_height"`
+	DestinationChainID string         `json:"dest_id"`
 }
 
 type TssConfig struct {

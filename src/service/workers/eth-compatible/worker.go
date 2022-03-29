@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"time"
 
+	aaveLP "github.com/latoken/bridge-backend-service/src/service/workers/eth-compatible/abi/aave"
 	ethBr "github.com/latoken/bridge-backend-service/src/service/workers/eth-compatible/abi/bridge/eth"
 	laBr "github.com/latoken/bridge-backend-service/src/service/workers/eth-compatible/abi/bridge/la"
 	"github.com/latoken/bridge-backend-service/src/service/workers/utils"
@@ -88,7 +89,7 @@ func (w *Erc20Worker) GetChainName() string {
 
 // GetChainName returns chain ID
 func (w *Erc20Worker) GetChainID() string {
-	return string(w.chainID)
+	return fmt.Sprint(w.chainID)
 }
 
 //returns destinationChainID to be checked to execute proposal
@@ -107,6 +108,18 @@ func (w *Erc20Worker) GetStartHeight() (int64, error) {
 // GetConfirmNum returns numbers of blocks after them tx will be confirmed
 func (w *Erc20Worker) GetConfirmNum() int64 {
 	return w.config.ConfirmNum
+}
+
+func (w *Erc20Worker) GetConfig() *models.WorkerConfig {
+	return w.config
+}
+
+func (w *Erc20Worker) getCallOpts() *bind.CallOpts {
+	return &bind.CallOpts{
+		Pending: true,
+		From:    w.config.WorkerAddr,
+		Context: context.Background(),
+	}
 }
 
 func (w *Erc20Worker) ExecuteProposalEth(depositNonce uint64, originChainID [8]byte, destinationChainID [8]byte, resourceID [32]byte, receiptAddr string, amount string) (string, error) {
@@ -128,7 +141,7 @@ func (w *Erc20Worker) ExecuteProposalEth(depositNonce uint64, originChainID [8]b
 	return tx.Hash().String(), nil
 }
 
-func (w *Erc20Worker) ExecuteProposalLa(depositNonce uint64, originChainID [8]byte, destinationChainID [8]byte, resourceID [32]byte, receiptAddr string, amount string) (string, error) {
+func (w *Erc20Worker) ExecuteProposalLa(depositNonce uint64, originChainID [8]byte, destinationChainID [8]byte, resourceID [32]byte, receiptAddr string, amount string, bytes []byte) (string, error) {
 	auth, err := w.getTransactor()
 	if err != nil {
 		return "", err
@@ -139,12 +152,28 @@ func (w *Erc20Worker) ExecuteProposalLa(depositNonce uint64, originChainID [8]by
 		return "", err
 	}
 	value, _ := new(big.Int).SetString(amount, 10)
-	tx, err := instance.ExecuteProposal(auth, originChainID, destinationChainID, depositNonce, resourceID, common.HexToAddress(receiptAddr), value, nil)
+	tx, err := instance.ExecuteProposal(auth, originChainID, destinationChainID, depositNonce, resourceID, common.HexToAddress(receiptAddr), value, bytes)
 	if err != nil {
 		return "", err
 	}
 
 	return tx.Hash().String(), nil
+}
+
+func (w *Erc20Worker) GetLiquidityIndex(lpAddress, usdtAddress common.Address) ([]byte, error) {
+	auth := w.getCallOpts()
+
+	instance, err := aaveLP.NewAaveLPCaller(lpAddress, w.client)
+	if err != nil {
+		return nil, err
+	}
+
+	liquidityIndex, err := instance.GetReserveNormalizedIncome(auth, usdtAddress)
+	if err != nil {
+		return nil, err
+	}
+
+	return liquidityIndex.Bytes(), nil
 }
 
 // // GetStatus returns status of relayer account(balance eg)

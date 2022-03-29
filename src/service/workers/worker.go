@@ -3,6 +3,7 @@ package workers
 import (
 	"time"
 
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/latoken/bridge-backend-service/src/models"
 	"github.com/latoken/bridge-backend-service/src/service/storage"
 )
@@ -26,6 +27,7 @@ type IWorker interface {
 	// GetFetchInterval returns fetch interval of the chain like average blocking time, it is used in observer
 	GetFetchInterval() time.Duration
 	GetGasPrice() float64
+	GetConfig() *models.WorkerConfig
 	// GetWorkerAddress returns relayer account address
 	// GetWorkerAddress() string
 	// // GetColdWalletAddress returns the address of the relayer's cold wallet
@@ -50,8 +52,8 @@ type IWorker interface {
 	// HasSwap(swapID common.Hash) (bool, error)
 	// HTLT sends htlt tx
 	ExecuteProposalEth(depositNonce uint64, originChainID [8]byte, destinationChainID [8]byte, resourceID [32]byte, receiptAddr string, amount string) (string, error)
-	ExecuteProposalLa(depositNonce uint64, originChainID [8]byte, destinationChainID [8]byte, resourceID [32]byte, receiptAddr string, amount string) (string, error)
-
+	ExecuteProposalLa(depositNonce uint64, originChainID [8]byte, destinationChainID [8]byte, resourceID [32]byte, receiptAddr string, amount string, bytes []byte) (string, error)
+	GetLiquidityIndex(lpAddress, usdtAddress common.Address) ([]byte, error)
 	//HTLT(erc20TokenAddr, lrc20TokenAddr, recipientAddr, otherChainRecipientAddr string, timestamp int64,
 	//	heightSpan int64, outAmount *big.Int) (string, error)
 	// CreateRequest sends wrapped tokens tx

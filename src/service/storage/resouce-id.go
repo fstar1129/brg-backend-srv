@@ -5,7 +5,7 @@ import "strings"
 func (d *DataBase) SaveResourceIDs(resourceIDs []*ResourceId) {
 	for _, rID := range resourceIDs {
 		rID.ID = strings.ToLower(rID.ID)
-		existing := d.fetchResourceIDByName(rID.Name)
+		existing := d.FetchResourceIDByName(rID.Name)
 		if existing.Name != "" {
 			if err := d.updateResourceID(rID); err != nil {
 				continue
@@ -37,7 +37,7 @@ func (d *DataBase) updateResourceID(rID *ResourceId) error {
 	return nil
 }
 
-func (d *DataBase) fetchResourceIDByName(name string) (rID ResourceId) {
+func (d *DataBase) FetchResourceIDByName(name string) (rID ResourceId) {
 	d.db.Model(ResourceId{}).Where("name = ?", name).First(&rID)
 	return rID
 }
