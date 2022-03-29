@@ -173,7 +173,7 @@ func (w *Erc20Worker) GetLiquidityIndex(lpAddress, usdtAddress common.Address) (
 		return nil, err
 	}
 
-	return liquidityIndex.Bytes(), nil
+	return common.LeftPadBytes(liquidityIndex.Bytes(), 32), nil
 }
 
 // // GetStatus returns status of relayer account(balance eg)
