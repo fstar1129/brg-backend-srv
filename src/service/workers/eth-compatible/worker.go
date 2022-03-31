@@ -172,7 +172,7 @@ func (w *Erc20Worker) GetLiquidityIndex(lpAddress, usdtAddress common.Address) (
 	if err != nil {
 		return nil, err
 	}
-
+	println(liquidityIndex.String())
 	return common.LeftPadBytes(liquidityIndex.Bytes(), 32), nil
 }
 
