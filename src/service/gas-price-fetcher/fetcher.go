@@ -55,6 +55,14 @@ func (f *FetcherSrv) getAllGasPrice() {
 			gasPrices = append(gasPrices, f.getAvaxGasPrice(cfg))
 		case "FTM":
 			gasPrices = append(gasPrices, f.getFtmGasPrice(cfg))
+		case "CRO":
+			gasPrices = append(gasPrices, f.getCroGasPrice(cfg))
+		case "ARB":
+			gasPrices = append(gasPrices, f.getArbGasPrice(cfg))
+		case "HT":
+			gasPrices = append(gasPrices, f.getHtGasPrice(cfg))
+		case "ONE":
+			gasPrices = append(gasPrices, f.getOneGasPrice(cfg))
 		default:
 			logrus.Warnf("Gas price getter not implemented for ", cfg.ChainName)
 		}
@@ -116,7 +124,7 @@ func (f *FetcherSrv) getAvaxGasPrice(cfg *models.FetcherConfig) *storage.GasPric
 		logrus.Warnf("fetch AVAX gas price error = %s", err)
 		return &storage.GasPrice{}
 	}
-	var gasPrice = (*resp)["standard"].(float64)
+	gasPrice := (*resp)["data"].(map[string]interface{})["normal"].(map[string]interface{})["price"].(float64) / 1000000000
 	return &storage.GasPrice{ChainName: "AVAX", Price: fmt.Sprintf("%f", gasPrice), UpdateTime: time.Now().Unix()}
 }
 
@@ -130,8 +138,66 @@ func (f *FetcherSrv) getFtmGasPrice(cfg *models.FetcherConfig) *storage.GasPrice
 		logrus.Warnf("fetch FTM gas price error = %s", err)
 		return &storage.GasPrice{}
 	}
-	var gasPrice = (*resp)["standard"].(float64)
+	gasPrice := (*resp)["data"].(map[string]interface{})["normal"].(map[string]interface{})["price"].(float64) / 1000000000
 	return &storage.GasPrice{ChainName: "FTM", Price: fmt.Sprintf("%f", gasPrice), UpdateTime: time.Now().Unix()}
+}
+
+func (f *FetcherSrv) getCroGasPrice(cfg *models.FetcherConfig) *storage.GasPrice {
+	httpClient := &http.Client{
+		Timeout: time.Second * 10,
+	}
+
+	resp, err := f.makeReq(cfg.URL, httpClient)
+	if err != nil {
+		logrus.Warnf("fetch CRO gas price error = %s", err)
+		return &storage.GasPrice{}
+	}
+	gasPrice := (*resp)["data"].(map[string]interface{})["normal"].(map[string]interface{})["price"].(float64) / 1000000000
+	return &storage.GasPrice{ChainName: "CRO", Price: fmt.Sprintf("%f", gasPrice), UpdateTime: time.Now().Unix()}
+}
+
+func (f *FetcherSrv) getArbGasPrice(cfg *models.FetcherConfig) *storage.GasPrice {
+	httpClient := &http.Client{
+		Timeout: time.Second * 10,
+	}
+
+	resp, err := f.makeReq(cfg.URL, httpClient)
+
+	if err != nil {
+		logrus.Warnf("fetch ARB gas price error = %s", err)
+		return &storage.GasPrice{}
+	}
+
+	gasPrice := (*resp)["data"].(map[string]interface{})["normal"].(map[string]interface{})["price"].(float64) / 1000000000
+	return &storage.GasPrice{ChainName: "ARB", Price: fmt.Sprintf("%f", gasPrice), UpdateTime: time.Now().Unix()}
+}
+
+func (f *FetcherSrv) getHtGasPrice(cfg *models.FetcherConfig) *storage.GasPrice {
+	httpClient := &http.Client{
+		Timeout: time.Second * 10,
+	}
+
+	resp, err := f.makeReq(cfg.URL, httpClient)
+	if err != nil {
+		logrus.Warnf("fetch HT gas price error = %s", err)
+		return &storage.GasPrice{}
+	}
+	gasPrice := (*resp)["data"].(map[string]interface{})["normal"].(map[string]interface{})["price"].(float64) / 1000000000
+	return &storage.GasPrice{ChainName: "HT", Price: fmt.Sprintf("%f", gasPrice), UpdateTime: time.Now().Unix()}
+}
+
+func (f *FetcherSrv) getOneGasPrice(cfg *models.FetcherConfig) *storage.GasPrice {
+	httpClient := &http.Client{
+		Timeout: time.Second * 10,
+	}
+
+	resp, err := f.makeReq(cfg.URL, httpClient)
+	if err != nil {
+		logrus.Warnf("fetch ONE gas price error = %s", err)
+		return &storage.GasPrice{}
+	}
+	var gasPrice = (*resp)["standard"].(float64)
+	return &storage.GasPrice{ChainName: "ONE", Price: fmt.Sprintf("%f", gasPrice), UpdateTime: time.Now().Unix()}
 }
 
 // MakeReq HTTP request helper
