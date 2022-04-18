@@ -83,3 +83,13 @@ func ConvertDecimals(amount string, inDecimals, outDecimals int64) int64 {
 	ret := value * outDecimals / inDecimals
 	return ret
 }
+
+func CalculateLiquidityIndex(balance, scaledBalance *big.Int) *big.Int {
+	if scaledBalance.Cmp(big.NewInt(0)) <= 0 {
+		return big.NewInt(0)
+	}
+	exp := big.NewInt(1).Exp(big.NewInt(10), big.NewInt(27), nil)
+	divisor := balance.Div(balance, scaledBalance)
+	liquidityIndex := big.NewInt(1).Mul(exp, divisor)
+	return liquidityIndex
+}

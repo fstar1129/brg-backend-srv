@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"time"
 
-	aaveLP "github.com/latoken/bridge-backend-service/src/service/workers/eth-compatible/abi/aave"
+	aToken "github.com/latoken/bridge-backend-service/src/service/workers/eth-compatible/abi/atoken"
 	ethBr "github.com/latoken/bridge-backend-service/src/service/workers/eth-compatible/abi/bridge/eth"
 	laBr "github.com/latoken/bridge-backend-service/src/service/workers/eth-compatible/abi/bridge/la"
 	"github.com/latoken/bridge-backend-service/src/service/workers/utils"
@@ -160,18 +160,25 @@ func (w *Erc20Worker) ExecuteProposalLa(depositNonce uint64, originChainID [8]by
 	return tx.Hash().String(), nil
 }
 
-func (w *Erc20Worker) GetLiquidityIndex(lpAddress, usdtAddress common.Address) ([]byte, error) {
+func (w *Erc20Worker) GetLiquidityIndex(handlerAddress, amUsdtAddress common.Address) ([]byte, error) {
 	auth := w.getCallOpts()
 
-	instance, err := aaveLP.NewAaveLPCaller(lpAddress, w.client)
+	instance, err := aToken.NewAToken(amUsdtAddress, w.client)
 	if err != nil {
 		return nil, err
 	}
 
-	liquidityIndex, err := instance.GetReserveNormalizedIncome(auth, usdtAddress)
+	balance, err := instance.BalanceOf(auth, handlerAddress)
 	if err != nil {
 		return nil, err
 	}
+
+	scaledBalance, err := instance.ScaledBalanceOf(auth, handlerAddress)
+	if err != nil {
+		return nil, err
+	}
+
+	liquidityIndex := utils.CalculateLiquidityIndex(balance, scaledBalance)
 	return common.LeftPadBytes(liquidityIndex.Bytes(), 32), nil
 }
 

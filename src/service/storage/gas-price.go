@@ -7,7 +7,7 @@ func (d *DataBase) SaveGasPriceInfo(priceLogs []*GasPrice) {
 			if e := d.savePrice(priceLog); e != nil {
 				continue
 			}
-		} else if priceLog.UpdateTime > previousLog.UpdateTime {
+		} else if priceLog.UpdateTime > previousLog.UpdateTime && priceLog.Price != "" {
 			if e := d.updatePrice(priceLog); e != nil {
 				continue
 			}

@@ -43,7 +43,7 @@ func (r *BridgeSRV) sendExecuteProposal(worker workers.IWorker, event *storage.E
 	if worker.GetChainName() == "LA" {
 		if event.ResourceID == r.storage.FetchResourceIDByName("amToken").ID {
 			wor := r.Workers["POS"]
-			liquidity, _ := wor.GetLiquidityIndex(wor.GetConfig().AaveLPAddress, wor.GetConfig().USDTContractAddr)
+			liquidity, _ := wor.GetLiquidityIndex(wor.GetConfig().AmTokenHandlerAddress, wor.GetConfig().AMUSDTContractAddr)
 			txHash, err = worker.ExecuteProposalLa(event.DepositNonce, utils.StringToBytes8(event.OriginChainID), utils.StringToBytes8(event.DestinationChainID), utils.StringToBytes32(event.ResourceID),
 				event.ReceiverAddr, event.OutAmount, liquidity)
 		} else {

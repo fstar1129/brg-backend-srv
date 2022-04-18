@@ -46,23 +46,68 @@ func (f *FetcherSrv) getAllGasPrice() {
 	for _, cfg := range f.chainFetCfgs {
 		switch cfg.ChainName {
 		case "BSC":
-			gasPrices = append(gasPrices, f.getBscGasPrice(cfg))
+			gasPrice, err := f.getBscGasPrice(cfg)
+			if err != nil {
+				logrus.Warnf("error fetching gas price for BSC %s", err.Error())
+				continue
+			}
+			gasPrices = append(gasPrices, gasPrice)
 		case "ETH":
-			gasPrices = append(gasPrices, f.getEthGasPrice(cfg))
+			gasPrice, err := f.getEthGasPrice(cfg)
+			if err != nil {
+				logrus.Warnf("error fetching gas price for ETH %s", err.Error())
+				continue
+			}
+			gasPrices = append(gasPrices, gasPrice)
 		case "POS":
-			gasPrices = append(gasPrices, f.getPosGasPrice(cfg))
+			gasPrice, err := f.getPosGasPrice(cfg)
+			if err != nil {
+				logrus.Warnf("error fetching gas price for POS %s", err.Error())
+				continue
+			}
+			gasPrices = append(gasPrices, gasPrice)
 		case "AVAX":
-			gasPrices = append(gasPrices, f.getAvaxGasPrice(cfg))
+			gasPrice, err := f.getAvaxGasPrice(cfg)
+			if err != nil {
+				logrus.Warnf("error fetching gas price for AVAX %s", err.Error())
+				continue
+			}
+			gasPrices = append(gasPrices, gasPrice)
 		case "FTM":
-			gasPrices = append(gasPrices, f.getFtmGasPrice(cfg))
+			gasPrice, err := f.getFtmGasPrice(cfg)
+			if err != nil {
+				logrus.Warnf("error fetching gas price for FTM %s", err.Error())
+				continue
+			}
+			gasPrices = append(gasPrices, gasPrice)
 		case "CRO":
-			gasPrices = append(gasPrices, f.getCroGasPrice(cfg))
+			gasPrice, err := f.getCroGasPrice(cfg)
+			if err != nil {
+				logrus.Warnf("error fetching gas price for CRO %s", err.Error())
+				continue
+			}
+			gasPrices = append(gasPrices, gasPrice)
 		case "ARB":
-			gasPrices = append(gasPrices, f.getArbGasPrice(cfg))
+			gasPrice, err := f.getArbGasPrice(cfg)
+			if err != nil {
+				logrus.Warnf("error fetching gas price for ARB %s", err.Error())
+				continue
+			}
+			gasPrices = append(gasPrices, gasPrice)
 		case "HT":
-			gasPrices = append(gasPrices, f.getHtGasPrice(cfg))
+			gasPrice, err := f.getHtGasPrice(cfg)
+			if err != nil {
+				logrus.Warnf("error fetching gas price for HT %s", err.Error())
+				continue
+			}
+			gasPrices = append(gasPrices, gasPrice)
 		case "ONE":
-			gasPrices = append(gasPrices, f.getOneGasPrice(cfg))
+			gasPrice, err := f.getOneGasPrice(cfg)
+			if err != nil {
+				logrus.Warnf("error fetching gas price for ONE %s", err.Error())
+				continue
+			}
+			gasPrices = append(gasPrices, gasPrice)
 		default:
 			logrus.Warnf("Gas price getter not implemented for ", cfg.ChainName)
 		}
@@ -72,7 +117,7 @@ func (f *FetcherSrv) getAllGasPrice() {
 	f.logger.Infoln("New gas prices fetched")
 }
 
-func (f *FetcherSrv) getBscGasPrice(cfg *models.FetcherConfig) *storage.GasPrice {
+func (f *FetcherSrv) getBscGasPrice(cfg *models.FetcherConfig) (*storage.GasPrice, error) {
 	// httpClient := &http.Client{
 	// 	Timeout: time.Second * 10,
 	// }
@@ -83,10 +128,10 @@ func (f *FetcherSrv) getBscGasPrice(cfg *models.FetcherConfig) *storage.GasPrice
 	// 	return &storage.GasPrice{}
 	// }
 	// var gasPrice = (*resp)["standard"].(float64)
-	return &storage.GasPrice{ChainName: "BSC", Price: fmt.Sprintf("%f", 20.0), UpdateTime: time.Now().Unix()}
+	return &storage.GasPrice{ChainName: "BSC", Price: fmt.Sprintf("%f", 20.0), UpdateTime: time.Now().Unix()}, nil
 }
 
-func (f *FetcherSrv) getEthGasPrice(cfg *models.FetcherConfig) *storage.GasPrice {
+func (f *FetcherSrv) getEthGasPrice(cfg *models.FetcherConfig) (*storage.GasPrice, error) {
 	httpClient := &http.Client{
 		Timeout: time.Second * 10,
 	}
@@ -94,13 +139,13 @@ func (f *FetcherSrv) getEthGasPrice(cfg *models.FetcherConfig) *storage.GasPrice
 	resp, err := f.makeReq(cfg.URL, httpClient)
 	if err != nil {
 		logrus.Warnf("fetch ETH gas price error = %s", err)
-		return &storage.GasPrice{}
+		return &storage.GasPrice{}, err
 	}
 	var gasPrice = (*resp)["average"].(float64) / 10
-	return &storage.GasPrice{ChainName: "ETH", Price: fmt.Sprintf("%f", gasPrice), UpdateTime: time.Now().Unix()}
+	return &storage.GasPrice{ChainName: "ETH", Price: fmt.Sprintf("%f", gasPrice), UpdateTime: time.Now().Unix()}, nil
 }
 
-func (f *FetcherSrv) getPosGasPrice(cfg *models.FetcherConfig) *storage.GasPrice {
+func (f *FetcherSrv) getPosGasPrice(cfg *models.FetcherConfig) (*storage.GasPrice, error) {
 	httpClient := &http.Client{
 		Timeout: time.Second * 10,
 	}
@@ -108,13 +153,13 @@ func (f *FetcherSrv) getPosGasPrice(cfg *models.FetcherConfig) *storage.GasPrice
 	resp, err := f.makeReq(cfg.URL, httpClient)
 	if err != nil {
 		logrus.Warnf("fetch POS gas price error = %s", err)
-		return &storage.GasPrice{}
+		return &storage.GasPrice{}, err
 	}
 	var gasPrice = (*resp)["fast"].(float64)
-	return &storage.GasPrice{ChainName: "POS", Price: fmt.Sprintf("%f", gasPrice), UpdateTime: time.Now().Unix()}
+	return &storage.GasPrice{ChainName: "POS", Price: fmt.Sprintf("%f", gasPrice), UpdateTime: time.Now().Unix()}, nil
 }
 
-func (f *FetcherSrv) getAvaxGasPrice(cfg *models.FetcherConfig) *storage.GasPrice {
+func (f *FetcherSrv) getAvaxGasPrice(cfg *models.FetcherConfig) (*storage.GasPrice, error) {
 	httpClient := &http.Client{
 		Timeout: time.Second * 10,
 	}
@@ -122,13 +167,13 @@ func (f *FetcherSrv) getAvaxGasPrice(cfg *models.FetcherConfig) *storage.GasPric
 	resp, err := f.makeReq(cfg.URL, httpClient)
 	if err != nil {
 		logrus.Warnf("fetch AVAX gas price error = %s", err)
-		return &storage.GasPrice{}
+		return &storage.GasPrice{}, err
 	}
 	gasPrice := (*resp)["data"].(map[string]interface{})["normal"].(map[string]interface{})["price"].(float64) / 1000000000
-	return &storage.GasPrice{ChainName: "AVAX", Price: fmt.Sprintf("%f", gasPrice), UpdateTime: time.Now().Unix()}
+	return &storage.GasPrice{ChainName: "AVAX", Price: fmt.Sprintf("%f", gasPrice), UpdateTime: time.Now().Unix()}, nil
 }
 
-func (f *FetcherSrv) getFtmGasPrice(cfg *models.FetcherConfig) *storage.GasPrice {
+func (f *FetcherSrv) getFtmGasPrice(cfg *models.FetcherConfig) (*storage.GasPrice, error) {
 	httpClient := &http.Client{
 		Timeout: time.Second * 10,
 	}
@@ -136,13 +181,13 @@ func (f *FetcherSrv) getFtmGasPrice(cfg *models.FetcherConfig) *storage.GasPrice
 	resp, err := f.makeReq(cfg.URL, httpClient)
 	if err != nil {
 		logrus.Warnf("fetch FTM gas price error = %s", err)
-		return &storage.GasPrice{}
+		return &storage.GasPrice{}, err
 	}
 	gasPrice := (*resp)["data"].(map[string]interface{})["normal"].(map[string]interface{})["price"].(float64) / 1000000000
-	return &storage.GasPrice{ChainName: "FTM", Price: fmt.Sprintf("%f", gasPrice), UpdateTime: time.Now().Unix()}
+	return &storage.GasPrice{ChainName: "FTM", Price: fmt.Sprintf("%f", gasPrice), UpdateTime: time.Now().Unix()}, nil
 }
 
-func (f *FetcherSrv) getCroGasPrice(cfg *models.FetcherConfig) *storage.GasPrice {
+func (f *FetcherSrv) getCroGasPrice(cfg *models.FetcherConfig) (*storage.GasPrice, error) {
 	httpClient := &http.Client{
 		Timeout: time.Second * 10,
 	}
@@ -150,13 +195,13 @@ func (f *FetcherSrv) getCroGasPrice(cfg *models.FetcherConfig) *storage.GasPrice
 	resp, err := f.makeReq(cfg.URL, httpClient)
 	if err != nil {
 		logrus.Warnf("fetch CRO gas price error = %s", err)
-		return &storage.GasPrice{}
+		return &storage.GasPrice{}, err
 	}
 	gasPrice := (*resp)["data"].(map[string]interface{})["normal"].(map[string]interface{})["price"].(float64) / 1000000000
-	return &storage.GasPrice{ChainName: "CRO", Price: fmt.Sprintf("%f", gasPrice), UpdateTime: time.Now().Unix()}
+	return &storage.GasPrice{ChainName: "CRO", Price: fmt.Sprintf("%f", gasPrice), UpdateTime: time.Now().Unix()}, nil
 }
 
-func (f *FetcherSrv) getArbGasPrice(cfg *models.FetcherConfig) *storage.GasPrice {
+func (f *FetcherSrv) getArbGasPrice(cfg *models.FetcherConfig) (*storage.GasPrice, error) {
 	httpClient := &http.Client{
 		Timeout: time.Second * 10,
 	}
@@ -165,14 +210,14 @@ func (f *FetcherSrv) getArbGasPrice(cfg *models.FetcherConfig) *storage.GasPrice
 
 	if err != nil {
 		logrus.Warnf("fetch ARB gas price error = %s", err)
-		return &storage.GasPrice{}
+		return &storage.GasPrice{}, err
 	}
 
 	gasPrice := (*resp)["data"].(map[string]interface{})["normal"].(map[string]interface{})["price"].(float64) / 1000000000
-	return &storage.GasPrice{ChainName: "ARB", Price: fmt.Sprintf("%f", gasPrice), UpdateTime: time.Now().Unix()}
+	return &storage.GasPrice{ChainName: "ARB", Price: fmt.Sprintf("%f", gasPrice), UpdateTime: time.Now().Unix()}, nil
 }
 
-func (f *FetcherSrv) getHtGasPrice(cfg *models.FetcherConfig) *storage.GasPrice {
+func (f *FetcherSrv) getHtGasPrice(cfg *models.FetcherConfig) (*storage.GasPrice, error) {
 	httpClient := &http.Client{
 		Timeout: time.Second * 10,
 	}
@@ -180,13 +225,13 @@ func (f *FetcherSrv) getHtGasPrice(cfg *models.FetcherConfig) *storage.GasPrice 
 	resp, err := f.makeReq(cfg.URL, httpClient)
 	if err != nil {
 		logrus.Warnf("fetch HT gas price error = %s", err)
-		return &storage.GasPrice{}
+		return &storage.GasPrice{}, err
 	}
 	gasPrice := (*resp)["data"].(map[string]interface{})["normal"].(map[string]interface{})["price"].(float64) / 1000000000
-	return &storage.GasPrice{ChainName: "HT", Price: fmt.Sprintf("%f", gasPrice), UpdateTime: time.Now().Unix()}
+	return &storage.GasPrice{ChainName: "HT", Price: fmt.Sprintf("%f", gasPrice), UpdateTime: time.Now().Unix()}, nil
 }
 
-func (f *FetcherSrv) getOneGasPrice(cfg *models.FetcherConfig) *storage.GasPrice {
+func (f *FetcherSrv) getOneGasPrice(cfg *models.FetcherConfig) (*storage.GasPrice, error) {
 	httpClient := &http.Client{
 		Timeout: time.Second * 10,
 	}
@@ -194,10 +239,10 @@ func (f *FetcherSrv) getOneGasPrice(cfg *models.FetcherConfig) *storage.GasPrice
 	resp, err := f.makeReq(cfg.URL, httpClient)
 	if err != nil {
 		logrus.Warnf("fetch ONE gas price error = %s", err)
-		return &storage.GasPrice{}
+		return &storage.GasPrice{}, err
 	}
 	var gasPrice = (*resp)["standard"].(float64)
-	return &storage.GasPrice{ChainName: "ONE", Price: fmt.Sprintf("%f", gasPrice), UpdateTime: time.Now().Unix()}
+	return &storage.GasPrice{ChainName: "ONE", Price: fmt.Sprintf("%f", gasPrice), UpdateTime: time.Now().Unix()}, nil
 }
 
 // MakeReq HTTP request helper
