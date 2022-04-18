@@ -45,7 +45,7 @@ type Erc20Worker struct {
 func NewErc20Worker(logger *logrus.Logger, cfg *models.WorkerConfig, db *storage.DataBase) *Erc20Worker {
 	client, err := ethclient.Dial(cfg.Provider)
 	if err != nil {
-		panic("new eth client error")
+		panic(fmt.Sprintf("rpc error for chain %s: %s", cfg.ChainName, err.Error()))
 	}
 
 	privKey, err := utils.GetPrivateKey(cfg)
