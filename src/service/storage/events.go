@@ -30,7 +30,7 @@ func (d *DataBase) UpdateEventStatus(event *Event, status EventStatus) {
 		"update_time": time.Now().Unix(),
 	}
 
-	d.db.Model(event).Update(toUpdate)
+	d.db.Model(Event{}).Where("swap_id = ?", event.SwapID).Update(toUpdate)
 }
 
 // CompensateNewEvent ...

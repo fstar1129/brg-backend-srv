@@ -35,6 +35,7 @@ func (r *BridgeSRV) sendExecuteProposal(worker workers.IWorker, event *storage.E
 	txSent := &storage.TxSent{
 		Chain:      worker.GetChainName(),
 		Type:       storage.TxTypePassed,
+		SwapID:     event.SwapID,
 		CreateTime: time.Now().Unix(),
 	}
 

@@ -92,7 +92,7 @@ func (ev ProposalEvent) ToTxLog(chain string) *storage.TxLog {
 		TxType:             storage.TxTypeClaim,
 		ReceiverAddr:       ev.RecipientAddress.String(),
 		OutAmount:          ev.Amount.String(),
-		SwapID:             utils.CalcutateSwapID(string(ev.DataHash[:]), string(ev.DepositNonce)),
+		SwapID:             utils.CalcutateSwapID(common.Bytes2Hex(ev.OriginChainID[:]), common.Bytes2Hex(ev.DestinationChainID[:]), fmt.Sprint(ev.DepositNonce)),
 		DestinationChainID: common.Bytes2Hex(ev.DestinationChainID[:]),
 		OriginСhainID:      common.Bytes2Hex(ev.OriginChainID[:]),
 		DepositNonce:       ev.DepositNonce,
