@@ -12,7 +12,7 @@ import (
 // emitRegistreted ...
 func (r *BridgeSRV) emitProposal(worker workers.IWorker) {
 	for {
-		events := r.storage.GetEventsByTypeAndStatuses([]storage.EventStatus{storage.EventStatusPassedConfirmed, storage.EventStatusPassedSentFailed})
+		events := r.storage.GetEventsByTypeAndStatuses([]storage.EventStatus{storage.EventStatusPassedInit, storage.EventStatusPassedConfirmed, storage.EventStatusPassedSentFailed})
 		for _, event := range events {
 			if event.Status == storage.EventStatusPassedConfirmed &&
 				worker.GetDestinationID() == event.DestinationChainID { //send tx where dest chainID matches
@@ -22,7 +22,7 @@ func (r *BridgeSRV) emitProposal(worker workers.IWorker) {
 				}
 			} else {
 				r.handleTxSent(event.ChainID, event, storage.TxTypePassed,
-					storage.EventStatusPassedConfirmed, storage.EventStatusPassedConfirmed)
+					storage.EventStatusPassedConfirmed, storage.EventStatusPassedFailed)
 			}
 		}
 
@@ -42,15 +42,15 @@ func (r *BridgeSRV) sendExecuteProposal(worker workers.IWorker, event *storage.E
 	r.logger.Infof("Execute parameters:  depositNonce(%d) | sender(%s) | outAmount(%s) | resourceID(%s) | chainID(%s)\n",
 		event.DepositNonce, event.ReceiverAddr, event.OutAmount, event.ResourceID, worker.GetChainName())
 	if worker.GetChainName() == "LA" {
-		if event.ResourceID == r.storage.FetchResourceIDByName("amToken").ID {
-			wor := r.Workers["POS"]
-			liquidity, _ := wor.GetLiquidityIndex(wor.GetConfig().AmTokenHandlerAddress, wor.GetConfig().AMUSDTContractAddr)
-			txHash, err = worker.ExecuteProposalLa(event.DepositNonce, utils.StringToBytes8(event.OriginChainID), utils.StringToBytes8(event.DestinationChainID), utils.StringToBytes32(event.ResourceID),
-				event.ReceiverAddr, event.OutAmount, liquidity)
-		} else {
-			txHash, err = worker.ExecuteProposalLa(event.DepositNonce, utils.StringToBytes8(event.OriginChainID), utils.StringToBytes8(event.DestinationChainID), utils.StringToBytes32(event.ResourceID),
-				event.ReceiverAddr, event.OutAmount, nil)
-		}
+		// if event.ResourceID == r.storage.FetchResourceIDByName("amToken").ID {
+		// 	wor := r.Workers["POS"]
+		// 	liquidity, _ := wor.GetLiquidityIndex(wor.GetConfig().AmTokenHandlerAddress, wor.GetConfig().AMUSDTContractAddr)
+		// 	txHash, err = worker.ExecuteProposalLa(event.DepositNonce, utils.StringToBytes8(event.OriginChainID), utils.StringToBytes8(event.DestinationChainID), utils.StringToBytes32(event.ResourceID),
+		// 		event.ReceiverAddr, event.OutAmount, liquidity)
+		// } else {
+		txHash, err = worker.ExecuteProposalLa(event.DepositNonce, utils.StringToBytes8(event.OriginChainID), utils.StringToBytes8(event.DestinationChainID), utils.StringToBytes32(event.ResourceID),
+			event.ReceiverAddr, event.OutAmount, nil)
+		// }
 	} else {
 		txHash, err = worker.ExecuteProposalEth(event.DepositNonce, utils.StringToBytes8(event.OriginChainID), utils.StringToBytes8(event.DestinationChainID), utils.StringToBytes32(event.ResourceID),
 			event.ReceiverAddr, event.OutAmount)

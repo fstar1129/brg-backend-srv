@@ -8,7 +8,7 @@ import (
 
 // GetConfirmedTxsLog ...
 func (d *DataBase) GetConfirmedTxsLog(chain string, event *Event, tx *gorm.DB) (txLogs []*TxLog, err error) {
-	if err := tx.Where("chain = ? and status = ? and event_id = ?", chain, TxStatusConfirmed, event.ID).Find(&txLogs).Error; err != nil {
+	if err := tx.Where("chain = ? and status = ?", chain, TxStatusConfirmed).Find(&txLogs).Error; err != nil {
 		return txLogs, err
 	}
 
@@ -107,7 +107,7 @@ func (d *DataBase) CreateTxSent(txSent *TxSent) error {
 
 // UpdateTxSentStatus ...
 func (d *DataBase) UpdateTxSentStatus(txSent *TxSent, status TxStatus) error {
-	return d.db.Model(txSent).Update(
+	return d.db.Model(TxSent{}).Where("swap_id = ?", txSent.SwapID).Update(
 		map[string]interface{}{
 			"status":      status,
 			"update_time": time.Now().Unix(),

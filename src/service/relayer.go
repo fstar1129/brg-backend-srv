@@ -109,7 +109,7 @@ func (r *BridgeSRV) ConfirmWorkerTx(worker workers.IWorker) {
 					OutAmount:          txLog.OutAmount,
 					Height:             txLog.Height,
 					SwapID:             txLog.SwapID,
-					Status:             storage.EventStatusPassedConfirmed,
+					Status:             storage.EventStatusPassedInit,
 					CreateTime:         time.Now().Unix(),
 				}
 				newEvents = append(newEvents, newEvent)
@@ -156,6 +156,7 @@ func (r *BridgeSRV) handleTxSent(chain string, event *storage.Event, txType stor
 	failedStatus storage.EventStatus) {
 	txsSent := r.storage.GetTxsSentByType(chain, txType, event)
 	if len(txsSent) == 0 {
+		println("new tx")
 		r.storage.UpdateEventStatus(event, backwardStatus)
 		return
 	}
