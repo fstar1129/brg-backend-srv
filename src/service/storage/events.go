@@ -58,7 +58,7 @@ func (d *DataBase) UpdateEventStatusWhenConfirmTx(tx *gorm.DB, txLog *TxLog,
 	inStatuses []EventStatus, notInStatuses []EventStatus, updateStatus EventStatus) error {
 	query := tx.Model(Event{})
 
-	query = query.Where("event_id = ?", txLog.EventID)
+	query = query.Where("swap_id = ?", txLog.SwapID)
 
 	if len(inStatuses) != 0 {
 		query = query.Where("status in (?)", inStatuses)

@@ -156,7 +156,6 @@ func (r *BridgeSRV) handleTxSent(chain string, event *storage.Event, txType stor
 	failedStatus storage.EventStatus) {
 	txsSent := r.storage.GetTxsSentByType(chain, txType, event)
 	if len(txsSent) == 0 {
-		println("new tx")
 		r.storage.UpdateEventStatus(event, backwardStatus)
 		return
 	}

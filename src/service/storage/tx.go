@@ -44,9 +44,12 @@ func (d *DataBase) ConfirmWorkerTx(chainID string, txLogs []*TxLog, txHashes []s
 
 	// create swap
 	for _, swap := range newEvents {
-		if err := tx.Create(swap).Error; err != nil {
-			tx.Rollback()
-			return err
+		var previousSwap Event
+		if tx.Model(Event{}).Where("swap_id = ?", swap.SwapID).Order("swap_id desc").First(&previousSwap); previousSwap.SwapID == "" {
+			if err := tx.Create(swap).Error; err != nil {
+				tx.Rollback()
+				return err
+			}
 		}
 	}
 
@@ -79,13 +82,13 @@ func (d *DataBase) ConfirmTx(tx *gorm.DB, txLog *TxLog) error {
 		}
 	case TxTypePassed:
 		if err := d.UpdateEventStatusWhenConfirmTx(tx, txLog, []EventStatus{
-			EventStatusClaimConfirmed, EventStatusPassedInit},
-			nil, EventStatusPassedConfirmed); err != nil {
+			EventStatusPassedFailed},
+			[]EventStatus{EventStatusPassedInit, EventStatusPassedConfirmed}, EventStatusPassedConfirmed); err != nil {
 			return err
 		}
 	case TxTypeSpend:
 		if err := d.UpdateEventStatusWhenConfirmTx(tx, txLog, []EventStatus{
-			EventStatusPassedSent},
+			EventStatusPassedConfirmed},
 			nil, EventStatusSpendConfirmed); err != nil {
 			return err
 		}

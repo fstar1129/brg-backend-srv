@@ -49,7 +49,7 @@ type Registration struct {
 
 // Event ...
 type Event struct {
-	EventID            string
+	SwapID             string `gorm:"primaryKey"`
 	ChainID            string
 	DestinationChainID string
 	OriginChainID      string
@@ -65,7 +65,6 @@ type Event struct {
 	UpdateTime         int64
 	DepositNonce       uint64
 	ResourceID         string
-	SwapID             string `gorm:primaryKey`
 	TxType             string
 }
 
