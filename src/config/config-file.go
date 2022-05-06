@@ -55,7 +55,6 @@ func (v *viperConfig) ReadWorkersConfig() []*models.WorkerConfig {
 func (v *viperConfig) readWorkerConfig(name string) *models.WorkerConfig {
 	return &models.WorkerConfig{
 		NetworkType:           v.GetString(fmt.Sprintf("workers.%s.type", name)),
-		ChainID:               v.GetInt64(fmt.Sprintf("workers.%s.chain_id", name)),
 		ChainName:             strings.ToUpper(name),
 		WorkerAddr:            common.HexToAddress(v.GetString(fmt.Sprintf("workers.%s.worker_addr", name))),
 		PrivateKey:            v.GetString(fmt.Sprintf("workers.%s.private_key", name)),

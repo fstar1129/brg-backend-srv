@@ -68,10 +68,14 @@ func NewErc20Worker(logger *logrus.Logger, cfg *models.WorkerConfig, db *storage
 		))
 	}
 
+	chainid, err := client.ChainID(context.Background())
+	if err != nil {
+		panic("rpc not returning chain id")
+	}
 	// init token addresses
 	return &Erc20Worker{
 		chainName:          cfg.ChainName,
-		chainID:            cfg.ChainID,
+		chainID:            chainid.Int64(),
 		destinationChainID: cfg.DestinationChainID,
 		logger:             logger.WithField("worker", cfg.ChainName),
 		provider:           cfg.Provider,
