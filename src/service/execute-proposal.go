@@ -57,7 +57,6 @@ func (r *BridgeSRV) sendExecuteProposal(worker workers.IWorker, event *storage.E
 	}
 	if err != nil {
 		txSent.ErrMsg = err.Error()
-		txSent.Status = storage.TxSentStatusFailed
 		txSent.TxHash = txHash
 		r.storage.UpdateEventStatus(event, storage.EventStatusPassedSentFailed)
 		r.storage.CreateTxSent(txSent)

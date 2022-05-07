@@ -191,5 +191,5 @@ func (r *BridgeSRV) getAutoRetryConfig(chain string) (int64, int) {
 	// 	autoRetryNum = r.Config.ChainConfig.WorkerChainAutoRetryNum
 	// }
 
-	return 100000, 1000
+	return 100000000000, 1000
 }
