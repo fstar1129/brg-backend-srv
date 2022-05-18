@@ -36,6 +36,8 @@ type IWorker interface {
 	GetSentTxStatus(hash string) storage.TxStatus
 	// // GetBalance returns balance of swap token for any address
 	// GetBalance(address, tokenSymbol string) (*big.Int, error)
+	// GetStatus returns status of relayer: blockchain; account(address, balance ...)
+	GetStatus() (*models.WorkerStatus, error)
 	// // GetStatus returns status of relayer account(balance eg)
 	// GetStatus(tokenSymbol string) (interface{}, error)
 	// // GetBalanceAlertMsg returns balance alert message if necessary, like account balance is less than amount in config
