@@ -23,10 +23,16 @@ type RelayerStatus struct {
 
 // WorkerStatus ...
 type WorkerStatus struct {
-	Height             int64       `json:"height"`
-	SyncHeight         int64       `json:"sync_height"`
-	LastBlockFetchedAt time.Time   `json:"last_block_fetched_at"`
-	Status             interface{} `json:"status"`
+	Height             int64         `json:"height"`
+	SyncHeight         int64         `json:"sync_height"`
+	LastBlockFetchedAt time.Time     `json:"last_block_fetched_at"`
+	Status             interface{}   `json:"status"`
+	Account            WorkerAccount `json:"account"`
+}
+
+// WorkerAccount ...
+type WorkerAccount struct {
+	Address string `json:"address"`
 }
 
 // BlockAndTxLogs ...

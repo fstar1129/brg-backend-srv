@@ -186,6 +186,21 @@ func (w *Erc20Worker) GetLiquidityIndex(handlerAddress, amUsdtAddress common.Add
 	return common.LeftPadBytes(liquidityIndex.Bytes(), 32), nil
 }
 
+// GetStatus returns status of relayer: blockchain; account(address, balance ...)
+func (w *Erc20Worker) GetStatus() (*models.WorkerStatus, error) {
+	status := &models.WorkerStatus{}
+	// set current block height
+	height, err := w.GetHeight()
+	if err != nil {
+		return nil, err
+	}
+	status.Height = height
+	// set worker address
+	status.Account.Address = w.config.WorkerAddr.Hex()
+
+	return status, nil
+}
+
 // // GetStatus returns status of relayer account(balance eg)
 // func (w *Erc20Worker) GetStatus(symbol string) (interface{}, error) {
 // 	ethStatus := &EthStatus{}

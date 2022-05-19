@@ -5,42 +5,24 @@ import (
 )
 
 // Status ...
-func (r *BridgeSRV) Status() (*models.RelayerStatus, error) {
-	relayerStatus := &models.RelayerStatus{
-		Mode:    "",
-		Workers: make(map[string]models.WorkerStatus),
+func (r *BridgeSRV) StatusOfWorkers() (map[string]*models.WorkerStatus, error) {
+	// get blockchain heights from workers and from database
+	workers := make(map[string]*models.WorkerStatus)
+	for _, w := range r.Workers {
+		status, err := w.GetStatus()
+		if err != nil {
+			r.logger.Errorf("While get status for worker = %s, err = %v", w.GetChainName(), err)
+			return nil, err
+		}
+		workers[w.GetChainName()] = status
 	}
 
-	// for k, w := range r.Workers {
-	// 	fmt.Println("----- NAME: ", k)
-	// 	var worker models.WorkerStatus
-	// 	// get block logs
-	// 	currentBlockLog, err := r.storage.GetCurrentBlockLog(w.GetChain())
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
+	for name, w := range workers {
+		blocks := r.storage.GetCurrentBlockLog(name)
+		w.SyncHeight = blocks.Height
+	}
 
-	// 	worker.SyncHeight = currentBlockLog.Height
-	// 	worker.LastBlockFetchedAt = time.Unix(currentBlockLog.CreateTime, 0)
-
-	// 	height, err := w.GetHeight()
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-	// 	worker.Height = height
-
-	// 	status, err := w.GetStatus("LA") //TODO
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-	// 	worker.Status = status
-
-	// 	relayerStatus.Workers[k] = worker
-	// }
-
-	// fmt.Println(relayerStatus)
-
-	return relayerStatus, nil
+	return workers, nil
 }
 
 // CreateNewBindRequest ...

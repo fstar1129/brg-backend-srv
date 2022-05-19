@@ -34,18 +34,11 @@ func (a *App) Endpoints(w http.ResponseWriter, r *http.Request) {
 
 // StatusHandler ...
 func (a *App) StatusHandler(w http.ResponseWriter, r *http.Request) {
-	status, err := a.relayer.Status()
+	status, err := a.relayer.StatusOfWorkers()
 	if err != nil {
 		common.ResponError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-
-	// jsonBytes, err := json.MarshalIndent(status, "", "    ")
-	// if err != nil {
-	// 	common.ResponError(w, http.StatusInternalServerError, err.Error())
-	// 	return
-	// }
-
 	common.ResponJSON(w, http.StatusOK, status)
 }
 
