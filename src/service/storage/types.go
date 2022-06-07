@@ -47,6 +47,9 @@ const (
 
 	EventStatusClaimSent      EventStatus = "CLAIM_SENT"
 	EventStatusClaimConfirmed EventStatus = "CLAIM_CONFIRM"
+
+	EventStatusUpdateConfirmed EventStatus = "UPDATE_CONFIRMED"
+	EventStatusUpdateFailed    EventStatus = "UPDATE_FAILED"
 )
 
 // TxLogStatus ...

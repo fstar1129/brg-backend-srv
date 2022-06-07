@@ -164,6 +164,25 @@ func (w *Erc20Worker) ExecuteProposalLa(depositNonce uint64, originChainID [8]by
 	return tx.Hash().String(), nil
 }
 
+func (w *Erc20Worker) UpdateSwapStatusOnChain(depositNonce uint64, originChainID [8]byte, destinationChainID [8]byte, resourceID [32]byte, receiptAddr string, amount string, bytes []byte, status uint8) (string, error) {
+	auth, err := w.getTransactor()
+	if err != nil {
+		return "", err
+	}
+
+	instance, err := laBr.NewLaBr(w.contractAddr, w.client)
+	if err != nil {
+		return "", err
+	}
+	value, _ := new(big.Int).SetString(amount, 10)
+
+	tx, err := instance.UpdateExternalTx(auth, originChainID, destinationChainID, depositNonce, resourceID, common.HexToAddress(receiptAddr), value, bytes, status)
+	if err != nil {
+		return "", err
+	}
+	return tx.Hash().String(), nil
+}
+
 func (w *Erc20Worker) GetLiquidityIndex(handlerAddress, amUsdtAddress common.Address) ([]byte, error) {
 	auth := w.getCallOpts()
 
