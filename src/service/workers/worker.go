@@ -56,6 +56,7 @@ type IWorker interface {
 	ExecuteProposalEth(depositNonce uint64, originChainID [8]byte, destinationChainID [8]byte, resourceID [32]byte, receiptAddr string, amount string) (string, error)
 	ExecuteProposalLa(depositNonce uint64, originChainID [8]byte, destinationChainID [8]byte, resourceID [32]byte, receiptAddr string, amount string, bytes []byte) (string, error)
 	GetLiquidityIndex(handlerAddress, usdtAddress common.Address) ([]byte, error)
+	UpdateSwapStatusOnChain(depositNonce uint64, originChainID [8]byte, destinationChainID [8]byte, resourceID [32]byte, receiptAddr string, amount string, bytes []byte, status uint8) (string, error)
 	//HTLT(erc20TokenAddr, lrc20TokenAddr, recipientAddr, otherChainRecipientAddr string, timestamp int64,
 	//	heightSpan int64, outAmount *big.Int) (string, error)
 	// CreateRequest sends wrapped tokens tx
