@@ -72,6 +72,8 @@ func ParseLAProposalEvent(abi *abi.ABI, log *types.Log) (ContractEvent, error) {
 	}
 
 	var event_time = time.Now().Format(time.RFC3339Nano)
+	var SwapID = ev.CalcutateSwapID()
+	fmt.Printf("INFO[%s] SwapID: %s\n", event_time, SwapID)
 	fmt.Printf("INFO[%s] ProposalEvent\n", event_time)
 	fmt.Printf("INFO[%s] origin chain ID: 0x%s\n", event_time, common.Bytes2Hex(ev.OriginChainID[:]))
 	fmt.Printf("INFO[%s] destination chain ID: 0x%s\n", event_time, common.Bytes2Hex(ev.DestinationChainID[:]))
@@ -82,7 +84,7 @@ func ParseLAProposalEvent(abi *abi.ABI, log *types.Log) (ContractEvent, error) {
 	fmt.Printf("INFO[%s] DataHash: 0x%s\n", event_time, common.Bytes2Hex(ev.DataHash[:]))
 	fmt.Printf("INFO[%s] amount: %s\n\n", event_time, ev.Amount.String())
 
-	setTxMonitor(ev.CalcutateSwapID(), ev.Status)
+	setTxMonitor(SwapID, ev.Status)
 
 	return ev, nil
 }
@@ -97,7 +99,9 @@ func ParseETHProposalEvent(abi *abi.ABI, log *types.Log) (ContractEvent, error) 
 	ev.RecipientAddress = common.BytesToAddress(log.Topics[3].Bytes())
 
 	var event_time = time.Now().Format(time.RFC3339Nano)
+	var SwapID = ev.CalcutateSwapID()
 	fmt.Printf("INFO[%s] ProposalEvent\n", event_time)
+	fmt.Printf("INFO[%s] SwapID: %s\n", event_time, SwapID)
 	fmt.Printf("INFO[%s] origin chain ID: 0x%s\n", event_time, common.Bytes2Hex(ev.OriginChainID[:]))
 	fmt.Printf("INFO[%s] destination chain ID: 0x%s\n", event_time, common.Bytes2Hex(ev.DestinationChainID[:]))
 	fmt.Printf("INFO[%s] deposit nonce: %d\n", event_time, ev.DepositNonce)
@@ -106,14 +110,14 @@ func ParseETHProposalEvent(abi *abi.ABI, log *types.Log) (ContractEvent, error) 
 	fmt.Printf("INFO[%s] DataHash: 0x%s\n", event_time, common.Bytes2Hex(ev.DataHash[:]))
 	fmt.Printf("INFO[%s] amount: %s\n\n", event_time, ev.Amount.String())
 
-    setTxMonitor(ev.CalcutateSwapID(), ev.Status)
+	setTxMonitor(SwapID, ev.Status)
 
 	return ev, nil
 }
 
 // !!! TODO !!!
 func (ev ProposalEvent) CalcutateSwapID() string {
-    return utils.CalcutateSwapID(common.Bytes2Hex(ev.OriginChainID[:]), common.Bytes2Hex(ev.DestinationChainID[:]), fmt.Sprint(ev.DepositNonce))
+	return utils.CalcutateSwapID(common.Bytes2Hex(ev.OriginChainID[:]), common.Bytes2Hex(ev.DestinationChainID[:]), fmt.Sprint(ev.DepositNonce))
 }
 
 // ToTxLog ...
