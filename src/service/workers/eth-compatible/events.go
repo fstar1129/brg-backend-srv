@@ -53,9 +53,6 @@ func setTxMonitor(DataHash [32]byte, Status uint8) {
 				if NewStatus != 3 {
 					fmt.Printf("ERROR[%s] tx DataHash %s is hangs in status %d\n\n",
 						time.Now().Format(time.RFC3339Nano), common.Bytes2Hex(DataHash[:]), NewStatus)
-				} else {
-					fmt.Printf("INFO[%s] tx DataHash %s completed with status %d\n\n",
-						time.Now().Format(time.RFC3339Nano), common.Bytes2Hex(DataHash[:]), NewStatus)
 				}
 				delete(txStatus, DataHash)
 			}
