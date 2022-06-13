@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/big"
 	"strings"
+	"time"
 
 	"github.com/latoken/bridge-backend-service/src/service/storage"
 	ethBr "github.com/latoken/bridge-backend-service/src/service/workers/eth-compatible/abi/bridge/eth"
@@ -28,6 +29,8 @@ var (
 	ProposalEventHash = common.HexToHash("0x9686dcabd0450cad86a88df15a9d35b08b35d1b08a19008df37cf8538c467516")
 )
 
+var txStatus = make(map[string]uint8)
+
 // ProposalEvent represents a ProposalEvent event raised by the Bridge.sol contract.
 type ProposalEvent struct {
 	OriginChainID      [8]byte
@@ -41,21 +44,47 @@ type ProposalEvent struct {
 	Raw                types.Log // Blockchain specific contextual infos
 }
 
+func setTxMonitor(SwapID string, Status uint8) {
+	if Status == 1 {
+		txStatus[SwapID] = Status
+		go func(SwapID string, Status uint8) {
+			time.Sleep(5 * 60 * time.Second)
+			if NewStatus, ok := txStatus[SwapID]; ok {
+				if NewStatus != 3 {
+					fmt.Printf("ERROR[%s] SwapID %s stuck in status %d\n\n", time.Now().Format(time.RFC3339Nano), SwapID, NewStatus)
+				}
+				delete(txStatus, SwapID)
+			}
+		}(SwapID, Status)
+	} else {
+		if HashStatus, ok := txStatus[SwapID]; ok {
+			if HashStatus < Status {
+				txStatus[SwapID] = Status
+			}
+		}
+	}
+}
+
 func ParseLAProposalEvent(abi *abi.ABI, log *types.Log) (ContractEvent, error) {
 	var ev ProposalEvent
 	if err := abi.UnpackIntoInterface(&ev, ProposalEventName, log.Data); err != nil {
 		return nil, err
 	}
 
-	fmt.Printf("ProposalEvent\n")
-	fmt.Printf("origin chain ID: 0x%s\n", common.Bytes2Hex(ev.OriginChainID[:]))
-	fmt.Printf("destination chain ID: 0x%s\n", common.Bytes2Hex(ev.DestinationChainID[:]))
-	fmt.Printf("deposit nonce: %d\n", ev.DepositNonce)
-	fmt.Printf("status: %d\n", ev.Status)
-	fmt.Printf("resource ID: 0x%s\n", common.Bytes2Hex(ev.ResourceID[:]))
-	fmt.Printf("recipient: 0x%s\n", common.Bytes2Hex(ev.RecipientAddress[:]))
-	fmt.Printf("DataHash: 0x%s\n\n", common.Bytes2Hex(ev.DataHash[:]))
-	fmt.Printf("amount: ", ev.Amount.String())
+	var event_time = time.Now().Format(time.RFC3339Nano)
+	var SwapID = ev.CalcutateSwapID()
+	fmt.Printf("INFO[%s] SwapID: %s\n", event_time, SwapID)
+	fmt.Printf("INFO[%s] ProposalEvent\n", event_time)
+	fmt.Printf("INFO[%s] origin chain ID: 0x%s\n", event_time, common.Bytes2Hex(ev.OriginChainID[:]))
+	fmt.Printf("INFO[%s] destination chain ID: 0x%s\n", event_time, common.Bytes2Hex(ev.DestinationChainID[:]))
+	fmt.Printf("INFO[%s] deposit nonce: %d\n", event_time, ev.DepositNonce)
+	fmt.Printf("INFO[%s] status: %d\n", event_time, ev.Status)
+	fmt.Printf("INFO[%s] resource ID: 0x%s\n", event_time, common.Bytes2Hex(ev.ResourceID[:]))
+	fmt.Printf("INFO[%s] recipient: 0x%s\n", event_time, common.Bytes2Hex(ev.RecipientAddress[:]))
+	fmt.Printf("INFO[%s] DataHash: 0x%s\n", event_time, common.Bytes2Hex(ev.DataHash[:]))
+	fmt.Printf("INFO[%s] amount: %s\n\n", event_time, ev.Amount.String())
+
+	setTxMonitor(SwapID, ev.Status)
 
 	return ev, nil
 }
@@ -69,19 +98,27 @@ func ParseETHProposalEvent(abi *abi.ABI, log *types.Log) (ContractEvent, error) 
 	ev.DestinationChainID = utils.BytesToBytes8(log.Topics[2].Bytes())
 	ev.RecipientAddress = common.BytesToAddress(log.Topics[3].Bytes())
 
-	fmt.Printf("ProposalEvent\n")
-	fmt.Printf("origin chain ID: 0x%s\n", common.Bytes2Hex(ev.OriginChainID[:]))
-	fmt.Printf("destination chain ID: 0x%s\n", common.Bytes2Hex(ev.DestinationChainID[:]))
-	fmt.Printf("deposit nonce: %d\n", ev.DepositNonce)
-	fmt.Printf("status: %d\n", ev.Status)
-	fmt.Printf("resource ID: 0x%s\n", common.Bytes2Hex(ev.ResourceID[:]))
-	fmt.Printf("DataHash: 0x%s\n\n", common.Bytes2Hex(ev.DataHash[:]))
-	fmt.Printf("amount: ", ev.Amount.String())
+	var event_time = time.Now().Format(time.RFC3339Nano)
+	var SwapID = ev.CalcutateSwapID()
+	fmt.Printf("INFO[%s] ProposalEvent\n", event_time)
+	fmt.Printf("INFO[%s] SwapID: %s\n", event_time, SwapID)
+	fmt.Printf("INFO[%s] origin chain ID: 0x%s\n", event_time, common.Bytes2Hex(ev.OriginChainID[:]))
+	fmt.Printf("INFO[%s] destination chain ID: 0x%s\n", event_time, common.Bytes2Hex(ev.DestinationChainID[:]))
+	fmt.Printf("INFO[%s] deposit nonce: %d\n", event_time, ev.DepositNonce)
+	fmt.Printf("INFO[%s] status: %d\n", event_time, ev.Status)
+	fmt.Printf("INFO[%s] resource ID: 0x%s\n", event_time, common.Bytes2Hex(ev.ResourceID[:]))
+	fmt.Printf("INFO[%s] DataHash: 0x%s\n", event_time, common.Bytes2Hex(ev.DataHash[:]))
+	fmt.Printf("INFO[%s] amount: %s\n\n", event_time, ev.Amount.String())
+
+	setTxMonitor(SwapID, ev.Status)
 
 	return ev, nil
 }
 
 // !!! TODO !!!
+func (ev ProposalEvent) CalcutateSwapID() string {
+	return utils.CalcutateSwapID(common.Bytes2Hex(ev.OriginChainID[:]), common.Bytes2Hex(ev.DestinationChainID[:]), fmt.Sprint(ev.DepositNonce))
+}
 
 // ToTxLog ...
 func (ev ProposalEvent) ToTxLog(chain string) *storage.TxLog {
@@ -92,7 +129,7 @@ func (ev ProposalEvent) ToTxLog(chain string) *storage.TxLog {
 		TxType:             storage.TxTypeClaim,
 		ReceiverAddr:       ev.RecipientAddress.String(),
 		OutAmount:          ev.Amount.String(),
-		SwapID:             utils.CalcutateSwapID(common.Bytes2Hex(ev.OriginChainID[:]), common.Bytes2Hex(ev.DestinationChainID[:]), fmt.Sprint(ev.DepositNonce)),
+		SwapID:             ev.CalcutateSwapID(),
 		DestinationChainID: common.Bytes2Hex(ev.DestinationChainID[:]),
 		OriginСhainID:      common.Bytes2Hex(ev.OriginChainID[:]),
 		DepositNonce:       ev.DepositNonce,

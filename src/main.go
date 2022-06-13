@@ -29,7 +29,7 @@ func main() {
 	logger.SetFormatter(&logrus.TextFormatter{
 		ForceColors:     true,
 		FullTimestamp:   true,
-		TimestampFormat: time.RFC822,
+		TimestampFormat: time.RFC3339Nano,
 	})
 	// set logger level
 	level, err := logrus.ParseLevel(cfg.GetString("logger-level"))
