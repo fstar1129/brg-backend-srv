@@ -334,7 +334,7 @@ func (w *Erc20Worker) getLogs(curHeight, nextHeight int64) ([]*storage.TxLog, er
 		ToBlock:   big.NewInt(nextHeight),
 		// Topics:    topics,
 		Addresses: []common.Address{w.contractAddr},
-		Topics:    [][]common.Hash{{utils.StringToBytes32("0x9686dcabd0450cad86a88df15a9d35b08b35d1b08a19008df37cf8538c467516")}},
+		Topics:    [][]common.Hash{{ProposalEventHash}},
 	})
 
 	if err != nil {
