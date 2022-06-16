@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/latoken/bridge-backend-service/src/service/storage"
-	ethBr "github.com/latoken/bridge-backend-service/src/service/workers/eth-compatible/abi/bridge/eth"
 	laBr "github.com/latoken/bridge-backend-service/src/service/workers/eth-compatible/abi/bridge/la"
 	"github.com/latoken/bridge-backend-service/src/service/workers/utils"
 
@@ -152,9 +151,6 @@ func (w *Erc20Worker) parseEvent(log *types.Log) (ContractEvent, error) {
 		if w.GetChainName() == "LA" {
 			abi, _ := abi.JSON(strings.NewReader(laBr.LaBrABI))
 			return ParseLAProposalEvent(&abi, log)
-		} else {
-			abi, _ := abi.JSON(strings.NewReader(ethBr.EthBrABI))
-			return ParseETHProposalEvent(&abi, log)
 		}
 	}
 	return nil, nil
