@@ -76,6 +76,7 @@ type WorkerConfig struct {
 	ContractAddr          common.Address `json:"contract_addr"`
 	AmTokenHandlerAddress common.Address `json:"amToken_handler_addr"`
 	AMUSDTContractAddr    common.Address `json:"USDT_token_addr"`
+	NativeResourceID      string         `json:"native_resource_id"`
 	WorkerAddr            common.Address `json:"worker_addr"`
 	ColdWalletAddr        common.Address `json:"cold_wallet_addr"`
 	FetchInterval         int64          `json:"fetch_interval"`
