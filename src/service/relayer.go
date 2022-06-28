@@ -184,13 +184,5 @@ func (r *BridgeSRV) handleTxSent(chain string, event *storage.Event, txType stor
 // !!! TODO !!!
 
 func (r *BridgeSRV) getAutoRetryConfig(chain string) (int64, int) {
-	// if chain == "LA" {
-	// 	autoRetryTimeout = r.Config.ChainConfig.BnbAutoRetryTimeout
-	// 	autoRetryNum = r.Config.ChainConfig.BnbAutoRetryNum
-	// } else {
-	// 	autoRetryTimeout = r.Config.ChainConfig.WorkerChainAutoRetryTimeout
-	// 	autoRetryNum = r.Config.ChainConfig.WorkerChainAutoRetryNum
-	// }
-
-	return 3000, 100
+	return 3000, 10
 }
