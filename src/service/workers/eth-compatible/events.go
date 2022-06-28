@@ -17,14 +17,11 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 )
 
-////
-// EVENTS HASHES  | web3.utils.sha3('HTLT(types,...)');
-////
-
 const (
 	ProposalEventName = "ProposalEvent"
 )
 
+// Event Hash (SHA3)
 var (
 	ProposalEventHash = common.HexToHash("0x9686dcabd0450cad86a88df15a9d35b08b35d1b08a19008df37cf8538c467516")
 )
@@ -44,6 +41,7 @@ type ProposalEvent struct {
 	Raw                types.Log // Blockchain specific contextual infos
 }
 
+//monitors swap status till 5 mins then throw error
 func setTxMonitor(SwapID string, Status uint8) {
 	if Status == 1 {
 		txStatus[SwapID] = Status

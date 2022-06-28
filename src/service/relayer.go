@@ -70,7 +70,7 @@ func (r *BridgeSRV) Run() {
 	r.Watcher.Run()
 	//start fetcher
 	r.Fetcher.Run()
-	go r.UpdateFailedTxOnLachain()
+	go r.UpdateTxOnLachain()
 	// run Worker workers
 	for _, worker := range r.Workers {
 		go r.ConfirmWorkerTx(worker)

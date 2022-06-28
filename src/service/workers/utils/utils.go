@@ -93,6 +93,7 @@ func CalculateLiquidityIndex(balance, scaledBalance *big.Int) *big.Int {
 	return liquidityIndex
 }
 
+//converts decimal outputAmount -> inputAmount (used to convert amount from proposal event)
 func ConvertDecimalsForInput(originDecimals, destDecimals uint8, amount string) *big.Int {
 	origin := new(big.Int).SetInt64(int64(math.Pow10(int(originDecimals))))
 	dest := new(big.Int).SetInt64(int64(math.Pow10(int(destDecimals))))

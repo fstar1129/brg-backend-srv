@@ -11,7 +11,8 @@ import (
 	"github.com/latoken/bridge-backend-service/src/service/workers/utils"
 )
 
-func (b *BridgeSRV) UpdateFailedTxOnLachain() {
+// Updates withdraw swap status on lachain
+func (b *BridgeSRV) UpdateTxOnLachain() {
 	for {
 		events := b.storage.GetEventsByTypeAndStatuses([]storage.EventStatus{storage.EventStatusPassedFailed, storage.EventStatusPassedSent})
 		for _, event := range events {
@@ -86,8 +87,11 @@ func (b *BridgeSRV) SendConfirmationLA(event *storage.Event) (string, error) {
 		b.storage.UpdateEventStatus(event, storage.EventStatusUpdateFailed)
 		return "", fmt.Errorf("could not send update tx: %w", err)
 	}
+
+	//using inAmount to check for decimals of other chain
 	var inAmount *big.Int
 	outAmount, _ := new(big.Int).SetString(event.OutAmount, 10)
+
 	if originDecimals == destDecimals {
 		inAmount = outAmount
 	} else if originDecimals == 0 || destDecimals == 0 || originDecimals > 63 || destDecimals > 63 {
@@ -101,8 +105,8 @@ func (b *BridgeSRV) SendConfirmationLA(event *storage.Event) (string, error) {
 		inAmount = utils.ConvertDecimalsForInput(originDecimals, destDecimals, event.OutAmount)
 	}
 
-	b.logger.Infof("Update status parameters:  depositNonce(%d) | sender(%s) | outAmount(%s) | resourceID(%s) \n",
-		event.DepositNonce, event.ReceiverAddr, event.OutAmount, event.ResourceID)
+	b.logger.Infof("Update status parameters:  depositNonce(%d) | sender(%s) | outAmount(%s) | resourceID(%s) | inAmount(%s) \n",
+		event.DepositNonce, event.ReceiverAddr, event.OutAmount, event.ResourceID, inAmount.String())
 
 	//required to update liquidity index for amTokens
 	if event.ResourceID == b.storage.FetchResourceIDByName("amToken").ID {
