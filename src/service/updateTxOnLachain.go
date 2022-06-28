@@ -126,6 +126,7 @@ func (b *BridgeSRV) SendConfirmationLA(event *storage.Event) (string, error) {
 		b.storage.UpdateEventStatus(event, storage.EventStatusUpdateFailed)
 		return "", err
 	}
+	txSent.TxHash = txHash
 	b.logger.Infof("Update status tx success: %s", txHash)
 	b.storage.UpdateEventStatus(event, storage.EventStatusUpdateConfirmed)
 	b.storage.CreateTxSent(txSent)
