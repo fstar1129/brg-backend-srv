@@ -29,7 +29,6 @@ const (
 	TxTypeClaim  TxType = "VOTE"
 	TxTypePassed TxType = "PASSED"
 	TxTypeSpend  TxType = "SPEND"
-	TxTypeUpdate TxType = "UPDATE"
 )
 
 type EventStatus string

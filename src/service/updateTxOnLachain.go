@@ -30,7 +30,7 @@ func (b *BridgeSRV) UpdateTxOnLachain() {
 func (b *BridgeSRV) SendConfirmationLA(event *storage.Event) (string, error) {
 	txSent := &storage.TxSent{
 		Chain:      "LA",
-		Type:       storage.TxTypeUpdate,
+		Type:       storage.TxTypeSpend,
 		SwapID:     event.SwapID,
 		CreateTime: time.Now().Unix(),
 	}
