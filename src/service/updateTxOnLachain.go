@@ -67,6 +67,7 @@ func (b *BridgeSRV) SendConfirmationLA(event *storage.Event) (string, error) {
 		txSent.ErrMsg = err
 		txSent.Status = storage.TxSentStatusFailed
 		b.storage.UpdateEventStatus(event, storage.EventStatusUpdateFailed)
+		b.storage.CreateTxSent(txSent)
 		return "", fmt.Errorf("could not send update tx: %s", err)
 	}
 
@@ -76,6 +77,7 @@ func (b *BridgeSRV) SendConfirmationLA(event *storage.Event) (string, error) {
 		txSent.ErrMsg = err.Error()
 		txSent.Status = storage.TxSentStatusFailed
 		b.storage.UpdateEventStatus(event, storage.EventStatusUpdateFailed)
+		b.storage.CreateTxSent(txSent)
 		return "", fmt.Errorf("could not send update tx: %w", err)
 	}
 
@@ -85,6 +87,7 @@ func (b *BridgeSRV) SendConfirmationLA(event *storage.Event) (string, error) {
 		txSent.ErrMsg = err.Error()
 		txSent.Status = storage.TxSentStatusFailed
 		b.storage.UpdateEventStatus(event, storage.EventStatusUpdateFailed)
+		b.storage.CreateTxSent(txSent)
 		return "", fmt.Errorf("could not send update tx: %w", err)
 	}
 
@@ -100,6 +103,7 @@ func (b *BridgeSRV) SendConfirmationLA(event *storage.Event) (string, error) {
 		txSent.ErrMsg = err.Error()
 		txSent.Status = storage.TxSentStatusFailed
 		b.storage.UpdateEventStatus(event, storage.EventStatusUpdateFailed)
+		b.storage.CreateTxSent(txSent)
 		return "", fmt.Errorf("could not send update tx: %w", err)
 	} else {
 		inAmount = utils.ConvertDecimalsForInput(originDecimals, destDecimals, event.OutAmount)
@@ -116,10 +120,14 @@ func (b *BridgeSRV) SendConfirmationLA(event *storage.Event) (string, error) {
 
 	txHash, err := b.laWorker.UpdateSwapStatusOnChain(event.DepositNonce, utils.StringToBytes8(event.OriginChainID), utils.StringToBytes8(event.DestinationChainID), utils.StringToBytes32(event.ResourceID), event.ReceiverAddr, outAmount, inAmount, liquidity, status)
 	if err != nil {
+		txSent.ErrMsg = err.Error()
+		txSent.Status = storage.TxSentStatusFailed
+		b.storage.CreateTxSent(txSent)
 		b.storage.UpdateEventStatus(event, storage.EventStatusUpdateFailed)
 		return "", err
 	}
 	b.logger.Infof("Update status tx success: %s", txHash)
 	b.storage.UpdateEventStatus(event, storage.EventStatusUpdateConfirmed)
+	b.storage.CreateTxSent(txSent)
 	return txHash, nil
 }
