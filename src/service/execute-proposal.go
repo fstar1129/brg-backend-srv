@@ -24,9 +24,9 @@ func (r *BridgeSRV) emitProposal(worker workers.IWorker) {
 				r.handleTxSent(event.ChainID, event, storage.TxTypePassed,
 					storage.EventStatusPassedConfirmed, storage.EventStatusPassedFailed)
 			}
+			time.Sleep(2 * time.Second)
 		}
-
-		time.Sleep(2 * time.Second)
+		time.Sleep(10 * time.Second)
 	}
 }
 
