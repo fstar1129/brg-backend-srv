@@ -7,11 +7,15 @@ import (
 	"fmt"
 	"math/big"
 	"strconv"
+	"strings"
 	"time"
 
+	ERC20 "github.com/latoken/bridge-backend-service/src/service/workers/eth-compatible/abi/ERC20"
 	aToken "github.com/latoken/bridge-backend-service/src/service/workers/eth-compatible/abi/atoken"
 	ethBr "github.com/latoken/bridge-backend-service/src/service/workers/eth-compatible/abi/bridge/eth"
 	laBr "github.com/latoken/bridge-backend-service/src/service/workers/eth-compatible/abi/bridge/la"
+	ethHandler "github.com/latoken/bridge-backend-service/src/service/workers/eth-compatible/abi/handler/eth"
+	laHandler "github.com/latoken/bridge-backend-service/src/service/workers/eth-compatible/abi/handler/la"
 	"github.com/latoken/bridge-backend-service/src/service/workers/utils"
 
 	"github.com/ethereum/go-ethereum"
@@ -164,7 +168,7 @@ func (w *Erc20Worker) ExecuteProposalLa(depositNonce uint64, originChainID [8]by
 	return tx.Hash().String(), nil
 }
 
-func (w *Erc20Worker) UpdateSwapStatusOnChain(depositNonce uint64, originChainID [8]byte, destinationChainID [8]byte, resourceID [32]byte, receiptAddr string, amount string, bytes []byte, status uint8) (string, error) {
+func (w *Erc20Worker) UpdateSwapStatusOnChain(depositNonce uint64, originChainID [8]byte, destinationChainID [8]byte, resourceID [32]byte, receiptAddr string, outAmount, inAmount *big.Int, bytes []byte, status uint8) (string, error) {
 	auth, err := w.getTransactor()
 	if err != nil {
 		return "", err
@@ -174,9 +178,8 @@ func (w *Erc20Worker) UpdateSwapStatusOnChain(depositNonce uint64, originChainID
 	if err != nil {
 		return "", err
 	}
-	value, _ := new(big.Int).SetString(amount, 10)
 
-	tx, err := instance.UpdateExternalTx(auth, originChainID, destinationChainID, depositNonce, resourceID, common.HexToAddress(receiptAddr), value, bytes, status)
+	tx, err := instance.UpdateExternalTx(auth, originChainID, destinationChainID, depositNonce, resourceID, common.HexToAddress(receiptAddr), outAmount, inAmount, bytes, status)
 	if err != nil {
 		return "", err
 	}
@@ -220,69 +223,8 @@ func (w *Erc20Worker) GetStatus() (*models.WorkerStatus, error) {
 	return status, nil
 }
 
-// // GetStatus returns status of relayer account(balance eg)
-// func (w *Erc20Worker) GetStatus(symbol string) (interface{}, error) {
-// 	ethStatus := &EthStatus{}
-
-// 	allowance, err := w.Allowance(symbol)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	ethStatus.Allowance = QuoBigInt(allowance, GetBigIntForDecimal(w.Config.ChainDecimal)).String()
-
-// 	balance, err := w.Erc20Balance(w.Config.WorkerAddr, symbol)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	ethStatus.Erc20Balance = QuoBigInt(balance, GetBigIntForDecimal(w.Config.ChainDecimal)).String()
-
-// 	ethBalance, err := w.EthBalance(w.Config.WorkerAddr)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	ethStatus.EthBalance = QuoBigInt(ethBalance, GetBigIntForDecimal(18)).String()
-
-// 	return ethStatus, nil
-// }
-
 // GetBlockAndTxs ...
 func (w *Erc20Worker) GetBlockAndTxs(height int64) (*models.BlockAndTxLogs, error) {
-	// var head *Header
-	// rpcClient := jsonrpc.NewClient(w.provider)
-
-	// resp, err := rpcClient.Call("eth_getBlockByNumber", "latest", false)
-	// if err != nil {
-	// 	w.logger.Errorln("while call eth_getBlockByNumber, err = ", err)
-	// 	return nil, err
-	// }
-
-	// if err := resp.GetObject(&head); err != nil {
-	// 	w.logger.Errorln("while GetObject, err = ", err)
-	// 	return nil, err
-	// }
-
-	// if head == nil {
-	// 	return nil, fmt.Errorf("not found")
-	// }
-
-	// if height >= int64(head.Number) {
-	// 	return nil, fmt.Errorf("not found")
-	// }
-
-	// logs, err := w.getLogs(height, int64(head.Number))
-	// if err != nil {
-	// 	w.logger.Errorf("while getEvents(from = %d, to = %d), err = %v", height, int64(head.Number), err)
-	// 	return nil, err
-	// }
-
-	// return &models.BlockAndTxLogs{
-	// 	Height:          int64(head.Number),
-	// 	BlockHash:       head.Hash.String(),
-	// 	ParentBlockHash: head.ParentHash.Hex(),
-	// 	BlockTime:       int64(head.Time),
-	// 	TxLogs:          logs,
-	// }, nil
-
 	client, err := ethclient.Dial(w.provider)
 	if err != nil {
 		w.logger.Errorln("Error while dialing the client = ", err)
@@ -380,16 +322,6 @@ func (w *Erc20Worker) GetHeight() (int64, error) {
 
 // GetSentTxStatus ...
 func (w *Erc20Worker) GetSentTxStatus(hash string) storage.TxStatus {
-	// _, isPending, err := w.client.TransactionByHash(context.Background(), common.HexToHash(hash))
-	// if err != nil {
-	// 	w.logger.Errorln("GetSentTxStatus, err = ", err)
-	// 	return storage.TxSentStatusNotFound
-	// }
-
-	// if isPending {
-	// 	return storage.TxSentStatusPending
-	// }
-
 	txReceipt, err := w.client.TransactionReceipt(context.Background(), common.HexToHash(hash))
 	if err != nil {
 		return storage.TxSentStatusNotFound
@@ -424,12 +356,6 @@ func (w *Erc20Worker) getTransactor() (auth *bind.TransactOpts, err error) {
 	}
 
 	var nonce uint64
-	// if w.chainName == "LA" || w.chainName == "POS" {
-	// 	nonce, err = w.GetTxCountLatest()
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-	// } else {
 	nonce, err = w.client.PendingNonceAt(context.Background(), w.config.WorkerAddr)
 	if err != nil {
 		return nil, err
@@ -466,22 +392,6 @@ func (w *Erc20Worker) GetWorkerAddress() string {
 	return w.config.WorkerAddr.String()
 }
 
-//GetGasPrice
-// func (w *Erc20Worker) GetGasPrice() (uint64, error) {
-// 	var result hexutil.Uint64
-// 	rpcClient := jsonrpc.NewClient(w.provider)
-// 	resp, err := rpcClient.Call("eth_gasPrice")
-// 	if err != nil {
-// 		return 0, err
-// 	}
-// 	if err := resp.GetObject(&result); err != nil {
-// 		println("err in obj")
-// 		return 0, err
-// 	}
-// 	return uint64(result), nil
-// 	time.Sleep(time.Second * 30)
-// }
-
 // GetColdWalletAddress ...
 func (w *Erc20Worker) GetColdWalletAddress() string {
 	return w.config.ColdWalletAddr.String()
@@ -500,4 +410,118 @@ func (w *Erc20Worker) SendAmount(address string, amount *big.Int) (string, error
 func (w *Erc20Worker) GetGasPrice() float64 {
 	gasPrice, _ := new(big.Float).SetInt64(w.config.GasPrice.Int64()).Float64()
 	return gasPrice
+}
+
+func (w *Erc20Worker) getHandlerAddr(resourceId string) (string, error) {
+	callOpts := &bind.CallOpts{
+		Pending: true,
+		From:    w.contractAddr,
+		Context: context.Background(),
+	}
+
+	if w.chainName == "LA" {
+		instance, err := laBr.NewLaBr(w.contractAddr, w.client)
+		if err != nil {
+			return "", err
+		}
+
+		handlerAddr, err := instance.ResourceIDToHandlerAddress(callOpts, utils.StringToBytes32(resourceId))
+		if err != nil {
+			return "", err
+		}
+
+		return handlerAddr.Hex(), nil
+	} else {
+		instance, err := ethBr.NewEthBr(w.contractAddr, w.client)
+		if err != nil {
+			return "", err
+		}
+
+		handlerAddr, err := instance.ResourceIDToHandlerAddress(callOpts, utils.StringToBytes32(resourceId))
+		if err != nil {
+			return "", err
+		}
+		return handlerAddr.Hex(), nil
+	}
+}
+
+func (w *Erc20Worker) getTokenAddr(handlerAddr, resourceId string) (string, error) {
+	callOpts := &bind.CallOpts{
+		Pending: true,
+		From:    common.HexToAddress(handlerAddr),
+		Context: context.Background(),
+	}
+
+	if w.chainName == "LA" {
+		instance, err := laHandler.NewLaHandler(common.HexToAddress(handlerAddr), w.client)
+		if err != nil {
+			return "", err
+		}
+
+		tokenAddr, err := instance.ResourceIDToTokenContractAddress(callOpts, utils.StringToBytes32(resourceId))
+		if err != nil {
+			return "", err
+		}
+
+		return tokenAddr.Hex(), nil
+	} else {
+		instance, err := ethHandler.NewEthHandler(common.HexToAddress(handlerAddr), w.client)
+		if err != nil {
+			return "", err
+		}
+
+		tokenAddr, err := instance.ResourceIDToTokenContractAddress(callOpts, utils.StringToBytes32(resourceId))
+		if err != nil {
+			return "", err
+		}
+
+		return tokenAddr.Hex(), nil
+	}
+}
+
+func (w *Erc20Worker) getDecimals(tokenAddr string) (uint8, error) {
+	callOpts := &bind.CallOpts{
+		Pending: true,
+		From:    common.HexToAddress(tokenAddr),
+		Context: context.Background(),
+	}
+
+	instance, err := ERC20.NewErc20(common.HexToAddress(tokenAddr), w.client)
+	if err != nil {
+		return 0, err
+	}
+
+	decimals, err := instance.Decimals(callOpts)
+	if err != nil {
+		return 0, err
+	}
+
+	return decimals, nil
+}
+
+func (w *Erc20Worker) GetDecimalsFromResourceID(resourceID string) (uint8, error) {
+
+	if strings.ToLower(w.config.NativeResourceID) == strings.ToLower(resourceID) {
+		return 18, nil
+	}
+
+	handlerAddr, err := w.getHandlerAddr(resourceID)
+	if err != nil {
+		println("error getting handler", w.chainName)
+		return 0, err
+	}
+
+	tokenAddr, err := w.getTokenAddr(handlerAddr, resourceID)
+	if err != nil {
+		println("error getting token addr", w.chainName)
+		return 0, err
+	}
+
+	decimals, err := w.getDecimals(tokenAddr)
+	if err != nil {
+		println("error getting decimals", w.chainName)
+		return 0, err
+	}
+
+	return decimals, nil
 }

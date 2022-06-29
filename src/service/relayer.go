@@ -70,7 +70,7 @@ func (r *BridgeSRV) Run() {
 	r.Watcher.Run()
 	//start fetcher
 	r.Fetcher.Run()
-	go r.UpdateFailedTxOnLachain()
+	go r.UpdateTxOnLachain()
 	// run Worker workers
 	for _, worker := range r.Workers {
 		go r.ConfirmWorkerTx(worker)
@@ -184,13 +184,5 @@ func (r *BridgeSRV) handleTxSent(chain string, event *storage.Event, txType stor
 // !!! TODO !!!
 
 func (r *BridgeSRV) getAutoRetryConfig(chain string) (int64, int) {
-	// if chain == "LA" {
-	// 	autoRetryTimeout = r.Config.ChainConfig.BnbAutoRetryTimeout
-	// 	autoRetryNum = r.Config.ChainConfig.BnbAutoRetryNum
-	// } else {
-	// 	autoRetryTimeout = r.Config.ChainConfig.WorkerChainAutoRetryTimeout
-	// 	autoRetryNum = r.Config.ChainConfig.WorkerChainAutoRetryNum
-	// }
-
-	return 1000, 100
+	return 10, 10
 }

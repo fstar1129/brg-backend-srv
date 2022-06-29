@@ -1,6 +1,7 @@
 package workers
 
 import (
+	"math/big"
 	"time"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -28,43 +29,19 @@ type IWorker interface {
 	GetFetchInterval() time.Duration
 	GetGasPrice() float64
 	GetConfig() *models.WorkerConfig
-	// GetWorkerAddress returns relayer account address
-	// GetWorkerAddress() string
-	// // GetColdWalletAddress returns the address of the relayer's cold wallet
-	// GetColdWalletAddress() string
-	// GetSentTxStatus returns status of tx sent
+	// gets tx status from chain
 	GetSentTxStatus(hash string) storage.TxStatus
-	// // GetBalance returns balance of swap token for any address
-	// GetBalance(address, tokenSymbol string) (*big.Int, error)
-	// GetStatus returns status of relayer: blockchain; account(address, balance ...)
 	GetStatus() (*models.WorkerStatus, error)
-	// // GetStatus returns status of relayer account(balance eg)
-	// GetStatus(tokenSymbol string) (interface{}, error)
-	// // GetBalanceAlertMsg returns balance alert message if necessary, like account balance is less than amount in config
-	// GetBalanceAlertMsg(tokenSymbol string) (string, error)
 	// IsSameAddress returns is addrA the same with addrB
 	IsSameAddress(addrA string, addrB string) bool
-	// CalcSwapID calculate swap id for each chain
-	//CalcSwapID(randomNumberHash common.Hash, sender string, senderOtherChain string) ([]byte, error)
-	// Refundable returns is swap refundable
-	//Refundable(swapID common.Hash) (bool, error)
-	// GetSwap returns swap request detail
-	//	GetSwap(swapID common.Hash) (*models.SwapRequest, error)
-	// HasSwap returns does swap exist
-	// HasSwap(swapID common.Hash) (bool, error)
-	// HTLT sends htlt tx
+	//Executes Swap on ETH based chains
 	ExecuteProposalEth(depositNonce uint64, originChainID [8]byte, destinationChainID [8]byte, resourceID [32]byte, receiptAddr string, amount string) (string, error)
+	//Executes Swap on Lachain
 	ExecuteProposalLa(depositNonce uint64, originChainID [8]byte, destinationChainID [8]byte, resourceID [32]byte, receiptAddr string, amount string, bytes []byte) (string, error)
+	//to get Liquidity Index for aave tokens
 	GetLiquidityIndex(handlerAddress, usdtAddress common.Address) ([]byte, error)
-	UpdateSwapStatusOnChain(depositNonce uint64, originChainID [8]byte, destinationChainID [8]byte, resourceID [32]byte, receiptAddr string, amount string, bytes []byte, status uint8) (string, error)
-	//HTLT(erc20TokenAddr, lrc20TokenAddr, recipientAddr, otherChainRecipientAddr string, timestamp int64,
-	//	heightSpan int64, outAmount *big.Int) (string, error)
-	// CreateRequest sends wrapped tokens tx
-	//	CreateRequest(swapID common.Hash) (string, error)
-	// SendClaim
-	//	SendClaim(swapID common.Hash) (string, error)
-	// Refund sends refund tx
-	//Refund(swapID common.Hash) (string, error)
-	// SendAmount
-	//SendAmount(address string, amount *big.Int) (string, error)
+	//updates withdraw swap status on lachain
+	UpdateSwapStatusOnChain(depositNonce uint64, originChainID [8]byte, destinationChainID [8]byte, resourceID [32]byte, receiptAddr string, outAmount, inAmount *big.Int, bytes []byte, status uint8) (string, error)
+	//gets decimals from token address by taking resource id
+	GetDecimalsFromResourceID(resourceID string) (uint8, error)
 }
