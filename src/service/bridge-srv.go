@@ -94,10 +94,10 @@ func (r *BridgeSRV) ConfirmWorkerTx(worker workers.IWorker) {
 
 		for _, txLog := range txLogs {
 			// reject swap request if receiver addr and worker chain addr both are r addr
-			if worker.IsSameAddress(txLog.ReceiverAddr, worker.GetWorkerAddress()) &&
-				!r.laWorker.IsSameAddress(txLog.WorkerChainAddr, r.laWorker.GetWorkerAddress()) {
-				r.logger.Warnln("THE SAME")
-			}
+			// if worker.IsSameAddress(txLog.ReceiverAddr, worker.GetWorkerAddress()) &&
+			// 	!r.laWorker.IsSameAddress(txLog.WorkerChainAddr, r.laWorker.GetWorkerAddress()) {
+			// 	r.logger.Warnln("THE SAME")
+			// }
 			if txLog.TxType == storage.TxTypePassed {
 				r.logger.Infoln("New Event")
 				newEvent := &storage.Event{
@@ -110,7 +110,7 @@ func (r *BridgeSRV) ConfirmWorkerTx(worker workers.IWorker) {
 					OutAmount:          txLog.OutAmount,
 					Height:             txLog.Height,
 					SwapID:             txLog.SwapID,
-					Status:             storage.EventStatusPassedInit,
+					Status:             storage.EventStatusClaimConfirmed,
 					CreateTime:         time.Now().Unix(),
 				}
 				newEvents = append(newEvents, newEvent)
