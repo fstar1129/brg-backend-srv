@@ -150,6 +150,10 @@ func (r *BridgeSRV) CheckTxSent(worker workers.IWorker) {
 			r.logger.WithFields(logrus.Fields{"function": "CheckTxSent() | UpdateTxSentStatus()"}).Errorln(err)
 			return
 		}
+		if err := r.storage.UpdateEventStatusWithTxStatus(txSent, status, txSent.Type); err != nil {
+			r.logger.WithFields(logrus.Fields{"function": "UpdateEventStatusWithTxStatus() | UpdateTxSentStatus()"}).Errorln(err)
+			return
+		}
 	}
 }
 

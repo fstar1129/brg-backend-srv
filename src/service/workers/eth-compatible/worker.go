@@ -326,7 +326,6 @@ func (w *Erc20Worker) GetSentTxStatus(hash string) storage.TxStatus {
 	if err != nil {
 		return storage.TxSentStatusNotFound
 	}
-
 	if txReceipt.Status == types.ReceiptStatusFailed {
 		return storage.TxSentStatusFailed
 	}

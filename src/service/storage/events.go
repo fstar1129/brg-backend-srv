@@ -12,6 +12,13 @@ import (
 3. UPDATE event
 */
 
+func (d *DataBase) getEventBySwapID(swapID string) (event Event, err error) {
+	if err = d.db.Model(Event{}).Where("swap_id = ?", swapID).First(&event).Error; err != nil {
+		return event, err
+	}
+	return event, nil
+}
+
 // GetEventsByTypeAndStatuses ...
 func (d *DataBase) GetEventsByTypeAndStatuses(statuses []EventStatus) []*Event {
 	swaps := make([]*Event, 0)
@@ -73,5 +80,33 @@ func (d *DataBase) UpdateEventStatusWhenConfirmTx(tx *gorm.DB, txLog *TxLog,
 		"update_time": time.Now().Unix(),
 	}
 
+	return query.Updates(toUpdate).Error
+}
+
+func (d *DataBase) UpdateEventStatusWithTxStatus(txSent *TxSent, status TxStatus, txType TxType) error {
+	event, err := d.getEventBySwapID(txSent.SwapID)
+	if err != nil {
+		return err
+	}
+
+	switch txType {
+	case TxTypePassed:
+		if status == TxSentStatusFailed {
+			d.UpdateParticularEventStatus(event, EventStatusPassedSentFailed, EventStatusPassedSent)
+		} else if status == TxSentStatusSuccess {
+			d.UpdateParticularEventStatus(event, EventStatusPassedConfirmed, EventStatusPassedSent)
+		}
+	}
+	return nil
+}
+
+func (d *DataBase) UpdateParticularEventStatus(event Event, status EventStatus, inStatus EventStatus) error {
+	query := d.db.Model(Event{})
+	query = query.Where("swap_id = ?", event.SwapID)
+	query = query.Where("status = ?", inStatus)
+	toUpdate := map[string]interface{}{
+		"status":      status,
+		"update_time": time.Now().Unix(),
+	}
 	return query.Updates(toUpdate).Error
 }
