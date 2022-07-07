@@ -110,7 +110,7 @@ func (d *DataBase) CreateTxSent(txSent *TxSent) error {
 
 // UpdateTxSentStatus ...
 func (d *DataBase) UpdateTxSentStatus(txSent *TxSent, status TxStatus) error {
-	return d.db.Model(TxSent{}).Where("swap_id = ?", txSent.SwapID).Update(
+	return d.db.Model(TxSent{}).Where("swap_id = ? and chain = ?", txSent.SwapID, txSent.Chain).Update(
 		map[string]interface{}{
 			"status":      status,
 			"update_time": time.Now().Unix(),

@@ -14,7 +14,7 @@ import (
 // Updates withdraw swap status on lachain
 func (b *BridgeSRV) UpdateTxOnLachain() {
 	for {
-		events := b.storage.GetEventsByTypeAndStatuses([]storage.EventStatus{storage.EventStatusPassedFailed, storage.EventStatusPassedSent})
+		events := b.storage.GetEventsByTypeAndStatuses([]storage.EventStatus{storage.EventStatusPassedFailed, storage.EventStatusPassedConfirmed})
 		for _, event := range events {
 			b.logger.Infoln("attempting to send confirmation tx")
 			txHash, err := b.SendConfirmationLA(event)
