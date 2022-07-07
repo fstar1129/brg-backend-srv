@@ -30,6 +30,7 @@ const (
 	TxTypePassed  TxType = "PASSED"
 	TxTypeSpend   TxType = "SPEND"
 	TxTypeExpired TxType = "EXPIRED"
+	TxTypeUpdate  TxType = "UPDATE"
 )
 
 type EventStatus string

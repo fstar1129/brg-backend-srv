@@ -47,7 +47,7 @@ func setTxMonitor(SwapID string, Status uint8) {
 		go func(SwapID string, Status uint8) {
 			time.Sleep(5 * 60 * time.Second)
 			if NewStatus, ok := txStatus[SwapID]; ok {
-				if NewStatus != 3 {
+				if NewStatus >= 3 {
 					fmt.Printf("ERROR[%s] SwapID %s stuck in status %d\n\n", time.Now().Format(time.RFC3339Nano), SwapID, NewStatus)
 				}
 				delete(txStatus, SwapID)
